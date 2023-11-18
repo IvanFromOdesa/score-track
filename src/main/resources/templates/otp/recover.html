@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account verification</title>
+    <link th:href="@{/layouts/styles/otp/style.css}" rel="stylesheet">
+</head>
+<body>
+<div class="all">
+    <h2 th:text="${otpTitle}"></h2>
+    <div class="hints">
+        <div th:text="${param.error} ? ${invalidOtp} : ''" class="error"></div>
+    </div>
+    <p th:utext="${otpDesc}"></p>
+    <div class="otpWrapper" onpaste="return false;">
+        <input class="otp" type="number" placeholder="0" min="0" max="9" required>
+        <input class="otp" type="number" placeholder="0" min="0" max="9" required>
+        <input class="otp" type="number" placeholder="0" min="0" max="9" required>
+        <input class="otp" type="number" placeholder="0" min="0" max="9" required>
+        <input class="otp" type="number" placeholder="0" min="0" max="9" required>
+        <input class="otp" type="number" placeholder="0" min="0" max="9" required>
+    </div>
+    <form th:object="${otpForm}" th:action="@{/recover}" method="post" id="otpForm">
+        <input id="inputOtp" type="hidden" th:field="*{otp}">
+        <div class="btn">
+            <button th:text="${sbBtn}" class="baseBtn" disabled type="submit"></button>
+        </div>
+    </form>
+    <br>
+    <div class="hint">
+        <div th:text="${hint}"></div>&nbsp;
+        <button id="resendOtp" class="enable" th:text="${resend}" onclick="resendOtp()"></button>
+    </div>
+</div>
+<script th:inline="javascript">
+    const resendOtp = async () => {
+        const res = await fetch("/otp/resend", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.getElementsByName('_csrf')[0].value
+            }
+        });
+        if (res.ok) {
+            const resendOtp = document.getElementById('resendOtp');
+            resendOtp.disabled = true;
+            resendOtp.classList.remove('enable');
+            resendOtp.style.cursor = 'default';
+            resendOtp.innerHTML = [[${resendOk}]] + '<ion-icon name="checkmark-done-outline"></ion-icon>';
+        }
+    }
+</script>
+<script type="text/javascript" th:src="@{/js/otp.js}"></script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

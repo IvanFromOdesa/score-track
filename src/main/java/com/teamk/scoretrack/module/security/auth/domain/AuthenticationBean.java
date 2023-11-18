@@ -1,10 +1,12 @@
 package com.teamk.scoretrack.module.security.auth.domain;
 
-import com.teamk.scoretrack.module.commons.domain.Identifier;
+import com.teamk.scoretrack.module.commons.base.domain.Identifier;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
+import com.teamk.scoretrack.module.security.handler.error.authfailure.domain.AuthenticationCredentialsFailure;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -12,10 +14,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Formula;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,13 +27,15 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * DB raw user model
+ * DB raw user getModel
  */
 @Entity
 @Table(name = "authentication")
-public class AuthenticationBean extends Identifier implements UserDetails {
+@EntityListeners({ AuditingEntityListener.class })
+public class AuthenticationBean extends Identifier implements ExtendedUserDetails {
     private static final long ENABLED_LIMIT = 30;
     private static final long EXPIRED_LIMIT = 365;
+    public static final String FK_NAME = "auth_fk";
     @Column(unique = true)
     private String loginname;
     @Column(unique = true)
@@ -46,11 +52,14 @@ public class AuthenticationBean extends Identifier implements UserDetails {
     private Instant lastLogOn;
     @OneToOne(mappedBy = "authentication", fetch = FetchType.LAZY)
     private User user;
-    @UpdateTimestamp
+    @LastModifiedDate
     private Instant lastModified;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
+    @LastModifiedBy
     private AuthenticationBean modifiedBy;
+    @Formula(AuthenticationCredentialsFailure.LATEST_FAILURE)
+    private Instant latestFailureUnlock;
 
     public String getLoginname() {
         return loginname;
@@ -140,6 +149,10 @@ public class AuthenticationBean extends Identifier implements UserDetails {
         this.modifiedBy = modifiedBy;
     }
 
+    public Instant getLatestFailureUnlock() {
+        return latestFailureUnlock;
+    }
+
     public static AuthenticationBean getDefault(String loginname, String hash, String email) {
         AuthenticationBean authenticationBean = new AuthenticationBean();
         authenticationBean.setLoginname(loginname);
@@ -179,6 +192,11 @@ public class AuthenticationBean extends Identifier implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return isEnabled() && !ps.isReset();
+    }
+
+    @Override
+    public boolean isBadCredentialsFailurePresent() {
+        return latestFailureUnlock != null && Instant.now().isBefore(latestFailureUnlock);
     }
 
     @Override

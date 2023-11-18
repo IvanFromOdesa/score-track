@@ -1,6 +1,8 @@
 package com.teamk.scoretrack.module.security.history.domain;
 
-import com.teamk.scoretrack.module.commons.domain.Identifier;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.teamk.scoretrack.module.commons.base.domain.Identifier;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +19,7 @@ import java.time.Instant;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class AuthenticationHistory extends Identifier {
     @ManyToOne
-    @JoinColumn(name = "auth_fk")
+    @JoinColumn(name = AuthenticationBean.FK_NAME)
     private AuthenticationBean authenticationBean;
     @CreationTimestamp
     private Instant issuedAt;
@@ -56,13 +58,31 @@ public class AuthenticationHistory extends Identifier {
         this.status = status;
     }
 
-    public AuthenticationBlockedStatus getBlockedStatusType() {
-        return AuthenticationBlockedStatus.DEFAULT;
-    }
-
     public enum Status {
-        TRUSTED,
-        BLOCKED;
+        TRUSTED(0),
+        BLOCKED(1),
+        UNDEFINED(2);
+
+        private final int code;
+
+        Status(int code) {
+            this.code = code;
+        }
+
+        @JsonValue
+        public int getCode() {
+            return code;
+        }
+
+        @JsonCreator
+        public static Status deserialize(int code) {
+            for (Status status : Status.values()) {
+                if (status.code == code) {
+                    return status;
+                }
+            }
+            return UNDEFINED;
+        }
 
         public boolean isTrusted() {
             return this == TRUSTED;
@@ -70,6 +90,10 @@ public class AuthenticationHistory extends Identifier {
 
         public boolean isBlocked() {
             return this == BLOCKED;
+        }
+
+        public boolean isUndefined() {
+            return this == UNDEFINED;
         }
     }
 }

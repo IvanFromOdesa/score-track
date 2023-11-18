@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.commons.cache.redis.service;
 
-import com.teamk.scoretrack.module.commons.domain.IdAware;
+import com.teamk.scoretrack.module.commons.base.domain.IdAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;

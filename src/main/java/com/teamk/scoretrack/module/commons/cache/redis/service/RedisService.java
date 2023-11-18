@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.commons.cache.redis.service;
 
-import com.teamk.scoretrack.module.commons.domain.IdAware;
+import com.teamk.scoretrack.module.commons.base.domain.IdAware;
 
 import java.util.Optional;
 

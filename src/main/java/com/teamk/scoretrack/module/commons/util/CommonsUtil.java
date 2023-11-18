@@ -23,4 +23,8 @@ public class CommonsUtil {
         }
         return s.substring(beginIndex, number + beginIndex);
     }
+
+    public static String anonymize(String input, int start, int end) {
+        return input.substring(0, start) + "*".repeat(end - start) + input.substring(end);
+    }
 }

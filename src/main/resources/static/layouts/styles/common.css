@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&family=Raleway&family=Roboto&display=swap');
+
+.btn {
+    width: 100%;
+    text-align: center;
+}
+
+.baseBtn {
+    height: 45px;
+    width: 300px;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #C8B568;
+    font-weight: 500;
+    transition: .5s;
+}
+
+.baseBtn:hover {
+    background-color: black;
+    color: #C8B568;
+}
+
+.hints {
+    text-align: center;
+    margin-top: 6px;
+}
+
+.hints .error {
+    font-family: "Roboto", serif;
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: crimson;
+}

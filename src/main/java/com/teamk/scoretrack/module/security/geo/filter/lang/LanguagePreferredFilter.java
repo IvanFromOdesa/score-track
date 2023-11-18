@@ -5,6 +5,7 @@ import com.teamk.scoretrack.module.commons.util.log.MessageLogger;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.Language;
 import com.teamk.scoretrack.module.security.filter.BaseSecurityFilter;
 import com.teamk.scoretrack.module.security.geo.service.GeoLocationService;
+import com.teamk.scoretrack.module.security.util.HttpUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ public class LanguagePreferredFilter extends BaseSecurityFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            Language language = Language.byIsoCode(geoLocationService.resolveLocation(getClientIP(request)).isoCode());
+            Language language = Language.byIsoCode(geoLocationService.resolveLocation(HttpUtil.getClientIP(request)).isoCode());
             if (language.isValid()) {
                 WebUtils.setSessionAttribute(request, SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, language.getLocale());
             }

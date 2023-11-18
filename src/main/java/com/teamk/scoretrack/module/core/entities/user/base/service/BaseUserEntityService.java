@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.base.service;
 
-import com.teamk.scoretrack.module.commons.service.AbstractJpaEntityService;
+import com.teamk.scoretrack.module.commons.base.service.AbstractJpaEntityService;
 import com.teamk.scoretrack.module.core.entities.Privileges;
 import com.teamk.scoretrack.module.core.entities.SportAPI;
 import com.teamk.scoretrack.module.core.entities.user.base.dao.BaseUserDao;

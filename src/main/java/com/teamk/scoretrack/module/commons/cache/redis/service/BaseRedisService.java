@@ -1,7 +1,7 @@
 package com.teamk.scoretrack.module.commons.cache.redis.service;
 
 import com.teamk.scoretrack.module.commons.cache.redis.dao.RedisDao;
-import com.teamk.scoretrack.module.commons.domain.IdAware;
+import com.teamk.scoretrack.module.commons.base.domain.IdAware;
 
 import java.util.Optional;
 
@@ -27,6 +27,14 @@ public abstract class BaseRedisService<CACHE_CONTEXT, ENTITY extends IdAware<ID>
     @Override
     public void evict(ID id) {
         dao.deleteById(id);
+    }
+
+    public Optional<ENTITY> evictAndGet(ID id) {
+        Optional<ENTITY> entity = get(id);
+        if (entity.isPresent()) {
+            evict(id);
+        }
+        return entity;
     }
 
     protected abstract void setDao(DAO dao);

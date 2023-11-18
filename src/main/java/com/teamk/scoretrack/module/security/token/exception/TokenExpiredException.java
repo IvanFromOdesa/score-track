@@ -1,6 +1,7 @@
 package com.teamk.scoretrack.module.security.token.exception;
 
-import com.teamk.scoretrack.module.commons.exception.ServerException;
+import com.teamk.scoretrack.module.commons.exception.ResourceNotFoundException;
 
-public class TokenExpiredException extends ServerException {
+// TODO
+public class TokenExpiredException extends ResourceNotFoundException {
 }

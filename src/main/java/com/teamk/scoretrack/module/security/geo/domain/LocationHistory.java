@@ -2,7 +2,6 @@ package com.teamk.scoretrack.module.security.geo.domain;
 
 import com.google.common.hash.Hashing;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
-import com.teamk.scoretrack.module.security.history.domain.AuthenticationBlockedStatus;
 import com.teamk.scoretrack.module.security.history.domain.AuthenticationHistory;
 import jakarta.persistence.Entity;
 
@@ -30,10 +29,5 @@ public class LocationHistory extends AuthenticationHistory {
 
     public static String hashed(String ip) {
         return Hashing.sha256().hashString(ip, StandardCharsets.UTF_8).toString();
-    }
-
-    @Override
-    public AuthenticationBlockedStatus getBlockedStatusType() {
-        return AuthenticationBlockedStatus.BLOCKED_UNKNOWN_LOCATION;
     }
 }

@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
-import com.teamk.scoretrack.module.commons.domain.Identifier;
+import com.teamk.scoretrack.module.commons.base.domain.Identifier;
 import com.teamk.scoretrack.module.commons.other.ScoreTrackConfig;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import jakarta.persistence.CascadeType;
@@ -19,7 +19,7 @@ public class User extends Identifier implements IUserAware {
     private Instant lastSeen;
     private Language preferredLang;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "auth_fk", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = AuthenticationBean.FK_NAME, referencedColumnName = "id", nullable = false)
     private AuthenticationBean authentication;
 
     public Instant getLastSeen() {

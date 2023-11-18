@@ -1,0 +1,114 @@
+@import url("../common.css");
+
+* {
+    box-sizing: border-box;
+    font-family: "Roboto", serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin: 0;
+}
+
+.all {
+    border: 2px solid rgba(0, 0, 0, .5);
+    border-radius: 10px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .3);
+    padding: 30px;
+    max-width: 1000px;
+    text-align: center;
+}
+
+.otpWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.all h2 {
+    color: #C8B568;
+}
+
+.all p {
+    font-size: 1.2em;
+}
+
+.otp {
+    caret-color: transparent;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    border: 1px solid #eee;
+    font-size: 30px;
+    width: 75px;
+    height: 80px;
+    margin: 10px;
+    text-align: center;
+    font-weight: 300;
+}
+
+@media (max-width: 600px) {
+    .otpWrapper {
+        flex-wrap: wrap;
+    }
+
+    .otp {
+        font-size: 24px;
+        height: 50px;
+        max-width: 50px;
+    }
+}
+
+.otp::-webkit-outer-spin-button,
+.otp::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.otp:valid {
+    border-color: #C8B568;
+    box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.25);
+}
+
+.hint {
+    display: inline-flex;
+}
+
+#resendOtp {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    text-decoration: none;
+    color: #C8B568;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#resendOtp.enable:hover {
+    text-decoration: underline;
+}
+
+.baseBtn {
+    cursor: default;
+}
+
+.baseBtn:hover {
+    background-color: #f0f0f0;
+}
+
+.baseBtn.enable {
+    cursor: pointer;
+}
+
+.baseBtn.enable:hover {
+    background-color: black;
+    color: #C8B568;
+}
+
+
+

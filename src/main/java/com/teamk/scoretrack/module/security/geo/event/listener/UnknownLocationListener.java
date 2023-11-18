@@ -1,9 +1,10 @@
 package com.teamk.scoretrack.module.security.geo.event.listener;
 
-import com.teamk.scoretrack.module.commons.service.BaseTransactionManager;
-import com.teamk.scoretrack.module.commons.service.mail.IEmailService;
-import com.teamk.scoretrack.module.commons.service.mail.NotificationEmail;
-import com.teamk.scoretrack.module.commons.service.mail.event.listener.EmailNotifyListener;
+import com.teamk.scoretrack.module.commons.mail.IEmailService;
+import com.teamk.scoretrack.module.commons.mail.NotificationEmail;
+import com.teamk.scoretrack.module.commons.mail.event.listener.EmailNotifyListener;
+import com.teamk.scoretrack.module.commons.mail.resend.domain.ResendNotificationEmail;
+import com.teamk.scoretrack.module.commons.mail.resend.service.ResendNotificationEmailService;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.Language;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import com.teamk.scoretrack.module.security.auth.service.AuthenticationEntityService;
@@ -29,7 +30,7 @@ public class UnknownLocationListener extends EmailNotifyListener<NotificationEma
     private final AuthenticationEntityService authenticationService;
     private final OTPAuthService otpAuthService;
     private final GeoTranslatorService translatorService;
-    private final BaseTransactionManager transactionManager;
+    private final ResendNotificationEmailService resendNotificationEmailService;
     @Value("${spring.application.name}")
     private String issuer;
 
@@ -37,18 +38,18 @@ public class UnknownLocationListener extends EmailNotifyListener<NotificationEma
     public UnknownLocationListener(AuthenticationEntityService authenticationService,
                                    OTPAuthService otpAuthService,
                                    GeoTranslatorService translatorService,
-                                   BaseTransactionManager transactionManager) {
+                                   ResendNotificationEmailService resendNotificationEmailService) {
         this.authenticationService = authenticationService;
         this.otpAuthService = otpAuthService;
         this.translatorService = translatorService;
-        this.transactionManager = transactionManager;
+        this.resendNotificationEmailService = resendNotificationEmailService;
     }
 
     @Override
     @EventListener
     @Async("fixedThreadPool")
     public void handleEvent(UnknownLocationEvent event) {
-        Long bhId = transactionManager.doInNewTransaction(status -> authenticationService.addHistory(prepareLH(event)));
+        Long bhId = authenticationService.addAuthHistory(prepareLH(event));
         Language preferredLang = event.getAuthenticationBean().getUser().getPreferredLang();
         sendNotificationEmail(event, bhId, preferredLang.getLocale(), preferredLang.getDtFormatter());
     }
@@ -64,7 +65,14 @@ public class UnknownLocationListener extends EmailNotifyListener<NotificationEma
         email.setSubject(translatorService.getMessage("mail.subject", locale));
         email.setTitle(translatorService.getMessage("mail.title", locale));
         email.setMessage(translatorService.getMessage("mail.body", locale, placeholders(event, bhId, dtFormatter)));
+        cache(event.getAuthenticationBean().getId().toString(), email);
         emailService.sendEmail(email);
+    }
+
+    private void cache(String id, NotificationEmail email) {
+        ResendNotificationEmail ctx = new ResendNotificationEmail(email, id);
+        ctx.setAttempt(ctx.getAttempt() + 1);
+        resendNotificationEmailService.cache(ctx);
     }
 
     private Object[] placeholders(UnknownLocationEvent event, Long bhId, DateTimeFormatter dtFormatter) {
@@ -78,6 +86,7 @@ public class UnknownLocationListener extends EmailNotifyListener<NotificationEma
                 event.getAttemptedDevice(),
                 otpAuthService.generate(authenticationBean.getId().toString(), bhId),
                 TimeUnit.MINUTES.convert(OTPToken.TTL, TimeUnit.SECONDS),
+                event.getRecoveryLink(),
                 issuer
         };
     }
@@ -87,7 +96,7 @@ public class UnknownLocationListener extends EmailNotifyListener<NotificationEma
     }
 
     private String formatCC(String country, String city) {
-        return country.concat(", ").concat(city);
+        return city != null ? country.concat(", ").concat(city) : country;
     }
 
     @Override

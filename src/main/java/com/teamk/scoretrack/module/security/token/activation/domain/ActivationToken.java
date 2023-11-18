@@ -1,7 +1,7 @@
 package com.teamk.scoretrack.module.security.token.activation.domain;
 
 import com.teamk.scoretrack.module.commons.cache.CacheStore;
-import com.teamk.scoretrack.module.commons.domain.IdAware;
+import com.teamk.scoretrack.module.commons.base.domain.IdAware;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;

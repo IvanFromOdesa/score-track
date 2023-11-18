@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.commons.mongo.domain;
 
-import com.teamk.scoretrack.module.commons.domain.IdAware;
+import com.teamk.scoretrack.module.commons.base.domain.IdAware;
 import org.springframework.data.annotation.Id;
 
 public class Identifier implements IdAware<String> {

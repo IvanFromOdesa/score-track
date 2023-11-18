@@ -1,10 +1,10 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.service.valid;
 
-import com.teamk.scoretrack.module.commons.service.valid.form.DtoEntityValidator;
-import com.teamk.scoretrack.module.commons.service.valid.form.FormValidationContext;
+import com.teamk.scoretrack.module.commons.base.service.valid.form.DtoEntityValidator;
+import com.teamk.scoretrack.module.commons.base.service.valid.form.FormValidationContext;
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
-import com.teamk.scoretrack.module.commons.service.valid.image.IImgValidator;
-import com.teamk.scoretrack.module.commons.service.valid.image.ImageValidationContext;
+import com.teamk.scoretrack.module.commons.base.service.valid.image.IImgValidator;
+import com.teamk.scoretrack.module.commons.base.service.valid.image.ImageValidationContext;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamResponseDto;
 import org.springframework.stereotype.Service;
 

@@ -2,9 +2,9 @@ package com.teamk.scoretrack.module.security.auth.service;
 
 import com.teamk.scoretrack.module.commons.cache.CacheStore;
 import com.teamk.scoretrack.module.commons.cache.service.ManualCacheManager;
-import com.teamk.scoretrack.module.commons.service.AbstractJpaEntityService;
-import com.teamk.scoretrack.module.commons.service.mail.IEmailService;
-import com.teamk.scoretrack.module.commons.service.mail.NotificationEmail;
+import com.teamk.scoretrack.module.commons.base.service.AbstractJpaEntityService;
+import com.teamk.scoretrack.module.commons.mail.IEmailService;
+import com.teamk.scoretrack.module.commons.mail.NotificationEmail;
 import com.teamk.scoretrack.module.commons.util.log.MessageLogger;
 import com.teamk.scoretrack.module.core.entities.user.base.event.UserProcessingEvent;
 import com.teamk.scoretrack.module.core.entities.user.base.event.publisher.UserProcessingDelegator;
@@ -17,9 +17,9 @@ import com.teamk.scoretrack.module.security.auth.dto.AuthenticationDto;
 import com.teamk.scoretrack.module.security.auth.service.i18n.AuthTranslatorService;
 import com.teamk.scoretrack.module.security.history.domain.AuthenticationHistory;
 import com.teamk.scoretrack.module.security.history.service.AuthenticationHistoryService;
+import com.teamk.scoretrack.module.security.token.activation.domain.ActivationToken;
 import com.teamk.scoretrack.module.security.token.activation.service.ActivationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,9 +38,6 @@ public class AuthenticationEntityService extends AbstractJpaEntityService<Authen
     private final ManualCacheManager manualCacheManager;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationHistoryService historyService;
-
-    @Value("${caching.default.ttl}")
-    private Long uuidTTL;
 
     @Autowired
     public AuthenticationEntityService(UserProcessingDelegator userProcessingDelegator,
@@ -72,9 +69,9 @@ public class AuthenticationEntityService extends AbstractJpaEntityService<Authen
     }
 
     public void activate(UUID uuid) {
+        long authId = Long.parseLong(tokenService.getActivationToken(uuid).authId());
         baseTransactionManager.doInNewTransaction(() -> {
             try {
-                long authId = Long.parseLong(tokenService.getActivationToken(uuid).authId());
                 AuthenticationBean byId = manualCacheManager.evict(CacheStore.AUTH_CACHE_STORE, authId, AuthenticationBean.class, () -> getById(authId));
                 byId.setStatus(AuthenticationStatus.ACTIVATED);
                 save(byId);
@@ -85,19 +82,12 @@ public class AuthenticationEntityService extends AbstractJpaEntityService<Authen
         });
     }
 
-    public Long addHistory(AuthenticationHistory history) {
-        AuthenticationBean authenticationBean = history.getAuthenticationBean();
-        if (!authenticationBean.getStatus().isBlocked() && history.getStatus().isBlocked()) {
-            authenticationBean.setStatus(AuthenticationStatus.BLOCKED);
-        }
+    public Long addAuthHistory(AuthenticationHistory history) {
         return baseTransactionManager.doInNewTransaction(status -> historyService.save(history));
     }
 
-    /**
-     * @return if {@link AuthenticationBean} was successfully unblocked - true (it does not have any related unresolved {@link AuthenticationHistory}), otherwise - false
-     */
-    public boolean resolveBlockHistory(AuthenticationBean authenticationBean, Long blockId) {
-        return historyService.resolveAuthHistory(authenticationBean, blockId);
+    public boolean resolveAuthHistory(AuthenticationBean authenticationBean, Long id) {
+        return historyService.resolveAuthHistory(authenticationBean, id);
     }
 
     private UUID generateActivationToken(AuthenticationBean authenticationBean) {
@@ -115,13 +105,12 @@ public class AuthenticationEntityService extends AbstractJpaEntityService<Authen
     }
 
     private String buildActivationEmailBody(UUID token, String link) {
-        return translatorService.getMessage("mail.body", link.concat("/%s".formatted(token)), TimeUnit.HOURS.convert(uuidTTL, TimeUnit.MILLISECONDS));
+        return translatorService.getMessage("mail.body", link.concat("/%s".formatted(token)), TimeUnit.HOURS.convert(ActivationToken.TTL, TimeUnit.MILLISECONDS));
     }
 
-    // TODO: exception handling
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return dao.findByLoginname(username).orElseThrow();
+    public UserDetails loadUserByUsername(String username) {
+        return dao.findByLoginname(username).orElseThrow(() -> new UsernameNotFoundException(""));
     }
 
     @Override

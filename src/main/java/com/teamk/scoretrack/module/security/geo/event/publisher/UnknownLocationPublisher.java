@@ -1,7 +1,7 @@
 package com.teamk.scoretrack.module.security.geo.event.publisher;
 
-import com.teamk.scoretrack.module.commons.service.mail.NotificationEmail;
-import com.teamk.scoretrack.module.commons.service.mail.event.publisher.EmailNotifyPublisher;
+import com.teamk.scoretrack.module.commons.mail.NotificationEmail;
+import com.teamk.scoretrack.module.commons.mail.event.publisher.EmailNotifyPublisher;
 import com.teamk.scoretrack.module.security.geo.event.UnknownLocationEvent;
 import org.springframework.stereotype.Component;
 

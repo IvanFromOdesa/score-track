@@ -1,0 +1,263 @@
+@import url("../common.css");
+
+@font-face {
+    font-family: airwaves-oblique;
+    src: url(../../fonts/airwaves_oblique.ttf);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: airwaves-oblique, "Roboto", serif;
+}
+
+.all {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    min-height: 100vh;
+    background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url(../../images/bg.gif) no-repeat fixed center;
+    background-size: cover;
+}
+
+.logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.wrapper-form {
+    position: relative;
+    width: 400px;
+    height: 440px;
+    background: transparent;
+    border: 2px solid rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: height .2s ease;
+}
+
+.wrapper-form.active {
+    height: 600px;
+    width: 450px;
+}
+
+.wrapper-form .form-box {
+    width: 100%;
+    padding: 40px;
+}
+
+.wrapper-form .form-box.login {
+    transition: transform .18s ease;
+    transform: translateX(0);
+}
+
+.wrapper-form.active .form-box.login {
+    transition: none;
+    transform: translateX(-450px);
+}
+
+.wrapper-form .form-box.signup {
+    position: absolute;
+    transition: none;
+    transform: translateX(450px);
+}
+
+.wrapper-form.active .form-box.signup {
+    transition: transform .18s ease;
+    transform: translateX(0);
+}
+
+.hints .registration-success {
+    font-family: "Roboto", serif;
+    font-weight: bold;
+    font-size: 1rem;
+    color: limegreen;
+    visibility: hidden;
+}
+
+.form-box h2 {
+    font-size: 2em;
+    color: #C8B568;
+    text-align: center;
+}
+
+.input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    /*border-bottom: 2px solid #C8B568;*/
+    margin: 30px 0;
+}
+
+small {
+    color: crimson;
+    display: flex;
+    margin-top: -15px;
+    visibility: hidden;
+}
+
+.input-box label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    font-size: 1em;
+    color: #C8B568;
+    font-weight: 500;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.input-box input:focus~label,
+.input-box input:not(:placeholder-shown)~label {
+    top: -12px;
+}
+
+.input-box input:required:invalid:not(:placeholder-shown) {
+    border-bottom-color: crimson;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    font-family: "Roboto", serif;
+    border:none;
+    border-bottom: 2px solid #C8B568;
+    outline: none;
+    font-size: 1.1em;
+    color: black;
+    font-weight: 600;
+    padding: 10px 35px 0 5px;
+}
+
+.input-box .icon {
+    position: absolute;
+    right: 8px;
+    font-size: 1.2em;
+    color: #C8B568;
+    line-height: 57px;
+}
+
+.remember-forgot {
+    font-size: 1em;
+    color: #C8B568;
+    font-weight: 500;
+    margin: 10px 0 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.remember-forgot label input {
+    accent-color: #C8B568;
+    margin-right: 3px;
+}
+
+.remember-forgot a {
+    color: #C8B568;
+    text-decoration: none;
+}
+
+.remember-forgot a:hover {
+    text-decoration: underline;
+}
+
+.baseBtn {
+    width: 100%;
+}
+
+.signup {
+    font-size: 1.1em;
+    color: black;
+    text-align: center;
+    font-weight: 500;
+    margin: 25px 0 10px;
+}
+
+.signup a {
+    color: #C8B568;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup a:hover {
+    text-decoration: underline;
+}
+
+.modal {
+    position: fixed;
+    overflow-y: scroll;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 200ms ease-in-out;
+    border: 2px solid #C8B568;
+    border-radius: 10px;
+    z-index: 10;
+    background-color: white;
+    width: 650px;
+    height: 800px;
+    max-height: 60%;
+    max-width: 60%;
+}
+
+.modal.active {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid black;
+}
+
+.modal-header .modal-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    font-family: "Roboto", serif;
+}
+
+.modal-header .btnCloseModal {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 2.5rem;
+    font-weight: bold;
+    transition: 18ms;
+}
+
+.modal-header .btnCloseModal:hover {
+    color: crimson;
+}
+
+.modal-body {
+    padding: 10px 15px;
+    font-family: "Roboto", serif;
+    font-size: 1rem;
+}
+
+#overlay {
+    position: fixed;
+    opacity: 0;
+    inset: 0;
+    background-color: rgba(0, 0, 0, .5);
+    pointer-events: none;
+}
+
+#overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}

@@ -1,55 +1,58 @@
 package com.teamk.scoretrack.module.security.geo.service;
 
 import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.teamk.scoretrack.module.commons.service.mail.NotificationEmail;
+import com.teamk.scoretrack.module.commons.cache.CacheStore;
+import com.teamk.scoretrack.module.commons.mail.NotificationEmail;
 import com.teamk.scoretrack.module.commons.util.log.MessageLogger;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
+import com.teamk.scoretrack.module.security.auth.service.AuthenticationHolderService;
 import com.teamk.scoretrack.module.security.geo.domain.LocationHistory;
 import com.teamk.scoretrack.module.security.geo.event.UnknownLocationEvent;
 import com.teamk.scoretrack.module.security.geo.event.publisher.UnknownLocationPublisher;
+import com.teamk.scoretrack.module.security.history.domain.AuthenticationHistory;
 import com.teamk.scoretrack.module.security.service.DeviceMetadataResolver;
 import com.teamk.scoretrack.module.security.util.HttpUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @ConditionalOnProperty(value = "geo.enabled", havingValue = "true")
 public class ULHService {
     private final GeoLocationService geoLocationService;
+    private final AuthenticationHolderService authenticationHolderService;
     private final LocationHistoryService locationHistoryService;
     private final UnknownLocationPublisher unknownLocationPublisher;
 
     @Autowired
-    public ULHService(GeoLocationService geoLocationService, LocationHistoryService locationHistoryService, UnknownLocationPublisher unknownLocationPublisher) {
+    public ULHService(GeoLocationService geoLocationService, AuthenticationHolderService authenticationHolderService, LocationHistoryService locationHistoryService, UnknownLocationPublisher unknownLocationPublisher) {
         this.geoLocationService = geoLocationService;
+        this.authenticationHolderService = authenticationHolderService;
         this.locationHistoryService = locationHistoryService;
         this.unknownLocationPublisher = unknownLocationPublisher;
     }
 
-    public void processUserLocation(HttpServletRequest request, HttpServletResponse response, String ip) {
+    @Cacheable(cacheNames = {CacheStore.LH_RESULT_CACHE_STORE}, key = "#ip")
+    public AuthenticationHistory.Status processUserLocation(HttpServletRequest request, String ip) {
+        AuthenticationHistory.Status result = AuthenticationHistory.Status.TRUSTED;
         try {
             GeoLocationService.GeoResponse geoResponse = geoLocationService.resolveLocation(ip);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null && authentication.isAuthenticated()) {
-                AuthenticationBean auth = (AuthenticationBean) authentication.getPrincipal();
+            Optional<AuthenticationBean> currentAuthentication = authenticationHolderService.getCurrentAuthentication();
+            if (currentAuthentication.isPresent()) {
+                AuthenticationBean auth = currentAuthentication.get();
                 String hashed = LocationHistory.hashed(ip);
-                List<LocationHistory> byIp = locationHistoryService.findTrusted(auth);
-                if (!byIp.isEmpty()) {
-                    if (byIp.stream().noneMatch(h -> h.getIpHash().equals(hashed))) {
-                        prepareProcessEvent(auth, geoResponse, ip, DeviceMetadataResolver.getDeviceMD(request), Instant.now());
-                        response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
-                        response.setHeader(HttpHeaders.LOCATION, response.encodeRedirectURL(HttpUtil.getBaseUrl(request).concat("")));
+                List<LocationHistory> byAuth = locationHistoryService.findTrusted(auth);
+                if (!byAuth.isEmpty()) {
+                    if (byAuth.stream().noneMatch(h -> h.getIpHash().equals(hashed))) {
+                        prepareProcessEvent(auth, geoResponse, ip, request, Instant.now());
+                        result = AuthenticationHistory.Status.BLOCKED;
                     }
                 } else {
                     locationHistoryService.saveTrusted(auth, hashed);
@@ -57,16 +60,20 @@ public class ULHService {
             }
         } catch (GeoIp2Exception | IOException e) {
             MessageLogger.error(e.getMessage());
+            result = AuthenticationHistory.Status.UNDEFINED;
         }
+        return result;
     }
 
-    private void prepareProcessEvent(AuthenticationBean authenticationBean, GeoLocationService.GeoResponse geoResponse, String ip, String device, Instant issuedAt) {
+    private void prepareProcessEvent(AuthenticationBean authenticationBean, GeoLocationService.GeoResponse geoResponse, String ip, HttpServletRequest request, Instant issuedAt) {
         UnknownLocationEvent event = new UnknownLocationEvent(new NotificationEmail().builder().recipient(authenticationBean.getEmail()).build(), issuedAt);
         event.setAuthenticationBean(authenticationBean);
         event.setAttemptedCountry(geoResponse.country());
         event.setAttemptedCity(geoResponse.city());
-        event.setAttemptedDevice(device);
+        event.setAttemptedDevice(DeviceMetadataResolver.getDeviceMD(request));
         event.setAttemptedIp(ip);
+        // TODO
+        event.setRecoveryLink(HttpUtil.getBaseUrl(request).concat(""));
         unknownLocationPublisher.processEvent(event);
     }
 }

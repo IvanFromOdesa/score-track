@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.security.service.jwt;
 
-import com.teamk.scoretrack.module.commons.service.token.ITokenResolver;
+import com.teamk.scoretrack.module.commons.token.ITokenResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;

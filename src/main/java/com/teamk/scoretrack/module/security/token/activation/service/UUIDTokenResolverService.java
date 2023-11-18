@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.security.token.activation.service;
 
-import com.teamk.scoretrack.module.commons.service.token.ITokenResolver;
+import com.teamk.scoretrack.module.commons.token.ITokenResolver;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import com.teamk.scoretrack.module.security.token.util.UUIDUtils;
 import org.springframework.security.core.token.Sha512DigestUtils;

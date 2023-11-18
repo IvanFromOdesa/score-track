@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
-import com.teamk.scoretrack.module.commons.domain.Identifier;
+import com.teamk.scoretrack.module.commons.base.domain.Identifier;
 import com.teamk.scoretrack.module.core.entities.SportType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;

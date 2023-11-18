@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.base.dao;
 
-import com.teamk.scoretrack.module.commons.dao.AbstractLongJpaDao;
+import com.teamk.scoretrack.module.commons.base.dao.AbstractLongJpaDao;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.Language;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
 import org.springframework.data.repository.NoRepositoryBean;

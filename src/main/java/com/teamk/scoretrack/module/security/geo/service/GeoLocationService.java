@@ -7,14 +7,15 @@ import com.maxmind.geoip2.record.Country;
 import com.teamk.scoretrack.module.commons.cache.CacheStore;
 import com.teamk.scoretrack.module.commons.cache.caffeine.CacheConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.InetAddress;
 
 @Service
+@ConditionalOnProperty(value = "geo.enabled", havingValue = "true")
 public class GeoLocationService {
     private final DatabaseReader databaseReader;
 
@@ -23,14 +24,14 @@ public class GeoLocationService {
         this.databaseReader = databaseReader;
     }
 
-    @Cacheable(cacheNames = {CacheStore.GEO_RESPONSE}, key = "#ip", cacheManager = CacheConfig.CAFFEINE_CACHE_MANAGER)
+    @Cacheable(cacheNames = {CacheStore.GEO_RESPONSE_CACHE_STORE}, key = "#ip", cacheManager = CacheConfig.CAFFEINE_CACHE_MANAGER)
     public GeoResponse resolveLocation(String ip) throws IOException, GeoIp2Exception {
         CityResponse cr = databaseReader.city(InetAddress.getByName(ip));
         Country country = cr.getCountry();
         return new GeoResponse(country.getName(), cr.getCity().getName(), country.getIsoCode());
     }
 
-    public record GeoResponse(String country, String city, String isoCode) implements Serializable {
+    public record GeoResponse(String country, String city, String isoCode) {
 
     }
 }

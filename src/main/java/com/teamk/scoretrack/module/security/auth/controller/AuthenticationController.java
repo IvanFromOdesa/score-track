@@ -1,9 +1,9 @@
 package com.teamk.scoretrack.module.security.auth.controller;
 
-import com.teamk.scoretrack.module.commons.controller.BaseMvcController;
+import com.teamk.scoretrack.module.commons.base.controller.BaseMvcController;
+import com.teamk.scoretrack.module.commons.base.service.valid.form.FormValidationContext;
+import com.teamk.scoretrack.module.commons.form.mvc.MvcForm;
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
-import com.teamk.scoretrack.module.commons.service.form.mvc.MvcForm;
-import com.teamk.scoretrack.module.commons.service.valid.form.FormValidationContext;
 import com.teamk.scoretrack.module.security.auth.dto.AuthenticationDto;
 import com.teamk.scoretrack.module.security.auth.dto.SignUpForm;
 import com.teamk.scoretrack.module.security.auth.dto.SignUpResponseDto;
@@ -47,7 +47,7 @@ public class AuthenticationController extends BaseMvcController {
 
     @GetMapping(LOGIN)
     public String login(Model model) {
-        optionsPreparer.prepareFormOptions(new MvcForm(model, "login", null));
+        optionsPreparer.prepareFormOptions(new MvcForm(model, "login"));
         model.addAttribute("signUpForm", new SignUpForm());
         return LOGIN_PAGE;
     }
