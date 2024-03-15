@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LocationHistoryDao extends AbstractHistoryDao<LocationHistory> {
-    default Optional<LocationHistory> findByIpHashAndAuthenticationBeanTrusted(String ipHash, AuthenticationBean authenticationBean) {
-        return findByIpHashAndAuthenticationBeanAndStatusIn(ipHash, authenticationBean, EnumSet.of(AuthenticationHistory.Status.TRUSTED));
+    default Optional<LocationHistory> findByCountryAndCityAndAuthenticationBeanTrusted(String country, String city, AuthenticationBean authenticationBean) {
+        return findByCountryAndCityAndAuthenticationBeanAndStatusIn(country, city, authenticationBean, EnumSet.of(AuthenticationHistory.Status.RESOLVED));
     }
 
     default List<LocationHistory> findByAuthenticationBeanTrusted(AuthenticationBean authenticationBean) {
-        return findByAuthenticationBeanAndStatusIn(authenticationBean, EnumSet.of(AuthenticationHistory.Status.TRUSTED));
+        return findByAuthenticationBeanAndStatusIn(authenticationBean, EnumSet.of(AuthenticationHistory.Status.RESOLVED));
     }
 
     List<LocationHistory> findByAuthenticationBeanAndStatusIn(AuthenticationBean authenticationBean, EnumSet<AuthenticationHistory.Status> statuses);
-    List<LocationHistory> findByIpHashAndAuthenticationBean(String ipHash, AuthenticationBean authenticationBean);
-    Optional<LocationHistory> findByIpHashAndAuthenticationBeanAndStatusIn(String ipHash, AuthenticationBean authenticationBean, EnumSet<AuthenticationHistory.Status> statuses);
+    List<LocationHistory> findByCountryAndCityAndAuthenticationBean(String country, String city, AuthenticationBean authenticationBean);
+    Optional<LocationHistory> findByCountryAndCityAndAuthenticationBeanAndStatusIn(String country, String city, AuthenticationBean authenticationBean, EnumSet<AuthenticationHistory.Status> statuses);
 }

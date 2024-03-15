@@ -15,6 +15,10 @@ public class MessageLogger {
         LOGGER.info(msg);
     }
 
+    public static void warn(String msg) {
+        LOGGER.warn(msg);
+    }
+
     public static void error(String msg) {
         LOGGER.error(msg);
     }

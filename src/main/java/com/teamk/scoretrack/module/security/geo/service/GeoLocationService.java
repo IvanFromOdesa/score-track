@@ -4,6 +4,7 @@ import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.Country;
+import com.maxmind.geoip2.record.Location;
 import com.teamk.scoretrack.module.commons.cache.CacheStore;
 import com.teamk.scoretrack.module.commons.cache.caffeine.CacheConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.net.InetAddress;
 
 @Service
 @ConditionalOnProperty(value = "geo.enabled", havingValue = "true")
-public class GeoLocationService {
+public class GeoLocationService implements IGeoLocationService {
     private final DatabaseReader databaseReader;
 
     @Autowired
@@ -28,10 +29,17 @@ public class GeoLocationService {
     public GeoResponse resolveLocation(String ip) throws IOException, GeoIp2Exception {
         CityResponse cr = databaseReader.city(InetAddress.getByName(ip));
         Country country = cr.getCountry();
-        return new GeoResponse(country.getName(), cr.getCity().getName(), country.getIsoCode());
+        /* Names */
+        String countryName = country.getName();
+        String cityName = cr.getCity().getName();
+        /* lat, long */
+        Location location = cr.getLocation();
+        double latitude = location == null ? -1 : location.getLatitude();
+        double longitude = location == null ? -1 : location.getLongitude();
+        return new GeoResponse(countryName, cityName, formatLocation(cityName, countryName), country.getIsoCode(), latitude, longitude);
     }
 
-    public record GeoResponse(String country, String city, String isoCode) {
-
+    public static String formatLocation(String city, String country) {
+        return city != null ? country.concat(", ").concat(city) : country;
     }
 }

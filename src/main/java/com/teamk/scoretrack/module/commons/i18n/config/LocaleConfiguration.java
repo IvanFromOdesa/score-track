@@ -21,6 +21,7 @@ import java.util.Locale;
  * beans that are responsible for i18n and delegate all of it processing to the corresponding injected beans.
  * On this basis singleton-scoped beans that have prototype-scoped beans will not use new instances of the latter
  * for each and every request, <a href="https://docs.spring.io/spring-framework/docs/3.0.0.M3/reference/html/ch04s04.html">unless they are configured to do so</a>.
+ * If working with {@link MessageSource} that contains more than one bundle, make sure that every code is uniquely identifiable.
  */
 @Configuration
 public class LocaleConfiguration {
@@ -29,8 +30,14 @@ public class LocaleConfiguration {
     private static final String ST = "score-track";
     public static final String AUTH = ST + "/auth";
     public static final String GEO = ST + "/lh";
-    public static final String STATUS = ST + "/status";
+    public static final String AUTH_ERROR = ST + "/auth_error";
     public static final String OTP = ST + "/otp";
+    public static final String PWD_RESET = ST + "/pwdreset";
+    public static final String LAYOUT = ST + "/layout";
+    public static final String API_INIT = ST + "/init";
+    public static final String RECAPTCHA = ST + "/recaptcha";
+    public static final String IO = ST + "/io";
+    public static final String PROFILE_PAGE = ST + "/profile";
 
     @Bean(AUTH)
     @Scope("prototype")
@@ -44,16 +51,52 @@ public class LocaleConfiguration {
         return getRB(GEO);
     }
 
-    @Bean(STATUS)
+    @Bean(AUTH_ERROR)
     @Scope("prototype")
     public MessageSource statusBundles() {
-        return getRB(STATUS);
+        return getRB(AUTH_ERROR);
     }
 
     @Bean(OTP)
     @Scope("prototype")
     public MessageSource recoverBundles() {
         return getRB(OTP);
+    }
+
+    @Bean(PWD_RESET)
+    @Scope("prototype")
+    public MessageSource pwdResetBundles() {
+        return getRB(PWD_RESET);
+    }
+
+    @Bean(LAYOUT)
+    @Scope("prototype")
+    public MessageSource uiBundles() {
+        return getRB(LAYOUT);
+    }
+
+    @Bean(API_INIT)
+    @Scope("prototype")
+    public MessageSource initApiBundles() {
+        return getRB(API_INIT);
+    }
+
+    @Bean(RECAPTCHA)
+    @Scope("prototype")
+    public MessageSource recaptchaBundles() {
+        return getRB(RECAPTCHA);
+    }
+
+    @Bean(IO)
+    @Scope("prototype")
+    public MessageSource ioBundles() {
+        return getRB(IO);
+    }
+
+    @Bean(PROFILE_PAGE)
+    @Scope("prototype")
+    public MessageSource profileBundles() {
+        return getRB(PROFILE_PAGE);
     }
 
     @Bean

@@ -10,8 +10,8 @@ public class UnknownLocationPublisher extends EmailNotifyPublisher<NotificationE
     @Override
     protected void log(UnknownLocationEvent event) {
         LOGGER.warn(event.getCause().msg().formatted(
-                event.getAuthenticationBean().getLoginname(),
-                event.getAttemptedCountry(),
+                event.getAuthentication().getLoginname(),
+                event.getAttemptedGeo().location(),
                 event.getIssuedAt(),
                 event.getAttemptedDevice(),
                 event.getAttemptedIp())

@@ -1,0 +1,59 @@
+@import url("../common.css");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", serif;
+}
+
+.centered {
+    min-height: 100vh;
+}
+
+.imgBox {
+    width: 500px;
+    height: 500px;
+    float: left;
+    margin-right: 15px;
+}
+
+.textBox {
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.textBox h2 {
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+.input-box input {
+    border: 2px solid #C8B568;
+    border-radius: 5px;
+    font-weight: 400;
+    padding-bottom: 5px;
+}
+
+@media (max-width: 1000px) {
+    .textBox {
+        font-size: 1.1em;
+    }
+
+    .textBox h2 {
+        font-size: 1.4em;
+        font-weight: 600;
+    }
+
+    .imgBox {
+        width: 320px;
+        height: 320px;
+    }
+}
+
+@media (max-width: 650px) {
+    .imgBox {
+        width: 280px;
+        height: 280px;
+    }
+}

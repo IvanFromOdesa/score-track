@@ -14,6 +14,8 @@ public class NotificationEmail {
     //@Transient - serialize for now
     private Map<String, File> attachments;
 
+    public static final NotificationEmail NULL_SAFE = new NotificationEmail().builder().recipient("").title("").subject("").message("").build();
+
     public NotificationEmail() {
         attachments = new HashMap<>();
     }

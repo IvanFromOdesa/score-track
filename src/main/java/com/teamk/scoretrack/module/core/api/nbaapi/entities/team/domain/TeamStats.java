@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain;
 
-import com.teamk.scoretrack.module.core.api.nbaapi.domain.Stats;
+import com.teamk.scoretrack.module.core.api.nbaapi.commons.domain.Stats;
 
 public class TeamStats extends Stats {
     private int games;
@@ -10,6 +10,10 @@ public class TeamStats extends Stats {
     private int secondChancePoints;
     private int pointsOffTurnovers;
     private int longestRun;
+
+    public TeamStats() {
+        super();
+    }
 
     public int getGames() {
         return games;

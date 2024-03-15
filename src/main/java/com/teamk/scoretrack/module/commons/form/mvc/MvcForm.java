@@ -1,12 +1,11 @@
 package com.teamk.scoretrack.module.commons.form.mvc;
 
+import com.teamk.scoretrack.module.commons.form.BaseForm;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 
-public class MvcForm {
+public class MvcForm extends BaseForm {
     private Model model;
-    private String bundleName;
-    private Authentication authentication;
 
     public MvcForm(Model model) {
         this.model = model;
@@ -34,21 +33,5 @@ public class MvcForm {
 
     public void setModel(Model model) {
         this.model = model;
-    }
-
-    public String getBundleName() {
-        return bundleName;
-    }
-
-    public void setBundleName(String bundleName) {
-        this.bundleName = bundleName;
-    }
-
-    public Authentication getAuthentication() {
-        return authentication;
-    }
-
-    public void setAuthentication(Authentication authentication) {
-        this.authentication = authentication;
     }
 }

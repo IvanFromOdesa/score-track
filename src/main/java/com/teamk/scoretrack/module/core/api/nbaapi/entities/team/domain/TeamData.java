@@ -1,8 +1,9 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain;
 
-import com.teamk.scoretrack.module.core.api.nbaapi.domain.APINbaIdentifier;
+import com.teamk.scoretrack.module.core.api.nbaapi.commons.domain.APINbaIdentifier;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,8 +24,16 @@ public class TeamData extends APINbaIdentifier {
     private String logo;
     private boolean allStar;
     private boolean nbaFranchise;
-    private League league;
-    private Map<Integer, TeamStats> statsByYear;
+    private Map<String, League> leagues;
+    /**
+     * Season represents the year
+     */
+    private Map<Integer, TeamStats> statsBySeason;
+
+    public TeamData() {
+        leagues = new HashMap<>();
+        statsBySeason = new HashMap<>();
+    }
 
     public String getName() {
         return name;
@@ -82,20 +91,26 @@ public class TeamData extends APINbaIdentifier {
         this.nbaFranchise = nbaFranchise;
     }
 
-    public League getLeague() {
-        return league;
+    public Map<String, League> getLeagues() {
+        return leagues;
     }
 
-    public void setLeague(League league) {
-        this.league = league;
+    public void setLeagues(Map<String, League> leagues) {
+        this.leagues = leagues;
     }
 
-    public Map<Integer, TeamStats> getStatsByYear() {
-        return statsByYear;
+    public Map<Integer, TeamStats> getStatsBySeason() {
+        return statsBySeason;
     }
 
-    public void setStatsByYear(Map<Integer, TeamStats> statsByYear) {
-        this.statsByYear = statsByYear;
+    public void setStatsBySeason(Map<Integer, TeamStats> statsBySeason) {
+        this.statsBySeason = statsBySeason;
+    }
+
+    public static TeamData withNbaFranchise() {
+        TeamData teamData = new TeamData();
+        teamData.setNbaFranchise(true);
+        return teamData;
     }
 
     @Override
@@ -109,7 +124,7 @@ public class TeamData extends APINbaIdentifier {
                 ", logo='" + logo + '\'' +
                 ", allStar=" + allStar +
                 ", nbaFranchise=" + nbaFranchise +
-                ", league=" + league +
+                ", league=" + leagues +
                 '}';
     }
 

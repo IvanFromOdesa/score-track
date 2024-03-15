@@ -6,12 +6,12 @@
     <link th:href="@{/layouts/styles/status/style.css}" rel="stylesheet">
 </head>
 <body>
-<div class="all">
+<div class="centered">
     <div class="imgBox">
         <img width="600px" height="287px" alt="404" th:src="@{/layouts/images/status/404.png}">
     </div>
     <div th:utext="${errorNotFound}" class="textBox"></div>
-    <div class="btn">
+    <div class="btnWrapper">
         <form th:action="@{/}">
             <button th:text="${btnBack}" class="baseBtn" type="submit"></button>
         </form>

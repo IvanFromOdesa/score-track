@@ -1,15 +1,18 @@
 package com.teamk.scoretrack.module.security.geo.domain;
 
-import com.google.common.hash.Hashing;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import com.teamk.scoretrack.module.security.history.domain.AuthenticationHistory;
 import jakarta.persistence.Entity;
 
-import java.nio.charset.StandardCharsets;
-
+/*@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = { "country", "city" })
+)*/
 @Entity
 public class LocationHistory extends AuthenticationHistory {
-    private String ipHash;
+    private String country;
+    private String city;
+    private double lat;
+    private double lng;
 
     public LocationHistory(AuthenticationBean authenticationBean, Status status) {
         super(authenticationBean, status);
@@ -19,15 +22,35 @@ public class LocationHistory extends AuthenticationHistory {
 
     }
 
-    public String getIpHash() {
-        return ipHash;
+    public String getCountry() {
+        return country;
     }
 
-    public void setIpHash(String ipHash) {
-        this.ipHash = ipHash;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
-    public static String hashed(String ip) {
-        return Hashing.sha256().hashString(ip, StandardCharsets.UTF_8).toString();
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

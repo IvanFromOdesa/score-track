@@ -1,26 +1,24 @@
 package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
-import com.teamk.scoretrack.module.commons.base.domain.Identifier;
-import com.teamk.scoretrack.module.commons.other.ScoreTrackConfig;
+import com.teamk.scoretrack.module.core.entities.Privileges;
+import com.teamk.scoretrack.module.core.entities.SportAPI;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.ViewershipPlan;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
-import jakarta.persistence.CascadeType;
+import com.teamk.scoretrack.module.security.auth.domain.AuthenticationIdentifier;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.time.Instant;
 
 @jakarta.persistence.Entity
 @Table(name = "user_t")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User extends Identifier implements IUserAware {
+public class User extends AuthenticationIdentifier implements IUserAware {
     private Instant lastSeen;
     private Language preferredLang;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = AuthenticationBean.FK_NAME, referencedColumnName = "id", nullable = false)
-    private AuthenticationBean authentication;
 
     public Instant getLastSeen() {
         return lastSeen;
@@ -38,17 +36,22 @@ public class User extends Identifier implements IUserAware {
         this.preferredLang = preferredLang;
     }
 
-    public AuthenticationBean getAuthentication() {
-        return authentication;
-    }
-
-    public void setAuthentication(AuthenticationBean authentication) {
-        this.authentication = authentication;
-    }
-
     public void setDefaultLanguageAndAuth(AuthenticationBean authentication) {
-        this.authentication = authentication;
-        this.setPreferredLang(Language.UNDEFINED.getByKey(ScoreTrackConfig.CURRENT_LOCALE.getLanguage()));
+        setAuthenticationBean(authentication);
+        this.setPreferredLang(Language.byCode(LocaleContextHolder.getLocale().getLanguage()));
+    }
+
+    /**
+     * @return array of api codes that are available for this user or else array of {@link com.teamk.scoretrack.module.commons.util.enums.convert.IEnumConvert#CODE_UNDEFINED},
+     * if the user is of type {@link UserGroup#SUPPORT_USER}
+     */
+    public int[] getAvailableApiCodes() {
+        if (this.getUserGroup().isSupport()) {
+            return new int[] { Privileges.ALL_SUBS };
+        } else {
+            ViewershipPlan viewershipPlan = ((ClientUser) this).getViewershipPlan();
+            return viewershipPlan.isActive() ? viewershipPlan.getAvailableApiCodes() : new int[]{ SportAPI.CODE_UNDEFINED };
+        }
     }
 
     @Override

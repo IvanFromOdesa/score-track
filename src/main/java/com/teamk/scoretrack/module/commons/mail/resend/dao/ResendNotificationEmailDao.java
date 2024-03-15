@@ -5,5 +5,5 @@ import com.teamk.scoretrack.module.commons.mail.resend.domain.ResendNotification
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ResendNotificationEmailDao extends RedisDao<ResendNotificationEmail, String> {
+public interface ResendNotificationEmailDao<RESENT_CTX extends ResendNotificationEmail> extends RedisDao<RESENT_CTX, String> {
 }

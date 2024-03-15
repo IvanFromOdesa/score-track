@@ -1,0 +1,36 @@
+.ad-item {
+    width: 100%;
+    height: 100%;
+    margin-bottom: -7px;
+}
+
+.ad-img {
+    object-fit: cover;
+    filter: brightness(0.5);
+}
+
+.api-name {
+    color: #C8B568;
+    font-weight: bold;
+}
+
+.carousel {
+    border: 3px solid black;
+    border-radius: 5px;
+}
+
+@media (max-width: 550px) {
+    .ad-item h3 {
+        font-size: 1em;
+    }
+
+    .ad-item p {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 420px) {
+    .ad-item h3, .ad-item p {
+        visibility: hidden;
+    }
+}

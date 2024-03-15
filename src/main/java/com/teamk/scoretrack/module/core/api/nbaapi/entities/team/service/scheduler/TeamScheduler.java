@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.service.scheduler;
 
-import com.teamk.scoretrack.module.core.api.nbaapi.service.scheduler.APINbaScheduler;
+import com.teamk.scoretrack.module.core.api.nbaapi.commons.service.scheduler.APINbaScheduler;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -5,7 +5,7 @@ import com.teamk.scoretrack.module.commons.util.enums.EnumUtils;
 import com.teamk.scoretrack.module.commons.util.enums.convert.IEnumConvert;
 
 public enum PasswordStatus implements IEnumConvert<Integer, PasswordStatus> {
-    NEW(0), RESET(1), CHANGED(2), UNDEFINED(-1);
+    NEW(0), RESET(1), CHANGED(2), UNDEFINED(CODE_UNDEFINED);
 
     public static final BiMap<Integer, PasswordStatus> LOOKUP_MAP = EnumUtils.createLookup(PasswordStatus.class);
     private final int code;

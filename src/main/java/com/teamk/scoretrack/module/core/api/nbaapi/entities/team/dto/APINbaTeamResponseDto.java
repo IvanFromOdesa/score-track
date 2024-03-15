@@ -1,6 +1,12 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto;
 
-public class APINbaTeamResponseDto {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.teamk.scoretrack.module.core.api.commons.base.dto.ResponseDto;
+
+import java.util.Map;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class APINbaTeamResponseDto extends ResponseDto {
     public String id;
     public String name;
     public String nickname;
@@ -9,12 +15,9 @@ public class APINbaTeamResponseDto {
     public String logo;
     public boolean allStar;
     public boolean nbaFranchise;
-    public LeagueWrapper leagues = new LeagueWrapper();
+    public Map<String, League> leagues;
 
-    public static class LeagueWrapper {
-        public League standard = new League();
-    }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class League {
         public String conference;
         public String division;
@@ -84,11 +87,11 @@ public class APINbaTeamResponseDto {
         this.nbaFranchise = nbaFranchise;
     }
 
-    public LeagueWrapper getLeagues() {
+    public Map<String, League> getLeagues() {
         return leagues;
     }
 
-    public void setLeagues(LeagueWrapper leagues) {
+    public void setLeagues(Map<String, League> leagues) {
         this.leagues = leagues;
     }
 

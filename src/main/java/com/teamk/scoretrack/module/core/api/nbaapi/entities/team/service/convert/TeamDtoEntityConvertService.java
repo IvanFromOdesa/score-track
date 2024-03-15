@@ -1,7 +1,7 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.service.convert;
 
-import com.teamk.scoretrack.module.commons.mongo.service.mapper.DtoEntityConvertService;
-import com.teamk.scoretrack.module.commons.mongo.service.mapper.MappingContext;
+import com.teamk.scoretrack.module.commons.base.service.mapper.DtoEntityConvertService;
+import com.teamk.scoretrack.module.commons.base.service.mapper.MappingContext;
 import com.teamk.scoretrack.module.commons.base.service.valid.form.DtoEntityValidator;
 import com.teamk.scoretrack.module.commons.base.service.valid.form.FormValidationContext;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.TeamData;

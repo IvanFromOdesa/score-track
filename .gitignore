@@ -1,4 +1,5 @@
 HELP.md
+.env
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -35,3 +36,31 @@ build/
 !/src/main/resources/geo/
 !/src/main/resources/application.properties
 !/src/main/resources/certs/
+!/src/main/resources/static/lang-icons/
+!/src/test/resources
+/proxy/json/
+
+ui/node_modules
+ui/.pnp
+ui/.pnp.js
+
+# testing
+ui/coverage
+
+# production
+ui/build
+
+# misc
+ui/.env
+ui/.DS_Store
+ui/.env.local
+ui/.env.development.local
+ui/.env.test.local
+ui/.env.production.local
+
+ui/npm-debug.log*
+ui/yarn-debug.log*
+ui/yarn-error.log*
+
+*.min.js
+/src/test/resources/

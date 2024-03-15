@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,7 +22,7 @@
     </div>
     <form th:object="${otpForm}" th:action="@{/recover}" method="post" id="otpForm">
         <input id="inputOtp" type="hidden" th:field="*{otp}">
-        <div class="btn">
+        <div class="btnWrapper">
             <button th:text="${sbBtn}" class="baseBtn" disabled type="submit"></button>
         </div>
     </form>

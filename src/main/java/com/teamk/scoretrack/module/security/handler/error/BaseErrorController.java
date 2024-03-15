@@ -9,13 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class BaseErrorController implements ErrorController {
     private static final String URL = "/error";
 
     @GetMapping(URL)
-    public void handleError(HttpServletRequest request) {
+    public void handleGetError(HttpServletRequest request) {
+        handleError(request);
+    }
+
+    @PostMapping(URL)
+    public void handlePostError(HttpServletRequest request) {
+        handleError(request);
+    }
+
+    private void handleError(HttpServletRequest request) {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());

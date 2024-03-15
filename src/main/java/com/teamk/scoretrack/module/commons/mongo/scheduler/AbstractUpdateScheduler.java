@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 
+// TODO: integrate Spring Batch
 public abstract class AbstractUpdateScheduler {
     protected ThreadPoolTaskScheduler taskScheduler;
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class FanEntityService extends AbstractUserEntityService<Fan, FanDao, FanProcessingContext> {
     @Override
     public void processUserCreation(FanProcessingContext ctx) {
-        baseTransactionManager.doInNewTransaction(() -> save(processBusinessUser(ctx, new Fan())));
+        baseTransactionManager.doInNewTransaction(() -> save(processClientUser(ctx, new Fan())));
     }
 
     @Override

@@ -59,7 +59,7 @@ public class AuthenticationHistory extends Identifier {
     }
 
     public enum Status {
-        TRUSTED(0),
+        RESOLVED(0),
         BLOCKED(1),
         UNDEFINED(2);
 
@@ -84,8 +84,8 @@ public class AuthenticationHistory extends Identifier {
             return UNDEFINED;
         }
 
-        public boolean isTrusted() {
-            return this == TRUSTED;
+        public boolean isResolved() {
+            return this == RESOLVED;
         }
 
         public boolean isBlocked() {

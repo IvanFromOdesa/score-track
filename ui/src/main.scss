@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&family=Raleway&family=Roboto&display=swap');
+
+$primary: #C8B568;
+$danger: crimson;
+$font-family-sans-serif: "Roboto";
+
+$btn-link-color: black;
+$nav-link-color: black;
+
+$link-hover-color: #C8B568;
+$nav-link-hover-color: #C8B568;
+
+@import "~bootstrap/scss/bootstrap.scss";
+
+// Typeahead
+$rbt-border-color-focus: $form-select-focus-border-color !important;
+$rbt-box-shadow-color: rgba(200, 181, 104, 0.5) !important;
+$rbt-border-color-focus-invalid: crimson !important;
+$rbt-background-color-disabled: transparent !important;
+//$rbt-placeholder-color: transparent !important;
+
+@import "~react-bootstrap-typeahead/css/Typeahead.scss";
+@import "~react-bootstrap-typeahead/css/Typeahead.bs5.scss";
+
+.rbt-input-multi.disabled {
+  border-color: transparent;
+  padding-left: 0;
+  opacity: 1;
+}
+
+

@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service(OTPTranslatorService.NAME)
 public class OTPTranslatorService extends TranslatorService {
+    public static final String NAME = "otpTranslatorService";
 
     @Override
     public void setMessageSource(@Qualifier(LocaleConfiguration.OTP) MessageSource messageSource) {

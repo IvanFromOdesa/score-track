@@ -13,7 +13,6 @@ import java.io.Serial;
 @RedisHash(value = CacheStore.MAIL_CACHE_STORE, timeToLive = ResendNotificationEmail.TTL)
 public class ResendNotificationEmail extends RedisAuthIdentifier {
     public static final long TTL = 1800;
-    public static final int MAX_ATTEMPTS = 3;
     @Serial
     private static final long serialVersionUID = 7284184782177678169L;
     private final NotificationEmail email;
@@ -34,5 +33,9 @@ public class ResendNotificationEmail extends RedisAuthIdentifier {
 
     public void setAttempt(int attempt) {
         this.attempt = attempt;
+    }
+
+    public int getMaxAttempts() {
+        return 3;
     }
 }

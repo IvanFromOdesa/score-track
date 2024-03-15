@@ -1,9 +1,8 @@
 package com.teamk.scoretrack.module.commons.base.service.valid.email;
 
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
+import com.teamk.scoretrack.module.commons.util.CommonsUtil;
 import org.springframework.stereotype.Service;
-
-import java.util.regex.Pattern;
 
 /**
  * Alternatively, here we will validate the existence of email by calling external API
@@ -20,12 +19,8 @@ public class StandardServerProvidedEmailValidator implements IEmailValidator<Ema
         return context.getErrorMap();
     }
 
-    private boolean patternMatches(String email, String regexRule) {
-        return Pattern.compile(regexRule).matcher(email).matches();
-    }
-
     private void checkEmailValidity(EmailValidationContext context, String ruleRegex) {
-        if (!patternMatches(context.getEmail(), ruleRegex)) {
+        if (!CommonsUtil.patternMatches(context.getEmail(), ruleRegex)) {
             context.getErrorMap().put(context.getFieldName(), context.getErrorMsg());
         }
     }

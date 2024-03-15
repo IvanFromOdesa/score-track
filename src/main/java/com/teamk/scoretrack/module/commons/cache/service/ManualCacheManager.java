@@ -25,8 +25,10 @@ public class ManualCacheManager {
         Cache cache = cacheManager.getCache(cacheName);
         if (cache != null) {
             VALUE value = cache.get(key, clazz);
-            cache.evict(key);
-            return value;
+            if (value != null) {
+                cache.evict(key);
+                return value;
+            }
         }
         return cacheMiss.call();
     }

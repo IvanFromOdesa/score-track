@@ -1,5 +1,6 @@
 package com.teamk.scoretrack.module.security.token.util;
 
+import com.teamk.scoretrack.module.commons.exception.ResourceNotFoundException;
 import com.teamk.scoretrack.module.commons.exception.ServerException;
 import com.teamk.scoretrack.module.commons.util.log.MessageLogger;
 
@@ -7,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -69,6 +71,18 @@ public final class UUIDUtils {
         } catch (NoSuchAlgorithmException e) {
             MessageLogger.error(e.getMessage());
             throw new ServerException(String.format("%s not supported.", algorithm));
+        }
+    }
+
+    public static String toBase64Url(UUID uuid) {
+        return Base64.getUrlEncoder().encodeToString(uuid.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static UUID fromBase64Url(String encoded) {
+        try {
+            return UUID.fromString(new String(Base64.getUrlDecoder().decode(encoded)));
+        } catch (IllegalArgumentException e) {
+            throw new ResourceNotFoundException();
         }
     }
 }

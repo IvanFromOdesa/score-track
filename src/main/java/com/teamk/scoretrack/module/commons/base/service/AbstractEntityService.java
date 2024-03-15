@@ -3,12 +3,14 @@ package com.teamk.scoretrack.module.commons.base.service;
 import com.teamk.scoretrack.module.commons.base.domain.IdAware;
 import com.teamk.scoretrack.module.commons.exception.BaseEntityNotFoundException;
 import com.teamk.scoretrack.module.commons.exception.BaseErrorMapException;
+import com.teamk.scoretrack.module.commons.other.ErrorMap;
 import com.teamk.scoretrack.module.commons.other.ErrorMapBeanWrapper;
 import com.teamk.scoretrack.module.commons.other.ScoreTrackConfig;
 import com.teamk.scoretrack.module.commons.util.mapper.BaseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -77,23 +79,28 @@ public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
      * @param ids
      */
     public void deleteAll(List<ID> ids) {
+        ErrorMap errorMap = errorMapBeanWrapper.getErrorMap();
         for (ID id : ids) {
             try {
                 baseTransactionManager.doInNewTransaction(() -> delete(id));
             } catch (BaseEntityNotFoundException e) {
                 if (e.isRequest()) {
-                    errorMapBeanWrapper.getErrorMap().put(e.getStrCause(), e.getMessage());
+                    errorMap.put(e.getStrCause(), e.getMessage());
                 } else {
                    LOGGER.warn(e.getMessage());
                 }
             }
         }
-        if (!errorMapBeanWrapper.getErrorMap().isEmpty()) {
-            throw new BaseErrorMapException(errorMapBeanWrapper.getErrorMap());
+        if (!errorMap.isEmpty()) {
+            throw new BaseErrorMapException(errorMap);
         }
     }
 
-    public ENTITY getById(ID id) {
+    public Optional<ENTITY> getById(ID id) {
+        return dao.findById(id);
+    }
+
+    public ENTITY getByIdOrThrow(ID id) {
         Optional<ENTITY> byId = dao.findById(id);
         if (byId.isPresent()) {
             return byId.get();
@@ -106,12 +113,20 @@ public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
     }
 
     public Page<ENTITY> getAll(int page, int size, String direction, String... sortBys) {
+        return dao.findAll(PageRequest.of(page, size, Sort.by(getOrders(direction, sortBys))));
+    }
+
+    public Page<ENTITY> getAll(int page, int size, Example<ENTITY> entityExample, String direction, String... sortBys) {
+        return dao.findAll(entityExample, PageRequest.of(page, size, Sort.by(getOrders(direction, sortBys))));
+    }
+
+    private static List<Sort.Order> getOrders(String direction, String[] sortBys) {
         List<Sort.Order> orders = new ArrayList<>();
         Sort.Direction dir = Sort.Direction.fromString(direction);
         for (String sortBy : sortBys) {
             orders.add(new Sort.Order(dir, sortBy));
         }
-        return dao.findAll(PageRequest.of(page, size, Sort.by(orders)));
+        return orders;
     }
 
     /*public abstract Class<ENTITY> getDomainClass();*/

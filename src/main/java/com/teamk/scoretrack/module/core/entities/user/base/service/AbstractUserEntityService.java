@@ -3,12 +3,14 @@ package com.teamk.scoretrack.module.core.entities.user.base.service;
 import com.teamk.scoretrack.module.commons.base.service.AbstractJpaEntityService;
 import com.teamk.scoretrack.module.core.entities.SportAPI;
 import com.teamk.scoretrack.module.core.entities.user.base.dao.AbstractUserDao;
-import com.teamk.scoretrack.module.core.entities.user.base.domain.PlannedViewership;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.PlannedViewership;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
-import com.teamk.scoretrack.module.core.entities.user.base.domain.ViewershipPlan;
-import com.teamk.scoretrack.module.core.entities.user.base.domain.business.BusinessUser;
-import com.teamk.scoretrack.module.core.entities.user.base.ctx.BusinessUserProcessingContext;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.Profile;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.ViewershipPlan;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
+import com.teamk.scoretrack.module.core.entities.user.client.ctx.ClientUserProcessingContext;
 import com.teamk.scoretrack.module.core.entities.user.base.ctx.UserProcessingContext;
+import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import org.springframework.data.util.Pair;
 
 import java.time.Instant;
@@ -17,13 +19,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractUserEntityService<ENTITY extends User, DAO extends AbstractUserDao<ENTITY>, USER_CTX extends UserProcessingContext> extends AbstractJpaEntityService<ENTITY, Long, DAO> {
-    protected <USER extends BusinessUser> USER processBusinessUser(BusinessUserProcessingContext ctx, USER user) {
+    protected <USER extends ClientUser> USER processClientUser(ClientUserProcessingContext ctx, USER user) {
+        AuthenticationBean authenticationBean = ctx.authenticationBean();
         user.setViewershipPlan(getOrDefaultVP(ctx.getViewershipCreationContext()));
-        user.setDefaultLanguageAndAuth(ctx.authenticationBean());
+        user.setDefaultLanguageAndAuth(authenticationBean);
+        user.setProfile(createProfile(authenticationBean));
         return user;
     }
 
-    protected ViewershipPlan getOrDefaultVP(BusinessUserProcessingContext.ViewershipCreationContext ctx) {
+    protected Profile createProfile(AuthenticationBean authenticationBean) {
+        Profile profile = new Profile();
+        profile.setNickname(authenticationBean.getUsername());
+        return profile;
+    }
+
+    protected ViewershipPlan getOrDefaultVP(ClientUserProcessingContext.ViewershipCreationContext ctx) {
         if (ctx != null) {
             return getCtxBasedViewershipPlan(ctx);
         } else {
@@ -31,7 +41,7 @@ public abstract class AbstractUserEntityService<ENTITY extends User, DAO extends
         }
     }
 
-    protected ViewershipPlan getCtxBasedViewershipPlan(BusinessUserProcessingContext.ViewershipCreationContext ctx) {
+    protected ViewershipPlan getCtxBasedViewershipPlan(ClientUserProcessingContext.ViewershipCreationContext ctx) {
         ViewershipPlan viewershipPlan = new ViewershipPlan();
         int code = ctx.getPlannedViewershipCode();
         PlannedViewership byKey = PlannedViewership.LOOKUP_MAP.get(code);

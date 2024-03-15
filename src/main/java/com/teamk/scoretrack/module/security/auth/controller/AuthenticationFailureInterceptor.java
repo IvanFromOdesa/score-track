@@ -6,6 +6,7 @@ import com.teamk.scoretrack.module.security.auth.service.i18n.AuthTranslatorServ
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,6 +28,8 @@ public class AuthenticationFailureInterceptor implements HandlerInterceptor {
             String key = "error";
             if (e instanceof AuthenticationFailureException) {
                 modelAndView.addObject(key, translatorService.getMessage(((AuthenticationFailureException) e).getBlockStatus().getCode()));
+            } else if (e instanceof DisabledException) {
+                modelAndView.addObject("authInfo", translatorService.getMessage("auth.account.activate"));
             } else {
                 modelAndView.addObject(key, translatorService.getMessage(AuthenticationBlockedStatus.DEFAULT.getCode()));
             }

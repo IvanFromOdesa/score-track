@@ -9,9 +9,7 @@ import com.teamk.scoretrack.module.security.token.otp.dto.OtpForm;
 import com.teamk.scoretrack.module.security.token.otp.service.OTPAuthService;
 import com.teamk.scoretrack.module.security.token.otp.service.form.OtpFormOptionsService;
 import com.teamk.scoretrack.module.security.util.HttpUtil;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,17 +48,16 @@ public class OtpAuthController extends BaseMvcController {
 
     @PostMapping(RESEND_OTP)
     public ResponseEntity<?> resendOtp(Authentication authentication) {
-        otpAuthService.resendOtp(((AuthenticationBean) authentication.getPrincipal()).getId().toString());
+        otpAuthService.resendOtp(((AuthenticationBean) authentication.getPrincipal()).getExternalId().toString());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(RECOVER)
-    public String recover(HttpServletRequest request, HttpServletResponse response, Authentication authentication, @ModelAttribute OtpForm otp) {
+    public String recover(HttpServletRequest request, Authentication authentication, @ModelAttribute OtpForm otp) {
         AuthenticationHistory.Status result = otpAuthService.verifyOTP((AuthenticationBean) authentication.getPrincipal(), otp.getOtp(), HttpUtil.getClientIP(request));
-        if (result.isTrusted()) {
+        if (result.isResolved()) {
             return "redirect:".concat(AuthenticationController.HOME);
         } else {
-            response.addCookie(new Cookie(OtpAuthController.RECOVER_REDIRECT, ""));
             return "redirect:".concat(RECOVER + "?error");
         }
     }

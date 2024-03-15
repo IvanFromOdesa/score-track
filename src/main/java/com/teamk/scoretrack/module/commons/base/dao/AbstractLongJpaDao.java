@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.commons.base.dao;
 
-import com.teamk.scoretrack.module.commons.base.domain.Identifier;
+import com.teamk.scoretrack.module.commons.base.domain.IdAware;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -10,5 +10,5 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @param <ENTITY>
  */
 @NoRepositoryBean
-public interface AbstractLongJpaDao<ENTITY extends Identifier> extends JpaRepository<ENTITY, Long> {
+public interface AbstractLongJpaDao<ENTITY extends IdAware<Long>> extends JpaRepository<ENTITY, Long> {
 }

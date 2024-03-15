@@ -1,10 +1,8 @@
 const wrapper = document.querySelector('.wrapper-form');
 const signInLink = document.querySelector('.login-link');
 const signUpLink = document.querySelector('.signup-link');
-const openModalBtns = document.querySelectorAll('[data-modal-target]');
-const closeModalBtns = document.querySelectorAll('[data-close-button]');
-const overlay = document.getElementById('overlay');
 const signUpForm = document.getElementById('signUpForm');
+const alertPopUp = document.getElementById('registration-success');
 
 signUpLink.addEventListener('click', () => {
     wrapper.classList.add('active');
@@ -14,52 +12,32 @@ signInLink.addEventListener('click', () => {
     wrapper.classList.remove('active');
 });
 
-openModalBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const modal = document.querySelector(btn.dataset.modalTarget);
-        openModal(modal);
-    });
-});
+function showSuccessMsg(msg) {
+    alertPopUp.appendChild(document.createTextNode(msg));
+    alertPopUp.classList.remove('collapse');
+    alertPopUp.classList.add('show');
+    alertPopUp.style.visibility = 'visible';
+}
 
-closeModalBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const modal = btn.closest('.modal');
-        closeModal(modal);
-    });
-});
+function hideAlertPopUp() {
+    const childNodes = [];
+    childNodes.push(...alertPopUp.childNodes);
+    childNodes.filter(n => n.nodeType === Node.TEXT_NODE).forEach(n => alertPopUp.removeChild(n));
+    alertPopUp.style.visibility = 'hidden';
+}
 
-overlay.addEventListener('click', () => {
-    const modals = document.querySelectorAll('.modal.active');
-    modals.forEach(modal => {
-        closeModal(modal);
-    });
-});
+function onLoginSubmit(token) {
+    document.getElementById("loginForm").submit();
+}
 
-const openModal = (modal) => {
-    if (modal == null) {
-        return;
-    }
-    modal.classList.add('active');
-    overlay.classList.add('active');
-};
-
-const closeModal = (modal) => {
-    if (modal == null) {
-        return;
-    }
-    modal.classList.remove('active');
-    overlay.classList.remove('active');
-};
-
-signUpForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-
+function onSignUpSubmit(token) {
     const hideAllHints = () => {
-         const smalls = document.querySelectorAll('small');
-         smalls.forEach(s => {
-             s.style.visibility = 'hidden';
-             s.innerText = 'Error msg';
-         });
+        hideAlertPopUp();
+        const smalls = document.querySelectorAll('small');
+        smalls.forEach(s => {
+            s.style.visibility = 'hidden';
+            s.innerText = 'Error msg';
+        });
 
         function hideLogInHints() {
             const hints = document.getElementsByClassName('hints')[0];
@@ -73,8 +51,6 @@ signUpForm.addEventListener('submit', function (e) {
         hideLogInHints();
     };
 
-    hideAllHints();
-
     const signUp = async (form) => {
         try {
             const res = await fetch("/signup", {
@@ -86,13 +62,12 @@ signUpForm.addEventListener('submit', function (e) {
             if (errors) {
                 fillInErrors(errors);
             } else {
-                const regSuccess = document.getElementsByClassName('registration-success')[0];
-                regSuccess.innerText = data.result;
-                regSuccess.style.visibility = 'visible';
+                signUpForm.reset();
+                showSuccessMsg(data.result);
                 wrapper.classList.remove('active');
             }
         } catch (error) {
-            // TODO: redirect to custom 500 page
+
         }
     };
 
@@ -106,7 +81,6 @@ signUpForm.addEventListener('submit', function (e) {
         }
     };
 
-    signUp(this);
-});
-
-
+    hideAllHints();
+    signUp(signUpForm);
+}

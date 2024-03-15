@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service(GeoTranslatorService.NAME)
 public class GeoTranslatorService extends TranslatorService {
+    public static final String NAME = "geoTranslatorService";
     @Override
     @Autowired
     public void setMessageSource(@Qualifier(LocaleConfiguration.GEO) MessageSource messageSource) {

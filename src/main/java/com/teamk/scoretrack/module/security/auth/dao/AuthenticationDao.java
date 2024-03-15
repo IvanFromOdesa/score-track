@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface AuthenticationDao extends AbstractLongJpaDao<AuthenticationBean> {
     Optional<AuthenticationBean> findByLoginname(String loginname);
     Optional<AuthenticationBean> findByEmail(String email);
+    boolean existsByLoginnameOrEmail(String loginname, String email);
 }

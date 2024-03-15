@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<!-- Navbar -->
+<div th:fragment="navbar">
+    <nav class="navbar navbar-expand-md">
+        <div class="container">
+            <a th:href="@{/}" class="navbar-brand">
+                <div th:replace="~{fragments/general.html :: score-track-logo}"></div>
+            </a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-label="Expand Navigation">
+                <div class="navbar-toggler-icon"></div>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul sec:authorize="isAnonymous()" class="navbar-nav text-center ms-auto">
+                    <li class="nav-item dropdown">
+                        <a th:text="${langPreferenceTitle}" href="#" class="nav-link dropdown-toggle" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-current="page"></a>
+                        <ul class="dropdown-menu" aria-labelledby="langDropdown">
+                            <li th:each="lang : ${langs}">
+                                <div class="dropdown-item">
+                                    <svg width="32px" height="32px">
+                                        <image th:href="${lang.getImagePath()}" width="32px" height="32px"/>
+                                    </svg>
+                                    <button th:text="${lang.getName()}" th:attr="onclick=|setLanguagePreference('${lang.getKey()}', '${recaptcha_pb_key}')|" class="btn btn-link"></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a th:text="${signInTitle}" th:href="@{/login}" class="nav-link" aria-current="page"></a>
+                    </li>
+                </ul>
+                <ul sec:authorize="isAuthenticated()" class="navbar-nav text-center ms-auto">
+                    <li class="nav-item">
+                        <!-- // TODO -->
+                        <a th:text="${preferencesTitle}" th:href="@{/preferences}" class="nav-link" aria-current="page"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:text="${supportUsTitle}" th:href="@{/support}" class="nav-link" aria-current="page"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:text="${changeLogTitle}" th:href="@{/changeLog}" class="nav-link" aria-current="page"></a>
+                    </li>
+                    <li class="nav-item">
+                        <div style="margin: 0 auto;">
+                            <form th:action="@{/logout}" method="POST" class="form-inline my-2 my-lg-0">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                <button th:text="${logOutTitle}" type="submit" class="btn btn-link my-2 my-sm-0"></button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<!-- Footer -->
+<div th:fragment="footer">
+    <footer class="bg-light py-5 mt-5">
+        <div class="container text-primary text-center">
+            <p class="display-5 mb-3">Score Track</p>
+            <div th:utext="${googleRecaptchaTos}" class="text-black"></div>
+            <div th:utext="${copyrightTitle}" class="text-black"></div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>

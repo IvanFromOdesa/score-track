@@ -3,8 +3,8 @@ package com.teamk.scoretrack.module.security.geo.filter.lang;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.teamk.scoretrack.module.commons.util.log.MessageLogger;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.Language;
-import com.teamk.scoretrack.module.security.filter.BaseSecurityFilter;
-import com.teamk.scoretrack.module.security.geo.service.GeoLocationService;
+import com.teamk.scoretrack.module.security.commons.filter.BaseSecurityFilter;
+import com.teamk.scoretrack.module.security.geo.service.IGeoLocationService;
 import com.teamk.scoretrack.module.security.util.HttpUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,10 +21,11 @@ import java.io.IOException;
 @Component
 @ConditionalOnProperty(value = "geo.enabled", havingValue = "true")
 public class LanguagePreferredFilter extends BaseSecurityFilter {
-    private final GeoLocationService geoLocationService;
+    private static final String LANG_PREF_FILTERED = "langPrefFiltered";
+    private final IGeoLocationService geoLocationService;
 
     @Autowired
-    public LanguagePreferredFilter(GeoLocationService geoLocationService) {
+    public LanguagePreferredFilter(IGeoLocationService geoLocationService) {
         this.geoLocationService = geoLocationService;
     }
 
@@ -38,6 +39,12 @@ public class LanguagePreferredFilter extends BaseSecurityFilter {
         } catch (GeoIp2Exception e) {
             MessageLogger.error(e.getMessage());
         }
+        request.getSession().setAttribute(LANG_PREF_FILTERED, true);
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getSession().getAttribute(LANG_PREF_FILTERED) != null;
     }
 }

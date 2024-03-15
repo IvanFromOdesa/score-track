@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.commons.mail.resend.service;
 
-import com.teamk.scoretrack.module.commons.cache.redis.service.BaseRedisService;
+import com.teamk.scoretrack.module.commons.cache.redis.service.RedisEqualCtxService;
 import com.teamk.scoretrack.module.commons.mail.IEmailService;
 import com.teamk.scoretrack.module.commons.mail.NotificationEmail;
 import com.teamk.scoretrack.module.commons.mail.resend.dao.ResendNotificationEmailDao;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.function.UnaryOperator;
 
 @Service
-public class ResendNotificationEmailService extends BaseRedisService<ResendNotificationEmail, ResendNotificationEmail, String, ResendNotificationEmailDao> {
+public class ResendNotificationEmailService<RESEND_CTX extends ResendNotificationEmail> extends RedisEqualCtxService<RESEND_CTX, String, ResendNotificationEmailDao<RESEND_CTX>> {
     private final IEmailService<NotificationEmail> emailService;
 
     @Autowired
@@ -26,7 +26,7 @@ public class ResendNotificationEmailService extends BaseRedisService<ResendNotif
     public void resend(String authId, UnaryOperator<NotificationEmail> emailAlter) {
         get(authId).ifPresent(ctx -> {
             int attempt = ctx.getAttempt();
-            if (attempt <= ResendNotificationEmail.MAX_ATTEMPTS) {
+            if (attempt < ctx.getMaxAttempts()) {
                 NotificationEmail email = ctx.getEmail();
                 emailService.sendEmail(emailAlter != null ? emailAlter.apply(email) : email);
                 ctx.setAttempt(attempt + 1);
@@ -37,14 +37,17 @@ public class ResendNotificationEmailService extends BaseRedisService<ResendNotif
         });
     }
 
-    @Override
-    protected ResendNotificationEmail fromContext(ResendNotificationEmail ctx) {
-        return ctx;
+    public boolean sendOnce(RESEND_CTX resendCtx) {
+        if (get(resendCtx.getId()).isEmpty()) {
+            emailService.sendEmail(resendCtx.getEmail());
+            return true;
+        }
+        return false;
     }
 
     @Override
     @Autowired
-    protected void setDao(ResendNotificationEmailDao dao) {
+    protected void setDao(ResendNotificationEmailDao<RESEND_CTX> dao) {
         this.dao = dao;
     }
 }

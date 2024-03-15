@@ -1,36 +1,10 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.teamk.scoretrack.module.core.api.nbaapi.commons.dto.APINbaResponseDto;
 
-public class APINbaTeamsResponseDto {
-    public String get;
-    public int results;
-    public List<APINbaTeamResponseDto> response;
-
-    public String getGet() {
-        return get;
-    }
-
-    public void setGet(String get) {
-        this.get = get;
-    }
-
-    public int getResults() {
-        return results;
-    }
-
-    public void setResults(int results) {
-        this.results = results;
-    }
-
-    public List<APINbaTeamResponseDto> getResponse() {
-        return response;
-    }
-
-    public void setResponse(List<APINbaTeamResponseDto> response) {
-        this.response = response;
-    }
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class APINbaTeamsResponseDto extends APINbaResponseDto<APINbaTeamResponseDto> {
     @Override
     public String toString() {
         return "APINbaTeamsResponseDto{" +

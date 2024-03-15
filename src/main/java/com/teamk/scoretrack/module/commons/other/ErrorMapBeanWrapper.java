@@ -13,6 +13,7 @@ public class ErrorMapBeanWrapper {
     private ErrorMap errorMap;
 
     public ErrorMapBeanWrapper() {
+        this.errorMap = new ErrorMap();
     }
 
     public ErrorMap getErrorMap() {

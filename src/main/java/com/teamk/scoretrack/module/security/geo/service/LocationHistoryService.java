@@ -13,25 +13,28 @@ import java.util.Optional;
 
 @Service
 public class LocationHistoryService extends AbstractHistoryService<LocationHistory, LocationHistoryDao> {
-    public Optional<LocationHistory> findByIpTrusted(AuthenticationBean authenticationBean, String hashedIp) {
-        return dao.findByIpHashAndAuthenticationBeanTrusted(hashedIp, authenticationBean);
+    public Optional<LocationHistory> findByCountryCityTrusted(AuthenticationBean authenticationBean, String country, String city) {
+        return dao.findByCountryAndCityAndAuthenticationBeanTrusted(country, city, authenticationBean);
     }
 
     public List<LocationHistory> findTrusted(AuthenticationBean authenticationBean) {
         return dao.findByAuthenticationBeanTrusted(authenticationBean);
     }
 
-    public List<LocationHistory> findByIp(AuthenticationBean authenticationBean, String hashedIp) {
-        return dao.findByIpHashAndAuthenticationBean(hashedIp, authenticationBean);
+    public List<LocationHistory> findByCountryCity(AuthenticationBean authenticationBean, String country, String city) {
+        return dao.findByCountryAndCityAndAuthenticationBean(country, city, authenticationBean);
     }
 
-    public boolean isFindByIpTrusted(AuthenticationBean authenticationBean, String hashedIp) {
-        return dao.findByIpHashAndAuthenticationBean(hashedIp, authenticationBean).stream().anyMatch(h -> h.getStatus().isTrusted());
+    public boolean isFindByCountryCityTrusted(AuthenticationBean authenticationBean, String country, String city) {
+        return dao.findByCountryAndCityAndAuthenticationBean(country, city, authenticationBean).stream().anyMatch(h -> h.getStatus().isResolved());
     }
 
-    public Long saveTrusted(AuthenticationBean authenticationBean, String hashedIp) {
-        LocationHistory lc = new LocationHistory(authenticationBean, AuthenticationHistory.Status.TRUSTED);
-        lc.setIpHash(hashedIp);
+    public Long saveTrusted(AuthenticationBean authenticationBean, GeoResponse geoResponse) {
+        LocationHistory lc = new LocationHistory(authenticationBean, AuthenticationHistory.Status.RESOLVED);
+        lc.setCountry(geoResponse.country());
+        lc.setCity(geoResponse.city());
+        lc.setLat(geoResponse.latitude());
+        lc.setLng(geoResponse.longitude());
         return save(lc);
     }
 

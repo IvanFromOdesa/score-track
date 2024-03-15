@@ -1,4 +1,8 @@
 spring.application.name=score-track
+spring.config.import=optional:file:.env[.properties]
+
+spring.servlet.multipart.max-file-size=1024KB
+spring.servlet.multipart.max-request-size=2048KB
 
 # Default locale
 application.locale=en
@@ -14,6 +18,19 @@ spring.jpa.open-in-view=false
 # Auth
 rsa.private-key=classpath:certs/private.pem
 rsa.public-key=classpath:certs/public.pem
+sym.remember-me=${RM_KEY}
+
+# Recaptcha
+recaptcha.verify-url=https://www.google.com/recaptcha/api/siteverify
+recaptcha.private-key=${RECAPTCHA_PR_KEY}
+recaptcha.public-key=${RECAPTCHA_PB_KEY}
+recaptcha.connection-timeout=${WEB_DEFAULT_CONNECT_TIMEOUT}
+recaptcha.read-timeout=${WEB_DEFAULT_READ_TIMEOUT}
+
+# Google cloud
+google.cloud.auth=certs/gcs_key.json
+google.cloud.project-id=
+google.cloud.bucket-main=
 
 email.external-validator=false
 
@@ -27,6 +44,14 @@ caching.default.ttl=3600000
 # GeoLite
 geo.enabled=false
 
+# ClamAV
+clamAV.hostname=localhost
+clamAV.port=3310
+
+# # 3rd party front end dev
+# MUST BE DISABLED IN PROD
+react.enable.dev=false
+
 # Sending mails
 spring.mail.host=
 spring.mail.port=
@@ -35,6 +60,7 @@ spring.mail.password=
 spring.mail.protocol=
 
 mail.noreply.address=score-track.noreply@gmail.com
+mail.support.address=score-track.support@gmail.com
 
 # Mongo
 mongo.db.rs=false

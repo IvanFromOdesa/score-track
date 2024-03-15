@@ -12,6 +12,6 @@ public class BadCredentialsLockedException extends AuthenticationFailureExceptio
 
     @Override
     public AuthenticationBlockedStatus getBlockStatus() {
-        return AuthenticationBlockedStatus.BLOCKED_AUTH_FAILURE;
+        return AuthenticationBlockedStatus.BLOCKED_BAD_CREDENTIALS;
     }
 }

@@ -1,5 +1,6 @@
 package com.teamk.scoretrack.module.commons.exception;
 
+// TODO
 public class BaseEntityNotFoundException extends ServerException {
     private final String strCause;
     private final boolean isRequest;

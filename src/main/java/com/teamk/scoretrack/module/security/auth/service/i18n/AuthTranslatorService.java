@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service(AuthTranslatorService.NAME)
 public class AuthTranslatorService extends TranslatorService {
+    public static final String NAME = "authTranslatorService";
     @Override
     @Autowired
     public void setMessageSource(@Qualifier(LocaleConfiguration.AUTH) MessageSource messageSource) {

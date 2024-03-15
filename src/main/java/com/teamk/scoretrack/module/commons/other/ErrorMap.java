@@ -35,6 +35,15 @@ public class ErrorMap {
         }
     }
 
+    public void put(String cause, Map<String, String> subs) {
+        Error error = errors.get(cause);
+        if (error != null) {
+            error.putAll(subs);
+        } else {
+            errors.put(cause, new Error(subs));
+        }
+    }
+
     public void put(String cause, String msg) {
         errors.put(cause, new Error(msg));
     }
@@ -51,6 +60,10 @@ public class ErrorMap {
         return errors;
     }
 
+    public static ErrorMap empty() {
+        return new ErrorMap();
+    }
+
     public static class Error {
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonIgnore
@@ -63,12 +76,20 @@ public class ErrorMap {
             errors.put(sub, msg);
         }
 
+        Error(Map<String, String> subs) {
+            errors = new HashMap<>(subs);
+        }
+
         Error(String msg) {
             this.msg = msg;
         }
 
         public void put(String sub, String msg) {
             errors.put(sub, msg);
+        }
+
+        public void putAll(Map<String, String> subs) {
+            errors.putAll(subs);
         }
 
         @JsonAnyGetter

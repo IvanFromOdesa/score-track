@@ -4,6 +4,7 @@ public class SignUpForm {
     private String loginname;
     private String email;
     private String password;
+    private String confirmPassword;
     private boolean tosChecked;
 
     public String getLoginname() {
@@ -28,6 +29,14 @@ public class SignUpForm {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     public boolean isTosChecked() {

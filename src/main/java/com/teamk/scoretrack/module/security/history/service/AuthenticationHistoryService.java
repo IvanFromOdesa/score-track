@@ -15,7 +15,7 @@ public class AuthenticationHistoryService extends AbstractHistoryService<Authent
             Optional<AuthenticationHistory> byId = dao.findByIdAndAuthenticationBean(id, authenticationBean);
             if (byId.isPresent()) {
                 AuthenticationHistory history = byId.get();
-                history.setStatus(AuthenticationHistory.Status.TRUSTED);
+                history.setStatus(AuthenticationHistory.Status.RESOLVED);
                 save(history);
                 return true;
             }

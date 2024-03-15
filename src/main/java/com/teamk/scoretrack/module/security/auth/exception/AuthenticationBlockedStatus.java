@@ -1,17 +1,12 @@
 package com.teamk.scoretrack.module.security.auth.exception;
 
-import com.teamk.scoretrack.module.security.handler.error.authfailure.domain.AuthenticationCredentialsFailure;
+import com.teamk.scoretrack.module.security.handler.error.authfailure.domain.AuthenticationLock;
 
 public enum AuthenticationBlockedStatus {
-    // TODO is this necessary?
     /**
-     * 3+ unresolved {@link com.teamk.scoretrack.module.security.geo.domain.LocationHistory} with the same ip
+     * Unresolved {@link AuthenticationLock}
      */
-    BLOCKED_UNKNOWN_LOCATION("location.unknown"),
-    /**
-     * Unresolved {@link AuthenticationCredentialsFailure}
-     */
-    BLOCKED_AUTH_FAILURE("creds.locked"),
+    BLOCKED_BAD_CREDENTIALS("creds.locked"),
     BLOCKED_TOS("tos.block"),
     BLOCKED_SUSPICIOUS_ACTIVITY("activity.unusual"),
     DEFAULT("creds.invalid");
