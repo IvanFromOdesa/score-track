@@ -28,7 +28,8 @@ import jakarta.persistence.OneToOne;
                         name = "profile-subgraph",
                         attributeNodes = {
                                 @NamedAttributeNode("sportPreference"),
-                                @NamedAttributeNode("socials")
+                                @NamedAttributeNode("socials"),
+                                @NamedAttributeNode("profileImg")
                         }
                 ),
                 @NamedSubgraph(

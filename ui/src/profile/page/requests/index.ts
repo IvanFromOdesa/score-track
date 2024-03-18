@@ -12,17 +12,17 @@ export const initProfilePage = () => axios.get<ProfilePageModel>(`${BASE}/profil
 export const searchSports = (name: string) => axios.get<Sport[]>(`${BASE}/search/sports?q=${name}`)
     .then(res => res.data as Sport[]);
 
-export const updateProfile = (data: FormikValues) => {
+export const updateProfile = async (data: FormikValues) => {
     const form = new FormData();
-    const profileImg = ((({ profileImg}) => ({ profileImg }))(data)) as any;
+    const profileImg = ((({profileImg}) => ({profileImg}))(data)) as any;
     delete data.profileImg;
 
     /**
      * Send dto as application/json and profile img as multipart
      */
-    form.append("data", new Blob([JSON.stringify(data)], { type: "application/json" }));
+    form.append("data", new Blob([JSON.stringify(data)], {type: "application/json"}));
     form.append("profileImg", profileImg['profileImg']);
 
-    return axios.post<GenericPostServerResponse<Profile>>(`${BASE}/profile/update`, form, getFormDataHeaders())
-        .then(res => res.data as GenericPostServerResponse<Profile>);
+    const res = await axios.post<GenericPostServerResponse<Profile>>(`${BASE}/profile/update`, form, getFormDataHeaders());
+    return res.data as GenericPostServerResponse<Profile>;
 }

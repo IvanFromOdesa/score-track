@@ -20,6 +20,7 @@ public final class Privileges {
     public static final Privileges USER_ACTIVITIES = new Privileges("USER_ACTIVITIES");
     public static final Privileges API_MANAGEMENT = new Privileges("API_MANAGEMENT");
     public static final Privileges CONTENT_MANAGEMENT = new Privileges("CONTENT_MANAGEMENT");
+    public static final Privileges APP_MANAGEMENT = new Privileges("APP_MANAGEMENT");
     public static final int ALL_SUBS = 9999;
 
     private final String privilege;
@@ -63,5 +64,4 @@ public final class Privileges {
                 "privilege=" + privilege + ", " +
                 "privilegeCallback=" + privilegeCallback + ']';
     }
-
 }

@@ -1,5 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.io.service;
 
+import com.google.common.io.BaseEncoding;
 import com.google.common.io.Files;
 import com.teamk.scoretrack.module.commons.exception.ServerException;
 import com.teamk.scoretrack.module.commons.util.log.MessageLogger;
@@ -10,7 +11,6 @@ import com.teamk.scoretrack.module.core.entities.io.FileData;
 import com.teamk.scoretrack.module.core.entities.io.FileType;
 import com.teamk.scoretrack.module.core.entities.io.img.ImageData;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
-import com.teamk.scoretrack.module.security.token.util.UUIDUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 import static com.teamk.scoretrack.module.core.entities.user.client.controller.ProfilePageController.PICTURE;
@@ -40,23 +40,39 @@ public class FileUploadService {
         this.fileDataEntityService = fileDataEntityService;
     }
 
+    /**
+     * Uploads the file as blob to the cloud while persisting its metadata into db.
+     * @param file file to upload
+     * @param uploadedBy associated principal
+     * @return file metadata object
+     */
     public FileData uploadFile(MultipartFile file, AuthenticationBean uploadedBy) {
-        String fileExtension = Files.getFileExtension(file.getName());
-        FileData fileData = getFileData(file, uploadedBy, fileExtension, uploadToCloud(file, fileExtension, uploadedBy));
+        String fileExtension = Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
+        FileData fileData = getFileData(file, uploadedBy, file.getContentType(), uploadToCloud(file, fileExtension, uploadedBy));
         fileDataEntityService.save(fileData);
         return fileData;
     }
 
-    public byte[] downloadFile(UUID externalUserId, String filename) {
-        return cloudService.getBytes(CloudId.ofFilename(externalUserId.toString().concat("_").concat(filename)));
+    public byte[] downloadFile(String filename) {
+        return downloadFile(() -> fileDataEntityService.getByName(filename));
     }
 
     public byte[] downloadFile(Long fileId) {
-        Optional<FileData> byId = fileDataEntityService.getById(fileId);
-        return byId.isPresent() ? downloadFile(byId.get()) : new byte[0];
+        return downloadFile(() -> fileDataEntityService.getById(fileId));
     }
 
-    public byte[] downloadFile(FileData fileData) {
+    private byte[] downloadFile(Supplier<Optional<FileData>> getByCallback) {
+        Optional<FileData> byCallback = getByCallback.get();
+        if (byCallback.isPresent()) {
+            FileData fileData = byCallback.get();
+            if (fileData.getAccessStatus().isAccessible()) {
+                return downloadFile(fileData);
+            }
+        }
+        return new byte[0];
+    }
+
+    private byte[] downloadFile(FileData fileData) {
         return cloudService.getBytes(new CloudId(fileData.getName(), fileData.getInternalUrl()));
     }
 
@@ -64,9 +80,9 @@ public class FileUploadService {
     private FileData getFileData(MultipartFile file, AuthenticationBean uploadedBy, String fileExtension, CloudId save) {
         String filename = save.getFilename();
         FileData fd = FD_EXTENSION_MAP.getOrDefault(FileType.byExtension(fileExtension), FileData::new).get();
-        fd.setAuthenticationBean(uploadedBy);
+        fd.setUploadedBy(uploadedBy);
         fd.setInternalUrl(save.getUrl());
-        fd.setExternalUrl(generateExternalUrl(uploadedBy.getExternalId(), filename));
+        fd.setExternalUrl(generateExternalUrl(filename));
         fd.setAccessStatus(AccessStatus.REQUIRES_REVIEW);
         fd.setName(filename);
         fd.setExtension(fileExtension);
@@ -85,7 +101,7 @@ public class FileUploadService {
         return save;
     }
 
-    private static String generateExternalUrl(UUID externalUserId, String filename) {
-        return PROFILE.concat(PICTURE).concat(UUIDUtils.toBase64Url(externalUserId)).concat("/").concat(filename);
+    private static String generateExternalUrl(String filename) {
+        return PROFILE.concat(PICTURE).concat("/").concat(BaseEncoding.base64Url().encode(filename.getBytes()));
     }
 }

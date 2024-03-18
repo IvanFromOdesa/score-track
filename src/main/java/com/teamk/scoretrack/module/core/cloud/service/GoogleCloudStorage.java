@@ -18,8 +18,8 @@ public abstract class GoogleCloudStorage implements CloudService<CloudId> {
 
     @Override
     public CloudId save(byte[] src, String extension, String userDir) {
-        String filename = generateFilename().concat(".").concat(extension);
-        BlobId blobId = getBucket().create(userDir.concat(filename), src).getBlobId();
+        String filename = userDir.concat(generateFilename()).concat(".").concat(extension);
+        BlobId blobId = getBucket().create(filename, src).getBlobId();
         return new CloudId(filename, blobId.toGsUtilUri());
     }
 

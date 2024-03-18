@@ -15,7 +15,7 @@ public final class HibernateRelations {
     }
 
     public static<T, U, C extends Collection<T>, D extends Collection<U>> void updateManyToOne(C updateCollection, D domainCollection, Function<C, D> transformer) {
-        if (updateCollection == null || updateCollection.size() == 0) {
+        if (updateCollection == null || updateCollection.isEmpty()) {
             domainCollection.clear();
         } else {
             D transformed = transformer.apply(updateCollection);

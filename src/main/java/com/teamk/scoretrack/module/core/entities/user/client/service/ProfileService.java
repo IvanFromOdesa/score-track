@@ -9,7 +9,11 @@ import com.teamk.scoretrack.module.core.entities.SportType;
 import com.teamk.scoretrack.module.core.entities.io.FileData;
 import com.teamk.scoretrack.module.core.entities.io.img.ImageData;
 import com.teamk.scoretrack.module.core.entities.io.service.FileUploadService;
-import com.teamk.scoretrack.module.core.entities.user.client.domain.*;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.Profile;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.SocialType;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.Socials;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.SportPreference;
 import com.teamk.scoretrack.module.core.entities.user.client.dto.ProfileUpdateDto;
 import com.teamk.scoretrack.module.core.entities.user.client.service.valid.rules.DobValidationRule;
 import com.teamk.scoretrack.module.core.entities.user.client.service.valid.rules.InstagramProfileValidationRule;
@@ -29,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,8 +89,8 @@ public class ProfileService {
         throw new IllegalStateException("Should not be able to access without authentication.");
     }
 
-    public byte[] getProfilePicture(UUID externalUserId, String filename) {
-        return fileUploadService.downloadFile(externalUserId, filename);
+    public byte[] getProfilePicture(String filename) {
+        return fileUploadService.downloadFile(filename);
     }
 
     private void fillProfile(ProfileUpdateDto dto, Profile profile) {

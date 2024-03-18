@@ -4,7 +4,8 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.teamk.scoretrack.module.security.auth.service.AuthenticationEntityService;
+import com.teamk.scoretrack.module.core.entities.Privileges;
+import com.teamk.scoretrack.module.security.auth.service.AuthenticationSignUpService;
 import com.teamk.scoretrack.module.security.auth.service.ExtendedDaoAuthenticationProvider;
 import com.teamk.scoretrack.module.security.auth.service.PreAuthenticationChecks;
 import com.teamk.scoretrack.module.security.firewall.filter.XSSSanitizerFilter;
@@ -90,9 +91,9 @@ public class SecurityConfiguration {
     @Bean
     public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
                                                             @Qualifier(HashingConfiguration.BCRYPT) PasswordEncoder passwordEncoder,
-                                                            AuthenticationEntityService authenticationEntityService,
+                                                            AuthenticationSignUpService authenticationSignUpService,
                                                             @Qualifier(PreAuthenticationChecks.NAME) UserDetailsChecker userDetailsChecker) {
-        ExtendedDaoAuthenticationProvider extendedDaoAuthenticationProvider = new ExtendedDaoAuthenticationProvider(authenticationEntityService);
+        ExtendedDaoAuthenticationProvider extendedDaoAuthenticationProvider = new ExtendedDaoAuthenticationProvider(authenticationSignUpService);
         extendedDaoAuthenticationProvider.setHideUserNotFoundExceptions(false);
         extendedDaoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         extendedDaoAuthenticationProvider.setUserDetailsService(userDetailsService);
@@ -135,6 +136,10 @@ public class SecurityConfiguration {
                         .requestMatchers(REFRESH_ACCESS_TOKEN).permitAll()
                         .requestMatchers(PREF.concat(LANG).concat("/**")).permitAll()
                         .requestMatchers(getResources()).permitAll()
+                        /*
+                         * Permit actuator endpoints for allowed user group
+                         */
+                        .requestMatchers("/actuator/**").hasAuthority(Privileges.APP_MANAGEMENT.privilege())
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.loginPage(LOGIN).permitAll().defaultSuccessUrl(HOME).failureHandler(failureHandler).successHandler(successHandler))

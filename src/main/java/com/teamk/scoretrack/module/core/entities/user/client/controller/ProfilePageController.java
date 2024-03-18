@@ -1,5 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.client.controller;
 
+import com.google.common.io.BaseEncoding;
 import com.teamk.scoretrack.module.commons.base.controller.BaseRestController;
 import com.teamk.scoretrack.module.commons.form.rest.RestForm;
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
@@ -11,7 +12,6 @@ import com.teamk.scoretrack.module.core.entities.user.client.service.ProfileServ
 import com.teamk.scoretrack.module.core.entities.user.client.service.form.ProfileInitFormOptionsService;
 import com.teamk.scoretrack.module.core.entities.user.client.service.valid.ProfileUpdateFormValidationContext;
 import com.teamk.scoretrack.module.core.entities.user.client.service.valid.ProfileUpdateValidator;
-import com.teamk.scoretrack.module.security.token.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,9 +64,9 @@ public class ProfilePageController extends BaseRestController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(PICTURE + "/{externalId}/{filename}")
-    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String externalId, @PathVariable String filename) {
-        byte[] profilePicture = profileService.getProfilePicture(UUIDUtils.fromBase64Url(externalId), filename);
+    @GetMapping(PICTURE + "/{filename}")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String filename) {
+        byte[] profilePicture = profileService.getProfilePicture(new String(BaseEncoding.base64Url().decode(filename)));
         return profilePicture.length > 0 ? ResponseEntity.ok(profilePicture) : ResponseEntity.notFound().build();
     }
 }

@@ -2,7 +2,6 @@ package com.teamk.scoretrack.module.core.entities.user.client.domain;
 
 import com.teamk.scoretrack.module.commons.base.domain.Identifier;
 import com.teamk.scoretrack.module.core.entities.io.img.ImageData;
-import com.teamk.scoretrack.module.security.auth.domain.AuthenticationIdentifier;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +28,7 @@ public class Profile extends Identifier {
     private Instant lastModified;
     private String nickname;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_img_id", referencedColumnName = AuthenticationIdentifier.FK_NAME)
+    @JoinColumn(name = "profile_img_id", referencedColumnName = "id")
     private ImageData profileImg;
     @Column(length = Length.LONG)
     private String bio;

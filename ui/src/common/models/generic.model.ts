@@ -46,8 +46,7 @@ export type ErrorMap = {
 }
 
 export type Error = {
-    msg?: string;
-    errors?: Record<string, string>;
+    [name: string]: string;
 }
 
 export type ReadonlyProps<T> = {

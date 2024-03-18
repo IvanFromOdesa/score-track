@@ -37,6 +37,7 @@ public class UserDataDtoPopulateService {
         return dto;
     }
 
+    // TODO: Support user
     public UserDataDto.ProfileDto getProfile(User user) {
         UserDataDto.ProfileDto dto = new UserDataDto.ProfileDto();
         if (user instanceof ClientUser clientUser) {

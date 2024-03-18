@@ -13,11 +13,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class ExtendedDaoAuthenticationProvider extends DaoAuthenticationProvider {
-    private final AuthenticationEntityService authenticationEntityService;
+    private final AuthenticationSignUpService authenticationSignUpService;
 
     @Autowired
-    public ExtendedDaoAuthenticationProvider(AuthenticationEntityService authenticationEntityService) {
-        this.authenticationEntityService = authenticationEntityService;
+    public ExtendedDaoAuthenticationProvider(AuthenticationSignUpService authenticationSignUpService) {
+        this.authenticationSignUpService = authenticationSignUpService;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ExtendedDaoAuthenticationProvider extends DaoAuthenticationProvider
             throw new BadCredentialsLockedException("Locked account due to recent auth attempts with bad credentials.");
         } else if (!userDetails.isEnabled()) {
             logger.debug("Failed to authenticate since user account is disabled");
-            authenticationEntityService.sendActivationEmail((AuthenticationBean) userDetails, HttpUtil.getBaseUrl().concat(AuthenticationController.ACTIVATE));
+            authenticationSignUpService.sendActivationEmail((AuthenticationBean) userDetails, HttpUtil.getBaseUrl().concat(AuthenticationController.ACTIVATE));
             throw new DisabledException(messages.getMessage("AbstractUserDetailsAuthenticationProvider.disabled", "User is disabled"));
         }
     }

@@ -5,8 +5,8 @@ export const showErrors = (errors: ErrorMap) => {
     return Object.entries(errors).map(([key, value]) => {
         return <Alert variant="danger" key={"error." + key} dismissible>
             {
-                value.msg || value.errors && Object.entries(value.errors).map(([key, value]) => {
-                    return <div key={key}>{value}<br/></div>;
+                Object.entries(value).map(([key, name]) => {
+                    return <div key={key}>{name}<br/></div>;
                 })
             }
         </Alert>;

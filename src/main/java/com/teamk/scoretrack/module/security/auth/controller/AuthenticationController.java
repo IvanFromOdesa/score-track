@@ -7,7 +7,7 @@ import com.teamk.scoretrack.module.commons.other.ErrorMap;
 import com.teamk.scoretrack.module.security.auth.dto.AuthenticationDto;
 import com.teamk.scoretrack.module.security.auth.dto.SignUpForm;
 import com.teamk.scoretrack.module.security.auth.dto.SignUpResponseDto;
-import com.teamk.scoretrack.module.security.auth.service.AuthenticationEntityService;
+import com.teamk.scoretrack.module.security.auth.service.AuthenticationSignUpService;
 import com.teamk.scoretrack.module.security.auth.service.form.AuthFormOptionsService;
 import com.teamk.scoretrack.module.security.auth.service.valid.AuthenticationExistsValidator;
 import com.teamk.scoretrack.module.security.auth.service.valid.AuthenticationSignUpFormValidator;
@@ -36,13 +36,15 @@ public class AuthenticationController extends BaseMvcController {
     private static final String LOGIN_PAGE = AUTH_DIR + LOGIN;
     private static final String ACTIVATED_PAGE = AUTH_DIR + ACTIVATE;
     private final AuthFormOptionsService optionsPreparer;
-    private final AuthenticationEntityService authenticationEntityService;
+    private final AuthenticationSignUpService authenticationSignUpService;
     private final AuthenticationSignUpFormValidator authenticationSignUpFormValidator;
 
     @Autowired
-    public AuthenticationController(AuthFormOptionsService optionsPreparer, AuthenticationEntityService authenticationEntityService, AuthenticationSignUpFormValidator authenticationSignUpFormValidator) {
+    public AuthenticationController(AuthFormOptionsService optionsPreparer,
+                                    AuthenticationSignUpService authenticationSignUpService,
+                                    AuthenticationSignUpFormValidator authenticationSignUpFormValidator) {
         this.optionsPreparer = optionsPreparer;
-        this.authenticationEntityService = authenticationEntityService;
+        this.authenticationSignUpService = authenticationSignUpService;
         this.authenticationSignUpFormValidator = authenticationSignUpFormValidator;
     }
 
@@ -62,12 +64,12 @@ public class AuthenticationController extends BaseMvcController {
             Map<String, ErrorMap.Error> errors = errorMap.getErrors();
             ErrorMap.Error exists = errors.remove(AuthenticationExistsValidator.LOGINNAME_EMAIL_ADDRESS_EXIST);
             if (errors.isEmpty() && exists != null) {
-                responseDto.setResult(authenticationEntityService.mockSignUp());
+                responseDto.setResult(authenticationSignUpService.mockSignUp());
             } else {
                 responseDto.setErrors(errors);
             }
         } else {
-            String result = authenticationEntityService.processSignUp(new AuthenticationDto(signUpForm.getLoginname(), signUpForm.getPassword(), signUpForm.getEmail()), getBaseUrl().concat(ACTIVATE));
+            String result = authenticationSignUpService.processSignUp(new AuthenticationDto(signUpForm.getLoginname(), signUpForm.getPassword(), signUpForm.getEmail()), getBaseUrl().concat(ACTIVATE));
             responseDto.setResult(result);
         }
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -75,7 +77,7 @@ public class AuthenticationController extends BaseMvcController {
 
     @GetMapping(ACTIVATE + "/{encoded}")
     public String activate(@PathVariable String encoded) {
-        authenticationEntityService.activate(UUIDUtils.fromBase64Url(encoded));
+        authenticationSignUpService.activate(UUIDUtils.fromBase64Url(encoded));
         return ACTIVATED_PAGE;
     }
 

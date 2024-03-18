@@ -26,7 +26,7 @@ public enum Role {
 
     public static Privileges[] sAdminPrivileges() {
         return CommonsUtil.concat2Arrays(adminPrivileges(), new Privileges[] {
-                Privileges.API_MANAGEMENT, Privileges.CONTENT_MANAGEMENT
+                Privileges.API_MANAGEMENT, Privileges.CONTENT_MANAGEMENT, Privileges.APP_MANAGEMENT
         });
     }
 
