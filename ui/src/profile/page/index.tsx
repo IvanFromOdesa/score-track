@@ -11,12 +11,13 @@ import {htmlFrom} from "common/utils/html.parse";
 import {AsyncTypeahead} from "react-bootstrap-typeahead";
 import {_DEFAULT} from "./model/profile_page.model";
 import {Formik, FormikHelpers, FormikValues} from "formik";
-import {CommonProfile} from "../../common/stores/auth.store";
+import {CommonProfile, getDefaultCommonProfile} from "common/stores/auth.store";
 import {getProfileSchema} from "./schemas";
-import {showErrors} from "../../common/utils/alert";
-import {ErrorMap} from "../../common/models/generic.model";
+import {showErrors} from "common/utils/alert";
+import {ErrorMap} from "common/models/generic.model";
 import {useNavigate} from "react-router-dom";
-import {HOME} from "../../common/routes/routes";
+import {HOME} from "common/routes/routes";
+import {merge, MergeParams} from "common/utils/obj";
 
 interface ProfileForm extends CommonProfile {
     nickname?: string | undefined;
@@ -32,13 +33,19 @@ const ProfilePage: React.FC = () => {
     const profile = userData.getProfile();
     const navigate = useNavigate();
 
-    const initFormValues: ProfileForm = {
-        ...(profile as CommonProfile),
+    /**
+     * This makes input values initially controlled replacing undefined with default values
+     */
+    const initFormValues = merge(getDefaultCommonProfile() as MergeParams, {...(profile as CommonProfile)}) as ProfileForm;
+    initFormValues.profileImg = undefined;
+
+    /*const initFormValues: ProfileForm = {
+        ...spreadElements,
         nickname: profile.nickname,
         profileImg: undefined
-    }
+    }*/
 
-    const { data: { bundle } = _DEFAULT } = useQuery({
+    const { data: { bundle, maxUploadFileSize } = _DEFAULT } = useQuery({
         queryKey: [PROFILE_PAGE_KEY],
         queryFn: () => initProfilePage()
     });
@@ -75,7 +82,7 @@ const ProfilePage: React.FC = () => {
             </Row>
             <Formik
                 initialValues={initFormValues}
-                validationSchema={getProfileSchema(bundle)}
+                validationSchema={getProfileSchema(bundle, maxUploadFileSize)}
                 onSubmit={(values, actions) => {submit(values, actions);}}
             >
                 {({ handleSubmit, handleChange, values, setFieldValue, touched, errors }) => (
@@ -89,18 +96,24 @@ const ProfilePage: React.FC = () => {
                                 </Form.Group>
                                 <Form.Group controlId="formFile" className="mb-5 mb-lg-3 col-12 col-lg-8">
                                     <Form.Label>{bundle?.['profilePicInfoTitle']}</Form.Label>
-                                    <Form.Control
-                                        name="profileImg"
-                                        type="file"
-                                        accept=".jpg, .jpeg, .png, .webp"
-                                        onChange={(event) => {
-                                            const target = event.target as HTMLInputElement & {
-                                                files: FileList
-                                            }
-                                            setFieldValue("profileImg", target.files[0]);
-                                        }}
-                                        isInvalid={!!validationErrors?.['profileImg']}
-                                    />
+                                    <InputGroup>
+                                        <Form.Control
+                                            name="profileImg"
+                                            type="file"
+                                            accept=".jpg, .jpeg, .png, .webp"
+                                            onChange={(event) => {
+                                                const target = event.target as HTMLInputElement & {
+                                                    files: FileList
+                                                }
+                                                setFieldValue("profileImg", target.files[0]);
+                                            }}
+                                            isValid={touched.profileImg && !errors.profileImg}
+                                            isInvalid={!!errors.profileImg || !!validationErrors?.['profileImg']}
+                                        />
+                                        <Form.Control.Feedback type="invalid" tooltip>
+                                            {errors.profileImg}
+                                        </Form.Control.Feedback>
+                                    </InputGroup>
                                 </Form.Group>
                                 <h2 className="mb-md-3">{bundle?.['profileEditSocialsTitle']}</h2>
                                 <Form.Group className="col-12 col-lg-8" controlId="formInstLink">

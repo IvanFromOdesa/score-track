@@ -1,14 +1,14 @@
 package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
-import com.teamk.scoretrack.module.core.entities.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.Privileges;
 
 /**
  * Enum holding all possible user groups.
  */
 public enum UserGroup {
     DEFAULT(-1),
-    FAN(0, Privileges.API_ACCESS, Privileges.PROFILE_ACCESS),
-    CREATOR(1, Privileges.API_ACCESS, Privileges.PROFILE_ACCESS, Privileges.CONTENT_CREATOR),
+    FAN(0, Privileges.API_ACCESS),
+    CREATOR(1, Privileges.API_ACCESS, Privileges.CONTENT_CREATOR),
     SUPPORT_USER(2, Privileges.SUPPORT_MANAGEMENT);
 
     private final int code;

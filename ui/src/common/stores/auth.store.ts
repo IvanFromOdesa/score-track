@@ -1,6 +1,6 @@
 import {API_UNDEFINED, CodeName, Sport, SportApi} from "../models/generic.model";
 import {makeAutoObservable} from "mobx";
-import {getDate, getDateTime} from "../utils/common";
+import {getDate, getDateTime} from "../utils/date";
 import {ACCESS_TOKEN, RECAPTCHA_KEY} from "../utils/callback.injector";
 
 export class AuthStore {
@@ -154,6 +154,18 @@ const getDefaultProfile = (): Profile => {
     return {
         nickname: '',
     };
+}
+
+export const getDefaultCommonProfile = (): CommonProfile => {
+    return {
+        instagramLink: "",
+        xLink: "",
+        firstName: "",
+        lastName: "",
+        dob: "",
+        bio: "",
+        sportPreference: []
+    }
 }
 
 const getDefaultUserData = (): UserData => {

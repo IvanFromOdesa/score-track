@@ -1,4 +1,4 @@
-package com.teamk.scoretrack.module.core.entities;
+package com.teamk.scoretrack.module.core.entities.user;
 
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.UserPrivilege;
@@ -12,7 +12,6 @@ import java.util.function.Function;
  */
 public final class Privileges {
     public static final Privileges API_ACCESS = new Privileges("API_ACCESS", user -> new UserPrivilege("API_ACCESS", user.getAvailableApiCodes()));
-    public static final Privileges PROFILE_ACCESS = new Privileges("PROFILE_ACCESS");
     public static final Privileges CONTENT_CREATOR = new Privileges("CONTENT_CREATOR");
     public static final Privileges SUPPORT_MANAGEMENT = new Privileges("SUPPORT_MANAGEMENT");
     public static final Privileges USER_MANAGEMENT = new Privileges("USER_MANAGEMENT");

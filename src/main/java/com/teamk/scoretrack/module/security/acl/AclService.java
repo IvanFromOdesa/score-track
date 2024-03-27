@@ -1,6 +1,7 @@
 package com.teamk.scoretrack.module.security.acl;
 
-import com.teamk.scoretrack.module.core.entities.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.Role;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.UserPrivilege;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import com.teamk.scoretrack.module.security.auth.service.AuthenticationHolderService;
@@ -37,15 +38,23 @@ public class AclService {
     }
 
     public boolean checkAcl(Privileges requiredAuthority, Integer code) {
+        return checkAcl(requiredAuthority.privilege(), code);
+    }
+
+    public boolean checkAcl(Role requiredAuthority) {
+        return checkAcl(requiredAuthority.getRoleAlias(), null);
+    }
+
+    public boolean checkAcl(String requiredAuthority, Integer code) {
         if (AuthenticationHolderService.isAnonymousAuthentication()) {
             return false;
         } else {
             Optional<JwtAuthenticationToken> currentAuthenticationToken = authenticationHolderService.getCurrentAuthenticationToken();
             if (currentAuthenticationToken.isPresent()) {
-                return currentAuthenticationToken.get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(requiredAuthority.privilege()) && isSubAuthPresent(code, (UserPrivilege) a));
+                return currentAuthenticationToken.get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(requiredAuthority) && isSubAuthPresent(code, (UserPrivilege) a));
             } else {
                 Optional<AuthenticationBean> currentAuthentication = authenticationHolderService.getCurrentAuthentication();
-                return currentAuthentication.map(authenticationBean -> authenticationBean.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(requiredAuthority.privilege()) && isSubAuthPresent(code, a))).orElse(false);
+                return currentAuthentication.map(authenticationBean -> authenticationBean.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(requiredAuthority) && isSubAuthPresent(code, a))).orElse(false);
             }
         }
     }

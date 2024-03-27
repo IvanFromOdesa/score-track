@@ -62,7 +62,7 @@ public class ProfileService {
         this.dtoPopulateService = dtoPopulateService;
     }
 
-    @PreAuthorize("@aclService.checkAcl(T(com.teamk.scoretrack.module.core.entities.Privileges).PROFILE_ACCESS)")
+    @PreAuthorize("@aclService.checkAcl(T(com.teamk.scoretrack.module.core.entities.user.Role).CLIENT)")
     public UserDataDto.ProfileDto update(ProfileUpdateDto dto, MultipartFile profileImg) {
         Optional<AuthenticationWrapper> authenticationWrapper = authenticationHolderService.getAuthenticationWrapper();
         if (authenticationWrapper.isPresent()) {

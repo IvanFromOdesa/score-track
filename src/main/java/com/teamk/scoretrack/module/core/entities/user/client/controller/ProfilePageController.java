@@ -4,9 +4,9 @@ import com.google.common.io.BaseEncoding;
 import com.teamk.scoretrack.module.commons.base.controller.BaseRestController;
 import com.teamk.scoretrack.module.commons.form.rest.RestForm;
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
-import com.teamk.scoretrack.module.core.api.commons.base.dto.BundleResponse;
 import com.teamk.scoretrack.module.core.api.commons.base.dto.GenericPostServerResponse;
 import com.teamk.scoretrack.module.core.api.commons.base.dto.UserDataDto;
+import com.teamk.scoretrack.module.core.entities.user.client.dto.ProfileInitResponse;
 import com.teamk.scoretrack.module.core.entities.user.client.dto.ProfileUpdateDto;
 import com.teamk.scoretrack.module.core.entities.user.client.service.ProfileService;
 import com.teamk.scoretrack.module.core.entities.user.client.service.form.ProfileInitFormOptionsService;
@@ -45,8 +45,8 @@ public class ProfilePageController extends BaseRestController {
     }
 
     @GetMapping(INIT)
-    public ResponseEntity<BundleResponse> init() {
-        RestForm<BundleResponse> form = new RestForm<>(new BundleResponse());
+    public ResponseEntity<ProfileInitResponse> init() {
+        RestForm<ProfileInitResponse> form = new RestForm<>(new ProfileInitResponse());
         formOptionsService.prepareFormOptions(form);
         return ResponseEntity.ok(form.getDto());
     }

@@ -4,7 +4,7 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.teamk.scoretrack.module.core.entities.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.Privileges;
 import com.teamk.scoretrack.module.security.auth.service.AuthenticationSignUpService;
 import com.teamk.scoretrack.module.security.auth.service.ExtendedDaoAuthenticationProvider;
 import com.teamk.scoretrack.module.security.auth.service.PreAuthenticationChecks;

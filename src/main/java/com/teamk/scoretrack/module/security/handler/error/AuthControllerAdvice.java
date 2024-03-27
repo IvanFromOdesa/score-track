@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
 
+// TODO: standardize error responses according to RFC 7807
 @ControllerAdvice
 public class AuthControllerAdvice extends ResponseEntityExceptionHandler {
     private static final String DIR = "status/";
@@ -67,14 +68,13 @@ public class AuthControllerAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> maxFileUploadSizeExceededException(MaxUploadSizeExceededException e) {
         ErrorMap errors = new ErrorMap();
         errors.put("error.file.size", translatorService.getMessage("file.upload.size-exceeded", maxFileUploadSize));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(Instant.now(), errors.getErrors()));
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(new ErrorResponse(Instant.now(), errors.getErrors()));
     }
 
     @ExceptionHandler({ ServerException.class, Exception.class })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView _500(Exception ex) {
         LOGGER.error(ex.getMessage());
-        ex.printStackTrace();
         return setView(_500);
     }
 

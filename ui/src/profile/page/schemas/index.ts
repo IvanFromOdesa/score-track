@@ -1,14 +1,15 @@
 import * as yup from 'yup';
 import {Bundle} from "common/models/generic.model";
-import {isBeforeNowString} from "../../../common/utils/common";
+import {isBeforeNowString} from "common/utils/date";
 
 const instagramRegex = /^(?:https?:\/\/)?(?:www\.)?instagram\.com\/([a-zA-Z\d\.\_\-]+)?/;
 const twitterRegex = /^(?:https?:\/\/)?(?:www\.)?((x|twitter)\.com)\/([a-zA-Z\d\.\_\-]+)?/;
 const nameRegex = /^[^\s\n\d_!¡?÷¿\/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
 const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
+// TODO: change this regex
 const nicknameRegex = /^(?=.{5,15}$)[A-Za-z\d]+\w[A-Za-z\d]+/;
 
-export const getProfileSchema = (bundle: Bundle) => {
+export const getProfileSchema = (bundle: Bundle, maxFileUploadSize: string) => {
     function isEmptyInput(input: string | undefined) {
         return input == undefined || input.length === 0;
     }
@@ -19,6 +20,11 @@ export const getProfileSchema = (bundle: Bundle) => {
 
     function isDateValid(input: string | undefined, regex: RegExp) {
         return isEmptyInput(input) || (regex.test(input!) && isBeforeNowString(input!));
+    }
+
+    function getMaxFileUploadSizeExceededMsg() {
+        const msg = bundle['error.file.upload.size-exceeded'];
+        return msg && msg.replace(/\{\d}/, maxFileUploadSize);
     }
 
     return yup.object().shape({
@@ -51,6 +57,14 @@ export const getProfileSchema = (bundle: Bundle) => {
             'valid-nickname',
             bundle['error.nickname'],
                 name => isValid(name, nicknameRegex)
+        ),
+        profileImg: yup.mixed().test(
+            'valid-file',
+            getMaxFileUploadSizeExceededMsg(),
+            file => {
+                const f = file as File;
+                return !f || f.size <= parseInt(maxFileUploadSize, 10) * 1000;
+            }
         )
     });
 }

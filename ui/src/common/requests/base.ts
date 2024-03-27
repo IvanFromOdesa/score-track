@@ -1,7 +1,7 @@
 import axios, {InternalAxiosRequestConfig} from "axios";
 import {plainToInstance} from "class-transformer";
 import {InitResponse} from "../stores/root.store";
-import {isBeforeNow} from "../utils/common";
+import {isBeforeNow} from "../utils/date";
 import {AccessToken} from "../stores/auth.store";
 import {ACCESS_TOKEN, RECAPTCHA_KEY} from "../utils/callback.injector";
 

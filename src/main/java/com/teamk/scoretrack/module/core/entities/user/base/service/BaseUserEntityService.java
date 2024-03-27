@@ -1,14 +1,14 @@
 package com.teamk.scoretrack.module.core.entities.user.base.service;
 
 import com.teamk.scoretrack.module.commons.base.service.AbstractJpaEntityService;
-import com.teamk.scoretrack.module.core.entities.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.Privileges;
 import com.teamk.scoretrack.module.core.entities.SportAPI;
 import com.teamk.scoretrack.module.core.entities.user.base.dao.BaseUserDao;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.PlannedViewership;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ViewershipPlan;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
-import com.teamk.scoretrack.module.core.entities.user.support.SupportUser;
+import com.teamk.scoretrack.module.core.entities.user.support.domain.SupportUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

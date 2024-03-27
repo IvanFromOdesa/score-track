@@ -1,9 +1,11 @@
 package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
-import com.teamk.scoretrack.module.core.entities.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.Privileges;
 import com.teamk.scoretrack.module.core.entities.SportAPI;
+import com.teamk.scoretrack.module.core.entities.user.Role;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ViewershipPlan;
+import com.teamk.scoretrack.module.core.entities.user.support.domain.SupportUser;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationIdentifier;
 import jakarta.persistence.Inheritance;
@@ -36,14 +38,17 @@ public class User extends AuthenticationIdentifier implements IUserAware {
         this.preferredLang = preferredLang;
     }
 
+    // FIXME this and other helper methods that are currently tied to domain classes may be moved to a separate classes,
+    //  although overall just a minor thing
     public void setDefaultLanguageAndAuth(AuthenticationBean authentication) {
         setAuthenticationBean(authentication);
         this.setPreferredLang(Language.byCode(LocaleContextHolder.getLocale().getLanguage()));
     }
 
     /**
-     * @return array of api codes that are available for this user or else array of {@link com.teamk.scoretrack.module.commons.util.enums.convert.IEnumConvert#CODE_UNDEFINED},
-     * if the user is of type {@link UserGroup#SUPPORT_USER}
+     * @return array of api codes that are available for this user.
+     * If this callback is fired for {@link SupportUser}, then returns {@link Privileges#ALL_SUBS} indicating that every API is accessible.
+     * If the user is of type {@link ClientUser}, then gets api codes provided by specific {@link ViewershipPlan}.
      */
     public int[] getAvailableApiCodes() {
         if (this.getUserGroup().isSupport()) {
@@ -56,6 +61,11 @@ public class User extends AuthenticationIdentifier implements IUserAware {
 
     @Override
     public UserGroup getUserGroup() {
-        return UserGroup.DEFAULT;
+        return getAnonymous();
+    }
+
+    @Override
+    public Role getRole() {
+        return Role.DEFAULT;
     }
 }
