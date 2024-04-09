@@ -3,8 +3,8 @@ package com.teamk.scoretrack.module.core.entities.user.client.service;
 import com.teamk.scoretrack.module.commons.base.service.BaseTransactionManager;
 import com.teamk.scoretrack.module.commons.util.CommonsUtil;
 import com.teamk.scoretrack.module.commons.util.HibernateRelations;
-import com.teamk.scoretrack.module.core.api.commons.base.dto.UserDataDto;
-import com.teamk.scoretrack.module.core.api.commons.base.service.UserDataDtoPopulateService;
+import com.teamk.scoretrack.module.core.api.commons.init.dto.ClientUserDataDto;
+import com.teamk.scoretrack.module.core.api.commons.init.service.data.ClientUserDataDtoPopulateService;
 import com.teamk.scoretrack.module.core.entities.SportType;
 import com.teamk.scoretrack.module.core.entities.io.FileData;
 import com.teamk.scoretrack.module.core.entities.io.img.ImageData;
@@ -45,7 +45,7 @@ public class ProfileService {
     private final AuthenticationEntityService authenticationEntityService;
     private final FileUploadService fileUploadService;
     private final AuthenticationHolderService authenticationHolderService;
-    private final UserDataDtoPopulateService dtoPopulateService;
+    private final ClientUserDataDtoPopulateService dtoPopulateService;
 
     @Autowired
     public ProfileService(ClientUserEntityService clientUserEntityService,
@@ -53,7 +53,7 @@ public class ProfileService {
                           AuthenticationEntityService authenticationEntityService,
                           FileUploadService fileUploadService,
                           AuthenticationHolderService authenticationHolderService,
-                          UserDataDtoPopulateService dtoPopulateService) {
+                          ClientUserDataDtoPopulateService dtoPopulateService) {
         this.clientUserEntityService = clientUserEntityService;
         this.transactionManager = transactionManager;
         this.authenticationEntityService = authenticationEntityService;
@@ -62,8 +62,8 @@ public class ProfileService {
         this.dtoPopulateService = dtoPopulateService;
     }
 
-    @PreAuthorize("@aclService.checkAcl(T(com.teamk.scoretrack.module.core.entities.user.Role).CLIENT)")
-    public UserDataDto.ProfileDto update(ProfileUpdateDto dto, MultipartFile profileImg) {
+    @PreAuthorize("isClient()")
+    public ClientUserDataDto.ProfileDto update(ProfileUpdateDto dto, MultipartFile profileImg) {
         Optional<AuthenticationWrapper> authenticationWrapper = authenticationHolderService.getAuthenticationWrapper();
         if (authenticationWrapper.isPresent()) {
             return transactionManager.doInNewTransaction((transactionStatus) -> {

@@ -15,6 +15,8 @@ public class CacheStore {
      * NBA API
      */
     public static class ApiNba {
-        public static final String TEAM_DATA = "teamData";
+        private static final String PREFIX = "apiNba-";
+        public static final String TEAM_DATA = PREFIX + "teamData";
+        public static final String TEAM_STATS = PREFIX + "teamStats";
     }
 }

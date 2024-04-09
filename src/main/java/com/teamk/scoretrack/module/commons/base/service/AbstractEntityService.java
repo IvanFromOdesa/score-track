@@ -21,7 +21,7 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
         DAO extends ListCrudRepository<ENTITY, ID>
@@ -43,15 +43,15 @@ public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
     }
 
     public ID update(ID id, ENTITY e) {
-        return update(id, e, p -> dao.findById(p));
+        return update(e, () -> dao.findById(id));
     }
 
-    public <PROPERTY> ID update(PROPERTY p, ENTITY e, Function<PROPERTY, Optional<ENTITY>> findByCallback) {
-        Optional<ENTITY> by = findByCallback.apply(p);
+    public ID update(ENTITY e, Supplier<Optional<ENTITY>> findByCallback) {
+        Optional<ENTITY> by = findByCallback.get();
         if (by.isPresent()) {
             return save(merge(e, by.get()));
         }
-        LOGGER.warn(String.format("Entity not found by property: %s.", p));
+        LOGGER.warn("Entity not found by callback.");
         return save(e);
     }
 
@@ -109,15 +109,23 @@ public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
     }
 
     public Page<ENTITY> getAll(int page, int size) {
-        return dao.findAll(PageRequest.of(page, size));
+        return dao.findAll(getPageable(page, size));
     }
 
     public Page<ENTITY> getAll(int page, int size, String direction, String... sortBys) {
-        return dao.findAll(PageRequest.of(page, size, Sort.by(getOrders(direction, sortBys))));
+        return dao.findAll(getPageable(page, size, direction, sortBys));
     }
 
     public Page<ENTITY> getAll(int page, int size, Example<ENTITY> entityExample, String direction, String... sortBys) {
-        return dao.findAll(entityExample, PageRequest.of(page, size, Sort.by(getOrders(direction, sortBys))));
+        return dao.findAll(entityExample, getPageable(page, size, direction, sortBys));
+    }
+
+    protected static PageRequest getPageable(int page, int size) {
+        return PageRequest.of(page, size);
+    }
+
+    protected static PageRequest getPageable(int page, int size, String direction, String[] sortBys) {
+        return PageRequest.of(page, size, Sort.by(getOrders(direction, sortBys)));
     }
 
     private static List<Sort.Order> getOrders(String direction, String[] sortBys) {

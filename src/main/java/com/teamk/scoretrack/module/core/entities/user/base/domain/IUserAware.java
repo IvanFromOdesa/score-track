@@ -1,6 +1,5 @@
 package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
-import com.teamk.scoretrack.module.core.entities.user.Role;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -8,7 +7,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public interface IUserAware {
-    UserGroup getUserGroup();
+    default UserGroup getUserGroup() {
+        return UserGroup.byRole(getRole());
+    }
+
     Role getRole();
 
     default List<UserPrivilege> getPrivileges() {
@@ -22,6 +24,6 @@ public interface IUserAware {
     }
 
     default UserGroup getAnonymous() {
-        return UserGroup.DEFAULT;
+        return UserGroup.ANONYMOUS;
     }
 }

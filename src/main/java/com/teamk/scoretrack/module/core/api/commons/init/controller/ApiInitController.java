@@ -3,7 +3,7 @@ package com.teamk.scoretrack.module.core.api.commons.init.controller;
 import com.teamk.scoretrack.module.commons.base.controller.BaseRestController;
 import com.teamk.scoretrack.module.commons.form.rest.RestForm;
 import com.teamk.scoretrack.module.core.api.commons.init.dto.InitResponse;
-import com.teamk.scoretrack.module.core.api.commons.init.service.form.ApiInitFormOptionsService;
+import com.teamk.scoretrack.module.core.api.commons.init.service.ApiInitServiceDelegator;
 import com.teamk.scoretrack.module.core.entities.SportAPI;
 import com.teamk.scoretrack.module.security.session.filter.SessionAccessTokenBindFilter;
 import com.teamk.scoretrack.module.security.token.jwt.model.AccessToken;
@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,18 +26,18 @@ public class ApiInitController extends BaseRestController {
      * /api with no version specified is used to initialize user data
      */
     public static final String INIT = "/api/init";
-    public static final String SUPPORTED_APIS = "/apis";
+    public static final String SUPPORTED_APIS = BASE_URL + "/apis";
     /**
      * Access token is bound to current session, so we don't need refresh tokens
      * as a new access token can be created from bound session data.
      */
     public static final String REFRESH_ACCESS_TOKEN = "/api/token/refresh";
-    private final ApiInitFormOptionsService formOptionsService;
+    private final ApiInitServiceDelegator apiInitServiceDelegator;
     private final AccessTokenService accessTokenService;
 
     @Autowired
-    public ApiInitController(ApiInitFormOptionsService formOptionsService, AccessTokenService accessTokenService) {
-        this.formOptionsService = formOptionsService;
+    public ApiInitController(ApiInitServiceDelegator apiInitServiceDelegator, AccessTokenService accessTokenService) {
+        this.apiInitServiceDelegator = apiInitServiceDelegator;
         this.accessTokenService = accessTokenService;
     }
 
@@ -44,13 +45,17 @@ public class ApiInitController extends BaseRestController {
      * This should be session accessible as to create jwt from it
      */
     @GetMapping(INIT)
-    public InitResponse init(HttpServletRequest request) {
-        RestForm<InitResponse> form = new RestForm<>(new InitResponse());
-        formOptionsService.prepareFormOptions(form, getAccessTokenSessionBind(request));
+    public InitResponse init(Authentication authentication, HttpServletRequest request) {
+        RestForm<InitResponse> form = new RestForm<>(new InitResponse(), authentication);
+        apiInitServiceDelegator.prepareFormOptions(form, getAccessTokenSessionBind(request));
         return form.getDto();
     }
 
-    @GetMapping(BASE_URL + SUPPORTED_APIS)
+    /**
+     * Change url on client to that in {@link com.teamk.scoretrack.module.core.api.commons.search.ApiSearchController}
+     */
+    @GetMapping(SUPPORTED_APIS)
+    @Deprecated
     public ResponseEntity<List<SportAPI>> supportedApis() {
         return new ResponseEntity<>(SportAPI.supported(), HttpStatus.OK);
     }

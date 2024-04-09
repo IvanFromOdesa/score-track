@@ -1,4 +1,4 @@
-package com.teamk.scoretrack.module.core.api.commons.base.dto;
+package com.teamk.scoretrack.module.core.api.commons.init.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,35 +8,15 @@ import com.teamk.scoretrack.module.core.entities.SportAPI;
 import com.teamk.scoretrack.module.core.entities.SportType;
 import com.teamk.scoretrack.module.core.entities.io.AccessStatus;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.PlannedViewership;
-import com.teamk.scoretrack.module.security.token.jwt.model.AccessToken;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
-public class UserDataDto {
-    private AccessToken token;
-    private String recaptchaKey;
+public class ClientUserDataDto extends UserDataDto {
     private ProfileDto profile;
     private ViewershipPlanDto viewershipPlan;
     private Instant lastSeen;
-    private String locale;
-
-    public AccessToken getToken() {
-        return token;
-    }
-
-    public void setToken(AccessToken token) {
-        this.token = token;
-    }
-
-    public String getRecaptchaKey() {
-        return recaptchaKey;
-    }
-
-    public void setRecaptchaKey(String recaptchaKey) {
-        this.recaptchaKey = recaptchaKey;
-    }
 
     public ProfileDto getProfile() {
         return profile;
@@ -60,14 +40,6 @@ public class UserDataDto {
 
     public void setLastSeen(Instant lastSeen) {
         this.lastSeen = lastSeen;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

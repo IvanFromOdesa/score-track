@@ -4,8 +4,8 @@ import com.google.common.io.BaseEncoding;
 import com.teamk.scoretrack.module.commons.base.controller.BaseRestController;
 import com.teamk.scoretrack.module.commons.form.rest.RestForm;
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
-import com.teamk.scoretrack.module.core.api.commons.base.dto.GenericPostServerResponse;
-import com.teamk.scoretrack.module.core.api.commons.base.dto.UserDataDto;
+import com.teamk.scoretrack.module.core.api.commons.base.GenericPostServerResponse;
+import com.teamk.scoretrack.module.core.api.commons.init.dto.ClientUserDataDto;
 import com.teamk.scoretrack.module.core.entities.user.client.dto.ProfileInitResponse;
 import com.teamk.scoretrack.module.core.entities.user.client.dto.ProfileUpdateDto;
 import com.teamk.scoretrack.module.core.entities.user.client.service.ProfileService;
@@ -52,9 +52,9 @@ public class ProfilePageController extends BaseRestController {
     }
 
     @PostMapping(path = UPDATE/*, consumes = MediaType.MULTIPART_FORM_DATA_VALUE*/)
-    public ResponseEntity<GenericPostServerResponse<UserDataDto.ProfileDto>> update(@RequestPart(name = "data", required = false) ProfileUpdateDto dto,
-                                                                                    @RequestPart(name = "profileImg", required = false) MultipartFile profileImg) {
-        GenericPostServerResponse<UserDataDto.ProfileDto> response = new GenericPostServerResponse<>();
+    public ResponseEntity<GenericPostServerResponse<ClientUserDataDto.ProfileDto>> update(@RequestPart(name = "data", required = false) ProfileUpdateDto dto,
+                                                                                          @RequestPart(name = "profileImg", required = false) MultipartFile profileImg) {
+        GenericPostServerResponse<ClientUserDataDto.ProfileDto> response = new GenericPostServerResponse<>();
         ErrorMap errorMap = profileUpdateValidator.validate(new ProfileUpdateFormValidationContext(dto, profileImg));
         if (!errorMap.isEmpty()) {
             response.setErrors(errorMap.getErrors());

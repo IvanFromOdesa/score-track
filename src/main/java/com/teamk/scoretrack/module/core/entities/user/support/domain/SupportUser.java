@@ -1,8 +1,7 @@
 package com.teamk.scoretrack.module.core.entities.user.support.domain;
 
-import com.teamk.scoretrack.module.core.entities.user.Role;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.Role;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
-import com.teamk.scoretrack.module.core.entities.user.base.domain.UserGroup;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.UserPrivilege;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,11 +23,6 @@ public class SupportUser extends User {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    @Override
-    public UserGroup getUserGroup() {
-        return UserGroup.SUPPORT_USER;
     }
 
     @Override

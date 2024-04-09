@@ -15,8 +15,9 @@ import java.util.Map;
  * 4. other properties may also change<br>
  * It's better to fully save it rather than keep constants hardcoded.
  */
-@Document("teams")
+@Document(TeamData.COLLECTION_NAME)
 public class TeamData extends APINbaIdentifier {
+    public static final String COLLECTION_NAME = "teams";
     private String name;
     private String nickname;
     private String code;

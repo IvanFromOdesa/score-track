@@ -4,7 +4,7 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.teamk.scoretrack.module.core.entities.user.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.Privileges;
 import com.teamk.scoretrack.module.security.auth.service.AuthenticationSignUpService;
 import com.teamk.scoretrack.module.security.auth.service.ExtendedDaoAuthenticationProvider;
 import com.teamk.scoretrack.module.security.auth.service.PreAuthenticationChecks;
@@ -181,7 +181,7 @@ public class SecurityConfiguration {
         return httpSecurity
                 .securityMatcher(AntPathRequestMatcher.antMatcher(BASE_URL.concat("/**")))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(BASE_URL.concat(SUPPORTED_APIS)).permitAll()
+                        .requestMatchers(SUPPORTED_APIS).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.NEVER))

@@ -1,37 +1,49 @@
 package com.teamk.scoretrack.module.security.auth.service;
 
+import com.teamk.scoretrack.module.core.entities.user.base.domain.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.Role;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.UserGroup;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.UserPrivilege;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
 import com.teamk.scoretrack.module.security.auth.domain.AuthenticationWrapper;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.teamk.scoretrack.module.security.token.jwt.model.AccessToken.Claims.*;
 
+/**
+ * Service to get authentication and related props either from the session or JWT
+ */
 @Service
 public class AuthenticationHolderService {
     private static final String ANONYMOUS_AUTHENTICATION = "anonymousUser";
 
     public Optional<AuthenticationBean> getCurrentAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (isAnonymousAuthentication(authentication) || authentication instanceof JwtAuthenticationToken) {
-            return Optional.empty();
-        }
-        return Optional.of((AuthenticationBean) authentication.getPrincipal());
+        return getAuthentication(a -> a instanceof JwtAuthenticationToken, a -> (AuthenticationBean) a.getPrincipal());
     }
 
     public Optional<JwtAuthenticationToken> getCurrentAuthenticationToken() {
+        return getAuthentication(a -> a instanceof UsernamePasswordAuthenticationToken, a -> (JwtAuthenticationToken) a);
+    }
+
+    private <T> Optional<T> getAuthentication(Predicate<Authentication> authTypeCheck, Function<Authentication, T> authTransformer) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (isAnonymousAuthentication(authentication) || authentication instanceof UsernamePasswordAuthenticationToken) {
+        if (isAnonymousAuthentication(authentication) || authTypeCheck.test(authentication)) {
             return Optional.empty();
         }
-        return Optional.of((JwtAuthenticationToken) authentication);
+        return Optional.of(authTransformer.apply(authentication));
     }
 
     public Optional<AuthenticationWrapper> getAuthenticationWrapper() {
@@ -57,5 +69,21 @@ public class AuthenticationHolderService {
 
     public static boolean isAnonymousAuthentication(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken || authentication.getName().equals(ANONYMOUS_AUTHENTICATION);
+    }
+
+    public UserGroup getUserGroup() {
+        return getFromWrapperAuthorities(UserGroup.ANONYMOUS, a -> Role.isRoleAlias(a.getAuthority()), a -> UserGroup.byRoleAlias(a.getAuthority()));
+    }
+
+    public int[] getApiCodes() {
+        return getFromWrapperAuthorities(new int[]{}, a -> a.getAuthority().equals(Privileges.API_ACCESS.privilege()), a -> ((UserPrivilege) a).getSubAuthorities());
+    }
+
+    public List<Integer> getApiCodesAsList() {
+        return Arrays.stream(getApiCodes()).boxed().toList();
+    }
+
+    private <T> T getFromWrapperAuthorities(T defaultRes, Predicate<GrantedAuthority> filter, Function<GrantedAuthority, T> findCallback) {
+        return getAuthenticationWrapper().map(wrapper -> wrapper.authorities().stream().filter(filter).findFirst().map(findCallback).orElse(defaultRes)).orElse(defaultRes);
     }
 }

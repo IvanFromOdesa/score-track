@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
  * May be used in the future to do custom events like sending emails to admins in case of really 'bad' exception.
  */
 public class MessageLogger {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageLogger.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(MessageLogger.class);
 
     public static void info(String msg) {
         LOGGER.info(msg);

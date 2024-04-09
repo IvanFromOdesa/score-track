@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.fan.domain;
 
-import com.teamk.scoretrack.module.core.entities.user.base.domain.UserGroup;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.Role;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
 import jakarta.persistence.Table;
 
@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 @Table(name = "fan")
 public class Fan extends ClientUser {
     @Override
-    public UserGroup getUserGroup() {
-        return UserGroup.FAN;
+    public Role getRole() {
+        return Role.FAN;
     }
 }

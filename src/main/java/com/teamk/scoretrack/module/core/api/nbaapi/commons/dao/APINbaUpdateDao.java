@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Repository
-public interface APINbaUpdateDao extends MongoDao<APINbaUpdate> {
+public interface APINbaUpdateDao extends MongoDao<APINbaUpdate>, APINbaUpdateMongoProjection {
     Optional<APINbaUpdate> findTopByCollectionNameOrderByFinishedDesc(String collectionName);
     Optional<APINbaUpdate> findFirstByStartedAndCollectionName(Instant started, String collectionName);
 }

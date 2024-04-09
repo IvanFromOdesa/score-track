@@ -1,12 +1,12 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.teamk.scoretrack.module.core.api.commons.base.dto.ResponseDto;
+import com.teamk.scoretrack.module.core.api.commons.sport_components.dto.SportComponentResponseDto;
 
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class APINbaTeamResponseDto extends ResponseDto {
+public class APINbaTeamResponseDto extends SportComponentResponseDto {
     public String id;
     public String name;
     public String nickname;

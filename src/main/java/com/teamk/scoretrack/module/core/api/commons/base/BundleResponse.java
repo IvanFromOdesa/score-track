@@ -1,4 +1,4 @@
-package com.teamk.scoretrack.module.core.api.commons.base.dto;
+package com.teamk.scoretrack.module.core.api.commons.base;
 
 import java.util.Map;
 

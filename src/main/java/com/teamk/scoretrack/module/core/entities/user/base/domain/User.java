@@ -1,8 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
-import com.teamk.scoretrack.module.core.entities.user.Privileges;
 import com.teamk.scoretrack.module.core.entities.SportAPI;
-import com.teamk.scoretrack.module.core.entities.user.Role;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ViewershipPlan;
 import com.teamk.scoretrack.module.core.entities.user.support.domain.SupportUser;
@@ -21,6 +19,12 @@ import java.time.Instant;
 public class User extends AuthenticationIdentifier implements IUserAware {
     private Instant lastSeen;
     private Language preferredLang;
+
+    /**
+     * Objects of this class should not be instantiated
+     */
+    protected User() {
+    }
 
     public Instant getLastSeen() {
         return lastSeen;
@@ -60,12 +64,7 @@ public class User extends AuthenticationIdentifier implements IUserAware {
     }
 
     @Override
-    public UserGroup getUserGroup() {
-        return getAnonymous();
-    }
-
-    @Override
     public Role getRole() {
-        return Role.DEFAULT;
+        return Role.ANONYMOUS;
     }
 }

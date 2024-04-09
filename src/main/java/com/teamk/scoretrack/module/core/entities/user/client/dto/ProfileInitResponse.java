@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.client.dto;
 
-import com.teamk.scoretrack.module.core.api.commons.base.dto.BundleResponse;
+import com.teamk.scoretrack.module.core.api.commons.base.BundleResponse;
 
 public class ProfileInitResponse extends BundleResponse {
     private String maxUploadFileSize;

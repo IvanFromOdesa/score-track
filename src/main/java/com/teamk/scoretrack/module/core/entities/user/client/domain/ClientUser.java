@@ -1,6 +1,5 @@
 package com.teamk.scoretrack.module.core.entities.user.client.domain;
 
-import com.teamk.scoretrack.module.core.entities.user.Role;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -68,10 +67,5 @@ public class ClientUser extends User {
 
     public void setViewershipPlan(ViewershipPlan viewershipPlan) {
         this.viewershipPlan = viewershipPlan;
-    }
-
-    @Override
-    public Role getRole() {
-        return Role.CLIENT;
     }
 }

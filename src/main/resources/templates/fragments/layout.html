@@ -35,6 +35,9 @@
                     </li>
                 </ul>
                 <ul sec:authorize="isAuthenticated()" class="navbar-nav text-center ms-auto">
+                    <li sec:authorize="isSupport()" class="nav-item">
+                        <a th:text="${adminTitle}" th:href="@{/admin}" class="nav-link" aria-current="page"></a>
+                    </li>
                     <li class="nav-item">
                         <!-- // TODO -->
                         <a th:text="${preferencesTitle}" th:href="@{/preferences}" class="nav-link" aria-current="page"></a>

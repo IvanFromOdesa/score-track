@@ -1,18 +1,21 @@
-package com.teamk.scoretrack.module.core.entities.user;
+package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
 import com.teamk.scoretrack.module.commons.util.CommonsUtil;
 
+import java.util.Arrays;
+
 public enum Role {
-    DEFAULT(""),
-    CLIENT("Client"),
+    ANONYMOUS(""),
+    FAN("Fan"),
+    CREATOR("Creator", Privileges.CONTENT_CREATOR),
     S_ADMIN("S-Admin", sAdminPrivileges()),
     ADMIN("Admin", adminPrivileges()),
-    SUPPORT("Support user", Privileges.USER_ACTIVITIES, Privileges.MODERATOR_PRIVILEGE);
+    MOD("Moderator", Privileges.USER_ACTIVITIES, Privileges.MODERATOR_PRIVILEGE);
 
     /**
      * ROLE is treated the same as Granted authority, but prefixed with ROLE_
      */
-    private static final String ROLE_PREFIX = "ROLE_";
+    public static final String ROLE_PREFIX = "ROLE_";
 
     private final String alias;
     private final Privileges[] privileges;
@@ -30,8 +33,16 @@ public enum Role {
         return ROLE_PREFIX.concat(alias);
     }
 
+    public static boolean isRoleAlias(String s) {
+        return s.startsWith(ROLE_PREFIX);
+    }
+
     public Privileges[] getPrivileges() {
         return privileges;
+    }
+
+    public boolean containsPrivilege(Privileges privilege) {
+        return Arrays.asList(privileges).contains(privilege);
     }
 
     public static Privileges[] sAdminPrivileges() {

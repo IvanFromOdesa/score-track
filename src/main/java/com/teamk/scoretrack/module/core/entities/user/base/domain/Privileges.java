@@ -1,7 +1,4 @@
-package com.teamk.scoretrack.module.core.entities.user;
-
-import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
-import com.teamk.scoretrack.module.core.entities.user.base.domain.UserPrivilege;
+package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
 import java.util.Objects;
 import java.util.function.Function;

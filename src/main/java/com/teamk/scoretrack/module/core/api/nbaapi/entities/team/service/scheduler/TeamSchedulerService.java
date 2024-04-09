@@ -85,6 +85,6 @@ public class TeamSchedulerService extends APINbaSchedulerService {
 
     @Override
     protected String getCollectionName() {
-        return "teams";
+        return TeamData.COLLECTION_NAME;
     }
 }

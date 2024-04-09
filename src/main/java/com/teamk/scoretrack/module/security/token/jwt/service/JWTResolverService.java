@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import static com.teamk.scoretrack.module.security.token.jwt.model.AccessToken.Claims.*;
 
-
 @Service
 public class JWTResolverService implements ITokenResolver<AccessToken, JwtSource> {
     private final JwtEncoder jwtEncoder;

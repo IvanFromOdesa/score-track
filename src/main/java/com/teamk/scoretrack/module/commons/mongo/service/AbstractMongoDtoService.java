@@ -8,11 +8,12 @@ import com.teamk.scoretrack.module.commons.other.ErrorMapBeanWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
+// TODO: rewrite to use not only with mongo
 /**
  * Services that expose DTOs to caller.
  */
-public abstract class AbstractMongoDtoService<ENTITY extends Identifier, DTO> {
-    protected AbstractMongoEntityService<ENTITY, ?> entityService;
+public abstract class AbstractMongoDtoService<ENTITY extends Identifier, DTO, ENTITY_SERVICE extends AbstractMongoEntityService<ENTITY, ?>> {
+    protected ENTITY_SERVICE entityService;
     protected DtoEntityConvertService<ENTITY, DTO> convertService;
     @Autowired
     protected ErrorMapBeanWrapper errorMapBeanWrapper;
@@ -48,6 +49,6 @@ public abstract class AbstractMongoDtoService<ENTITY extends Identifier, DTO> {
         }
     }
 
-    protected abstract void setEntityService(AbstractMongoEntityService<ENTITY, ?> entityService);
+    protected abstract void setEntityService(ENTITY_SERVICE entityService);
     protected abstract void setConvertService(DtoEntityConvertService<ENTITY, DTO> convertService);
 }

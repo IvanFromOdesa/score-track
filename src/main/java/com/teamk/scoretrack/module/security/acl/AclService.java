@@ -1,15 +1,15 @@
 package com.teamk.scoretrack.module.security.acl;
 
-import com.teamk.scoretrack.module.core.entities.user.Privileges;
-import com.teamk.scoretrack.module.core.entities.user.Role;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.Privileges;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.Role;
+import com.teamk.scoretrack.module.core.entities.user.base.domain.UserGroup;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.UserPrivilege;
-import com.teamk.scoretrack.module.security.auth.domain.AuthenticationBean;
+import com.teamk.scoretrack.module.security.auth.domain.AuthenticationWrapper;
 import com.teamk.scoretrack.module.security.auth.service.AuthenticationHolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -45,18 +45,16 @@ public class AclService {
         return checkAcl(requiredAuthority.getRoleAlias(), null);
     }
 
+    public boolean checkAcl(UserGroup userGroup) {
+        return authenticationHolderService.getUserGroup().equals(userGroup);
+    }
+
     public boolean checkAcl(String requiredAuthority, Integer code) {
-        if (AuthenticationHolderService.isAnonymousAuthentication()) {
-            return false;
-        } else {
-            Optional<JwtAuthenticationToken> currentAuthenticationToken = authenticationHolderService.getCurrentAuthenticationToken();
-            if (currentAuthenticationToken.isPresent()) {
-                return currentAuthenticationToken.get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(requiredAuthority) && isSubAuthPresent(code, (UserPrivilege) a));
-            } else {
-                Optional<AuthenticationBean> currentAuthentication = authenticationHolderService.getCurrentAuthentication();
-                return currentAuthentication.map(authenticationBean -> authenticationBean.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(requiredAuthority) && isSubAuthPresent(code, a))).orElse(false);
-            }
-        }
+        return getAuthenticationWrapper().map(wrapper -> wrapper.authorities().stream().anyMatch(a -> a.getAuthority().equals(requiredAuthority) && isSubAuthPresent(code, (UserPrivilege) a))).orElse(false);
+    }
+
+    private Optional<AuthenticationWrapper> getAuthenticationWrapper() {
+        return authenticationHolderService.getAuthenticationWrapper();
     }
 
     private static boolean isSubAuthPresent(Integer code, UserPrivilege a) {

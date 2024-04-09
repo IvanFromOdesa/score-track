@@ -29,10 +29,7 @@ public class AccessTokenService {
      */
     public Optional<AccessToken> generateToken() {
         Optional<AuthenticationBean> currentAuthentication = authenticationHolderService.getCurrentAuthentication();
-        if (currentAuthentication.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(generateToken(currentAuthentication.get()));
+        return currentAuthentication.map(this::generateToken);
     }
 
     public AccessToken generateToken(AuthenticationBean authenticationBean) {
