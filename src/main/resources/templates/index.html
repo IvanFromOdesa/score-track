@@ -9,6 +9,7 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div th:replace="~{fragments/alerts.html :: alert-info}"></div>
     <div id="root"></div>
     <script type="text/javascript" sec:authorize="isAnonymous() || isClient()" th:src="@{/bundles/home/bundle.min.js}"></script>
     <!-- // TODO: different script for support/admin -->

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Optional;
 
 public abstract class ApiSportComponentRestController extends BaseRestController {
-    public static final String TEAMS_ENDPOINT = "/teams";
-    public static final String GAMES_ENDPOINT = "/games";
-    public static final String PLAYERS_ENDPOINT = "/players";
+    protected static final String TEAMS_ENDPOINT = "/teams";
+    protected static final String GAMES_ENDPOINT = "/games";
+    protected static final String PLAYERS_ENDPOINT = "/players";
 
     protected abstract Page<? extends SportComponentResponseDto> getTeamsData(int page);
 

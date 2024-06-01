@@ -38,6 +38,13 @@
         </layout>
     </appender>
 
+    <appender name="api-nba-logging-players" class="ch.qos.logback.core.FileAppender">
+        <file>${NBA_API}/players/players.log</file>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>${BASE_PATTERN}</Pattern>
+        </layout>
+    </appender>
+
     <appender name="async-unhandled-ex" class="ch.qos.logback.core.FileAppender">
         <file>${ASYNC_UNHANDLED}/ex.log</file>
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -67,6 +74,10 @@
 
     <logger name="com.teamk.scoretrack.module.core.api.nbaapi.entities.team.service.scheduler.TeamSchedulerService" additivity="false" level="info">
         <appender-ref ref="api-nba-logging-teams" />
+    </logger>
+
+    <logger name="com.teamk.scoretrack.module.core.api.nbaapi.entities.player.service.scheduler.PlayerSchedulerService" additivity="false" level="info">
+        <appender-ref ref="api-nba-logging-players" />
     </logger>
 
     <logger name="com.teamk.scoretrack.module.commons.async.AsyncPropagatedExceptionHandler" additivity="false" level="info">

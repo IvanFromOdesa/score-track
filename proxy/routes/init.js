@@ -4,7 +4,7 @@ const generateAccessToken = require('../services/token');
 const router = express.Router();
 
 router.get('/init', (req, res) => {
-    sendJson(res, '../json/init.json');
+    sendJson(res, '../json/init.json', 1000);
 });
 
 router.get('/token/refresh', (req, res) => {

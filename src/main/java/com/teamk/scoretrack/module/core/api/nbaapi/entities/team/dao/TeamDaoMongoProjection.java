@@ -1,6 +1,7 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dao;
 
 import com.teamk.scoretrack.module.commons.mongo.dao.MongoProjection;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.domain.SupportedSeasons;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.TeamStats;
 
 import java.util.Collection;
@@ -29,5 +30,7 @@ public interface TeamDaoMongoProjection extends MongoProjection<TeamStats, TeamD
         return Collections.emptyList();
     }
 
-    Map<Integer, TeamStats> fetchMap(TeamDaoImpl.Options options);
+    Map<SupportedSeasons, TeamStats> fetchMap(TeamDaoImpl.Options options);
+
+    Map<SupportedSeasons, TeamStats> findAvgTeamStatsBySeason();
 }

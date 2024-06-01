@@ -73,7 +73,12 @@ nbaapi.mongodb.username=
 nbaapi.mongodb.password=
 nbaapi.mongodb.port=
 
-nbaapi.update.cron=0 0 12 * * ?
+# Free plan permits 10 requests per minute
+nbaapi.rate.limit=10
+
+nbaapi.update.team.cron=0 0 12 * * ?
+nbaapi.update.player.cron=0 0 13 * * ?
+
 nbaapi.update.threadpool.size=8
 
 nbaapi.realhost=

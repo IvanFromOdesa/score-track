@@ -19,9 +19,12 @@ import org.springframework.data.repository.ListPagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
         DAO extends ListCrudRepository<ENTITY, ID>
@@ -55,6 +58,29 @@ public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
         return save(e);
     }
 
+    public void updateAll(Collection<ENTITY> entities) {
+        updateAll(entities, e -> getById(e.getId()), ArrayList::new);
+    }
+
+    protected void updateAll(Collection<ENTITY> entities, Function<ENTITY, Optional<ENTITY>> findByCallback) {
+        updateAll(entities, findByCallback, ArrayList::new);
+    }
+
+    protected <C extends Collection<ENTITY>> void updateAll(Collection<ENTITY> entities, Supplier<C> collectionSupplier) {
+        updateAll(entities, e -> getById(e.getId()), collectionSupplier);
+    }
+
+    /**
+     * @apiNote WARNING: This will retrieve all entities from the database that have the same IDs
+     * as those in the provided collection, allowing for merging to be performed. Use carefully.
+     * @param entities collection of entities to be saved at once
+     * @param findByCallback callback function that takes entity from collection and returns an optional of existing db entity
+     * @param collectionSupplier a supplier that provides a transform collection
+     */
+    protected <C extends Collection<ENTITY>> void updateAll(Collection<ENTITY> entities, Function<ENTITY, Optional<ENTITY>> findByCallback, Supplier<C> collectionSupplier) {
+        dao.saveAll(entities.stream().map(e -> findByCallback.apply(e).map(en -> merge(e, en)).orElse(e)).collect(Collectors.toCollection(collectionSupplier)));
+    }
+
     /**
      * Standard merging mechanism
      * @param e
@@ -78,7 +104,7 @@ public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
      * Transactional delete operation. Might be overriden for custom needs.
      * @param ids
      */
-    public void deleteAll(List<ID> ids) {
+    public void deleteAll(Collection<ID> ids) {
         ErrorMap errorMap = errorMapBeanWrapper.getErrorMap();
         for (ID id : ids) {
             try {

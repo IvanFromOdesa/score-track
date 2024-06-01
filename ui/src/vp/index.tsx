@@ -1,9 +1,9 @@
 import React from "react";
 import {Button, Col, Row} from "react-bootstrap";
-import {useStoreContext} from "../common/stores/store.context";
-import ApisList from "../common/components/ApisList";
-import {PlannedViewership} from "../common/stores/auth.store";
-import {SportApi} from "../common/models/generic.model";
+import {useStoreContext} from "../common/base/stores/store.context";
+import ApisList from "../common/base/components/ApisList";
+import {PlannedViewership} from "../common/base/stores/auth.store";
+import {SportApi} from "../common/base/models/generic.model";
 import {XCircle} from "react-bootstrap-icons";
 
 // TODO: VP page

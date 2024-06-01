@@ -1,8 +1,8 @@
 import React from "react";
-import {WithLoadingProps} from "../../common/models/generic.model";
+import {WithLoadingProps} from "../../common/base/models/generic.model";
 import {Accordion} from "react-bootstrap";
-import {htmlFrom} from "../../common/utils/html.parse";
-import {TextPreload, TitlePreload} from "../../common/components/load/Preload";
+import {htmlFrom} from "../../common/base/utils/html.parse";
+import {TextPreload, TitlePreload} from "../../common/load/Preload";
 
 const InfoAccordion: React.FC<WithLoadingProps> = ({ bundle, loading}) => {
     return (

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static com.teamk.scoretrack.module.core.api.commons.init.controller.ApiInitController.BASE_URL;
 import static com.teamk.scoretrack.module.core.api.commons.init.controller.ApiInitController.SUPPORTED_APIS;
 
 @Component
@@ -48,6 +47,6 @@ public class SessionAccessTokenBindFilter extends BaseSecurityFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return super.shouldNotFilter(request) || HttpUtil.getRequestedUri(request).endsWith(BASE_URL.concat(SUPPORTED_APIS));
+        return super.shouldNotFilter(request) || HttpUtil.getRequestedUri(request).endsWith(SUPPORTED_APIS);
     }
 }

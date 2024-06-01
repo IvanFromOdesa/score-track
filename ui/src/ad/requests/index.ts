@@ -1,6 +1,5 @@
-import axios from "axios";
-import {BASE} from "../../common/requests/base";
-import {SportApi} from "../../common/models/generic.model";
+import {baseAxios} from "common/base/requests/base";
+import {SportApi} from "common/base/models/generic.model";
 
-export const getApis = () => axios.get<SportApi[]>(`${BASE}/apis`)
+export const getApis = () => baseAxios.get<SportApi[]>('/apis')
     .then(res => res.data as SportApi[]);

@@ -1,16 +1,16 @@
 package com.teamk.scoretrack.module.security.token.otp.controller;
 
 import com.teamk.scoretrack.module.security.auth.controller.AuthenticationController;
+import com.teamk.scoretrack.module.security.handler.ExtendedHandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 @Component
-public class RecoverRequestInterceptor implements HandlerInterceptor {
+public class RecoverRequestInterceptor implements ExtendedHandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (request.getMethod().equals(HttpMethod.GET.name())) {
@@ -29,5 +29,10 @@ public class RecoverRequestInterceptor implements HandlerInterceptor {
                 request.getSession().removeAttribute(OtpAuthController.RECOVER_REDIRECT);
             }
         }
+    }
+
+    @Override
+    public String[] getPathPatterns() {
+        return new String[] { OtpAuthController.RECOVER.concat("/**") };
     }
 }

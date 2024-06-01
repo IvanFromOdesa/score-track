@@ -31,16 +31,18 @@ public class NoReplyEmailService implements IEmailService<NotificationEmail> {
         this.templateEngine = templateEngine;
     }
 
+    // TODO: review
     @Async("fixedThreadPool")
     public void sendEmail(NotificationEmail email) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            Map<String, File> attachments = email.getAttachments();
+            MimeMessageHelper helper = new MimeMessageHelper(message, !attachments.isEmpty());
             helper.setFrom(fromAddress);
             helper.setTo(email.getRecipient());
             helper.setSubject(email.getSubject());
-            helper.setText(buildBody(email.getMessage(), email.getTitle()));
-            for (Map.Entry<String, File> attachment : email.getAttachments().entrySet()) {
+            message.setContent(buildBody(email.getMessage(), email.getTitle()), "text/html; charset=utf-8");
+            for (Map.Entry<String, File> attachment : attachments.entrySet()) {
                 helper.addAttachment(attachment.getKey(), attachment.getValue());
             }
             mailSender.send(message);

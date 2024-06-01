@@ -106,7 +106,7 @@ public class LocaleConfiguration {
         return localeResolver;
     }
 
-    private ExposedResourceBundleMessageSource getRB(String path) {
+    public static ExposedResourceBundleMessageSource getRB(String path) {
         ExposedResourceBundleMessageSource messageSource = new ExposedResourceBundleMessageSource();
         messageSource.setBasename(String.format("classpath*:/bundle/%s/*", path));
         messageSource.setDefaultEncoding("UTF-8");

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.dto.StatsDto;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class APINbaTeamStatsDto extends StatsDto {
+public class APINbaTeamStatsDto extends StatsDto<Integer> {
     private int games;
     private int fastBreakPoints;
     private int pointsInPaint;

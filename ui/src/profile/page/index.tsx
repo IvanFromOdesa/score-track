@@ -1,27 +1,33 @@
 import React, {useState} from "react";
 import {Button, Col, Container, Form, FormLabel, InputGroup, Row} from "react-bootstrap";
 import './index.css';
-import {useStoreContext} from "common/stores/store.context";
-import {ImgPreload} from "common/components/load/ImgPreload";
-import {PROFILE_PAGE_KEY, SPORTS_KEY} from "common/config/tanstack.query.client";
+import {useStoreContext} from "common/base/stores/store.context";
+import {ImgPreload} from "common/load/ImgPreload";
+import {PROFILE_PAGE_KEY, SPORTS_KEY} from "common/base/config/tanstack.query.client";
 import {useQuery} from "@tanstack/react-query";
 import {initProfilePage, searchSports, updateProfile} from "./requests";
 import {At, BalloonHeart, Instagram, Twitter} from "react-bootstrap-icons";
-import {htmlFrom} from "common/utils/html.parse";
+import {htmlFrom} from "common/base/utils/html.parse";
 import {AsyncTypeahead} from "react-bootstrap-typeahead";
 import {_DEFAULT} from "./model/profile_page.model";
 import {Formik, FormikHelpers, FormikValues} from "formik";
-import {CommonProfile, getDefaultCommonProfile} from "common/stores/auth.store";
+import {CommonProfile, getDefaultCommonProfile} from "common/base/stores/auth.store";
 import {getProfileSchema} from "./schemas";
-import {showErrors} from "common/utils/alert";
-import {ErrorMap} from "common/models/generic.model";
+import {showErrors} from "common/base/utils/alert";
+import {ErrorMap} from "common/base/models/generic.model";
 import {useNavigate} from "react-router-dom";
-import {HOME} from "common/routes/routes";
-import {merge, MergeParams} from "common/utils/obj";
+import {HOME} from "common/base/routes/routes";
+import {merge, MergeParams} from "common/base/utils/obj";
 
 interface ProfileForm extends CommonProfile {
     nickname?: string | undefined;
     profileImg?: File;
+}
+
+function getFeedbackInvalid(errorMsg: string | undefined) {
+    return <Form.Control.Feedback type="invalid" tooltip>
+        {errorMsg}
+    </Form.Control.Feedback>;
 }
 
 const ProfilePage: React.FC = () => {
@@ -110,9 +116,7 @@ const ProfilePage: React.FC = () => {
                                             isValid={touched.profileImg && !errors.profileImg}
                                             isInvalid={!!errors.profileImg || !!validationErrors?.['profileImg']}
                                         />
-                                        <Form.Control.Feedback type="invalid" tooltip>
-                                            {errors.profileImg}
-                                        </Form.Control.Feedback>
+                                        {getFeedbackInvalid(errors.profileImg)}
                                     </InputGroup>
                                 </Form.Group>
                                 <h2 className="mb-md-3">{bundle?.['profileEditSocialsTitle']}</h2>
@@ -128,9 +132,7 @@ const ProfilePage: React.FC = () => {
                                             isValid={touched.instagramLink && !errors.instagramLink}
                                             isInvalid={!!errors.instagramLink || !!validationErrors?.['instagramLink']}
                                         />
-                                        <Form.Control.Feedback type="invalid" tooltip>
-                                            {errors.instagramLink}
-                                        </Form.Control.Feedback>
+                                        {getFeedbackInvalid(errors.instagramLink)}
                                     </InputGroup>
                                 </Form.Group>
                                 <Form.Group className="col-12 col-lg-8 mt-4" controlId="formXLink">
@@ -145,9 +147,7 @@ const ProfilePage: React.FC = () => {
                                             isValid={touched.xLink && !errors.xLink}
                                             isInvalid={!!errors.xLink || !!validationErrors?.['xLink']}
                                         />
-                                        <Form.Control.Feedback type="invalid" tooltip>
-                                            {errors.xLink}
-                                        </Form.Control.Feedback>
+                                        {getFeedbackInvalid(errors.xLink)}
                                     </InputGroup>
                                 </Form.Group>
                             </Col>
@@ -164,9 +164,7 @@ const ProfilePage: React.FC = () => {
                                                 isValid={touched.firstName && !errors.firstName}
                                                 isInvalid={!!errors.firstName || !!validationErrors?.['firstName']}
                                             />
-                                            <Form.Control.Feedback type="invalid" tooltip>
-                                                {errors.firstName}
-                                            </Form.Control.Feedback>
+                                            {getFeedbackInvalid(errors.firstName)}
                                         </InputGroup>
                                     </Form.Group>
                                     <Form.Group className="col-md-6 mt-4 mt-md-0" controlId="formLastName">
@@ -179,9 +177,7 @@ const ProfilePage: React.FC = () => {
                                                 isValid={touched.lastName && !errors.lastName}
                                                 isInvalid={!!errors.lastName || !!validationErrors?.['lastName']}
                                             />
-                                            <Form.Control.Feedback type="invalid" tooltip>
-                                                {errors.lastName}
-                                            </Form.Control.Feedback>
+                                            {getFeedbackInvalid(errors.lastName)}
                                         </InputGroup>
                                     </Form.Group>
                                 </Row>
@@ -199,9 +195,7 @@ const ProfilePage: React.FC = () => {
                                                 isValid={touched.nickname && !errors.nickname}
                                                 isInvalid={!!errors.nickname || !!validationErrors?.['nickname']}
                                             />
-                                            <Form.Control.Feedback type="invalid" tooltip>
-                                                {errors.nickname}
-                                            </Form.Control.Feedback>
+                                            {getFeedbackInvalid(errors.nickname)}
                                         </InputGroup>
                                         <Form.Text id="fnHelpText" muted>{bundle?.['profileEditNicknameHelpText']}</Form.Text>
                                     </Form.Group>
@@ -220,9 +214,7 @@ const ProfilePage: React.FC = () => {
                                                 isValid={touched.dob && !errors.dob}
                                                 isInvalid={!!errors.dob || !!validationErrors?.['dob']}
                                             />
-                                            <Form.Control.Feedback type="invalid" tooltip>
-                                                {errors.dob}
-                                            </Form.Control.Feedback>
+                                            {getFeedbackInvalid(errors.dob)}
                                         </InputGroup>
                                         <Form.Text id="dobHelpText" muted>{htmlFrom(bundle?.['profileEditDobHelpText'])}</Form.Text>
                                     </Form.Group>

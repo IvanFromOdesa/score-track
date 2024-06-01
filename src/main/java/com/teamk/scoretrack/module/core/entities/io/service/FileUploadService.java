@@ -22,9 +22,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static com.teamk.scoretrack.module.core.entities.user.client.controller.ProfilePageController.PICTURE;
-import static com.teamk.scoretrack.module.core.entities.user.client.controller.ProfilePageController.PROFILE;
-
 @Service
 public class FileUploadService {
     private final CloudService<CloudId> cloudService;
@@ -40,15 +37,20 @@ public class FileUploadService {
         this.fileDataEntityService = fileDataEntityService;
     }
 
+    public FileData uploadFile(MultipartFile file, AuthenticationBean uploadedBy) {
+        return uploadFile(file, uploadedBy, FileUtils::getDefaultExternalDownloadUrl);
+    }
+
     /**
      * Uploads the file as blob to the cloud while persisting its metadata into db.
      * @param file file to upload
      * @param uploadedBy associated principal
+     * @param externalUrl file server url
      * @return file metadata object
      */
-    public FileData uploadFile(MultipartFile file, AuthenticationBean uploadedBy) {
+    public FileData uploadFile(MultipartFile file, AuthenticationBean uploadedBy, Supplier<String> externalUrl) {
         String fileExtension = Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
-        FileData fileData = getFileData(file, uploadedBy, file.getContentType(), uploadToCloud(file, fileExtension, uploadedBy));
+        FileData fileData = getFileData(file, uploadedBy, file.getContentType(), uploadToCloud(file, fileExtension, uploadedBy), externalUrl);
         fileDataEntityService.save(fileData);
         return fileData;
     }
@@ -77,17 +79,22 @@ public class FileUploadService {
     }
 
     @NotNull
-    private FileData getFileData(MultipartFile file, AuthenticationBean uploadedBy, String fileExtension, CloudId save) {
+    private FileData getFileData(MultipartFile file, AuthenticationBean uploadedBy, String fileExtension, CloudId save, Supplier<String> externalUrl) {
         String filename = save.getFilename();
         FileData fd = FD_EXTENSION_MAP.getOrDefault(FileType.byExtension(fileExtension), FileData::new).get();
         fd.setUploadedBy(uploadedBy);
         fd.setInternalUrl(save.getUrl());
-        fd.setExternalUrl(generateExternalUrl(filename));
+        fd.setExternalUrl(generateExternalUrl(externalUrl, filename));
         fd.setAccessStatus(AccessStatus.REQUIRES_REVIEW);
         fd.setName(filename);
         fd.setExtension(fileExtension);
         fd.setSize(file.getSize());
         return fd;
+    }
+
+    @NotNull
+    private static String generateExternalUrl(Supplier<String> externalUrl, String filename) {
+        return externalUrl.get().concat(BaseEncoding.base64Url().encode(filename.getBytes()));
     }
 
     private CloudId uploadToCloud(MultipartFile file, String extension, AuthenticationBean uploadedBy) {
@@ -99,9 +106,5 @@ public class FileUploadService {
             throw new ServerException(e);
         }
         return save;
-    }
-
-    private static String generateExternalUrl(String filename) {
-        return PROFILE.concat(PICTURE).concat("/").concat(BaseEncoding.base64Url().encode(filename.getBytes()));
     }
 }

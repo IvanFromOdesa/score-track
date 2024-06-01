@@ -2,9 +2,11 @@ package com.teamk.scoretrack.module.core.api.nbaapi.commons.dao;
 
 import com.teamk.scoretrack.module.commons.mongo.dao.MongoProjection;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.domain.APINbaUpdateMetadata;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.domain.SupportedSeasons;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public interface APINbaUpdateMongoProjection extends MongoProjection<APINbaUpdateMetadata, Void> {
@@ -22,4 +24,6 @@ public interface APINbaUpdateMongoProjection extends MongoProjection<APINbaUpdat
     default Collection<APINbaUpdateMetadata> fetchCollection(Void options) {
         return Collections.emptyList();
     }
+
+    List<SupportedSeasons> findAvailableSeasonsForCollection(String name);
 }

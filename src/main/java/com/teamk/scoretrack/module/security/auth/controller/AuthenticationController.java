@@ -3,6 +3,7 @@ package com.teamk.scoretrack.module.security.auth.controller;
 import com.teamk.scoretrack.module.commons.base.controller.BaseMvcController;
 import com.teamk.scoretrack.module.commons.base.service.valid.form.FormValidationContext;
 import com.teamk.scoretrack.module.commons.form.mvc.MvcForm;
+import com.teamk.scoretrack.module.commons.layout.alert.UiAlertDisplayOptions;
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
 import com.teamk.scoretrack.module.security.auth.dto.AuthenticationDto;
 import com.teamk.scoretrack.module.security.auth.dto.SignUpForm;
@@ -12,6 +13,7 @@ import com.teamk.scoretrack.module.security.auth.service.form.AuthFormOptionsSer
 import com.teamk.scoretrack.module.security.auth.service.valid.AuthenticationExistsValidator;
 import com.teamk.scoretrack.module.security.auth.service.valid.AuthenticationSignUpFormValidator;
 import com.teamk.scoretrack.module.security.token.util.UUIDUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Map;
+
+import static com.teamk.scoretrack.module.commons.layout.alert.UiAlertDisplayOptionsUtils.addToHttpSession;
 
 @Controller
 public class AuthenticationController extends BaseMvcController {
@@ -76,8 +80,9 @@ public class AuthenticationController extends BaseMvcController {
     }
 
     @GetMapping(ACTIVATE + "/{encoded}")
-    public String activate(@PathVariable String encoded) {
-        authenticationSignUpService.activate(UUIDUtils.fromBase64Url(encoded));
+    public String activate(HttpServletRequest request, @PathVariable String encoded, Model model) {
+        authenticationSignUpService.activate(UUIDUtils.fromBase64Url(encoded), () -> addToHttpSession(request.getSession(), UiAlertDisplayOptions::setAccountActivated));
+        optionsPreparer.prepareFormOptions(new MvcForm(model, "activation"));
         return ACTIVATED_PAGE;
     }
 

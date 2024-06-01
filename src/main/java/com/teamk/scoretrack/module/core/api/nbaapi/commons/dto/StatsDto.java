@@ -1,6 +1,10 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.commons.dto;
 
-public class StatsDto {
+/**
+ * @param <PM_T> - for player stats, plusMinus is string
+ *              but for the team stats, is an int
+ */
+public class StatsDto<PM_T> {
     private int points;
     private int fgm;
     private int fga;
@@ -19,7 +23,7 @@ public class StatsDto {
     private int steals;
     private int turnovers;
     private int blocks;
-    private int plusMinus;
+    private PM_T plusMinus;
 
     public int getPoints() {
         return points;
@@ -165,11 +169,11 @@ public class StatsDto {
         this.blocks = blocks;
     }
 
-    public int getPlusMinus() {
+    public PM_T getPlusMinus() {
         return plusMinus;
     }
 
-    public void setPlusMinus(int plusMinus) {
+    public void setPlusMinus(PM_T plusMinus) {
         this.plusMinus = plusMinus;
     }
 }

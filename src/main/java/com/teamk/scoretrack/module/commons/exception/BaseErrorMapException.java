@@ -10,6 +10,7 @@ public class BaseErrorMapException extends ServerException {
     }
 
     public BaseErrorMapException(ErrorMap errorMap) {
+        super(errorMap.getErrors().toString());
         this.errorMap = errorMap;
     }
 

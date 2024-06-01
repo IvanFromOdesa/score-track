@@ -1,6 +1,7 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain;
 
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.domain.APINbaIdentifier;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.domain.SupportedSeasons;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class TeamData extends APINbaIdentifier {
     /**
      * Season represents the year
      */
-    private Map<Integer, TeamStats> statsBySeason;
+    private Map<SupportedSeasons, TeamStats> statsBySeason;
 
     public TeamData() {
         leagues = new HashMap<>();
@@ -100,11 +101,11 @@ public class TeamData extends APINbaIdentifier {
         this.leagues = leagues;
     }
 
-    public Map<Integer, TeamStats> getStatsBySeason() {
+    public Map<SupportedSeasons, TeamStats> getStatsBySeason() {
         return statsBySeason;
     }
 
-    public void setStatsBySeason(Map<Integer, TeamStats> statsBySeason) {
+    public void setStatsBySeason(Map<SupportedSeasons, TeamStats> statsBySeason) {
         this.statsBySeason = statsBySeason;
     }
 

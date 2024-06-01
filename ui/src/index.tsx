@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {StoreProvider} from "./common/stores/store";
+import {StoreProvider} from "./common/base/stores/store";
 import {QueryClientProvider} from "@tanstack/react-query";
-import {TANSTACK_QUERY_CLIENT} from "./common/config/tanstack.query.client";
+import {TANSTACK_QUERY_CLIENT} from "./common/base/config/tanstack.query.client";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

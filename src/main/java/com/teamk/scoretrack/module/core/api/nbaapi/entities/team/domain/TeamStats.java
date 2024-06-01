@@ -1,7 +1,9 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.domain.Stats;
 
+@JsonIgnoreProperties("id")
 public class TeamStats extends Stats {
     private int games;
     private int fastBreakPoints;

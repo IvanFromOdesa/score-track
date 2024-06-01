@@ -10,6 +10,7 @@ public class CacheStore {
     public static final String BAD_CREDENTIALS_FAILURE_CACHE_STORE = "badCredsFailure";
     public static final String IP_AUTH_FAILURE_CACHE_STORE = "ipAuthFailure";
     public static final String CRYPTO_TOKENS = "cryptoTokens";
+    public static final String API_RATE_LIMITER = "apiRateLimiter";
 
     /**
      * NBA API
@@ -18,5 +19,7 @@ public class CacheStore {
         private static final String PREFIX = "apiNba-";
         public static final String TEAM_DATA = PREFIX + "teamData";
         public static final String TEAM_STATS = PREFIX + "teamStats";
+        public static final String TEAM_STATS_AVG_BY_SEASON = PREFIX + "teamStatsAvgBySeason";
+        public static final String TOP_PLAYERS_BY_SEASON = PREFIX + "topPlayersBySeason";
     }
 }

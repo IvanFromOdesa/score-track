@@ -2,7 +2,7 @@ import React from "react";
 import Profile from "../profile";
 import {Alert, Container, Row} from "react-bootstrap";
 import ViewershipPlan from "../vp";
-import {useStoreContext} from "../common/stores/store.context";
+import {useStoreContext} from "../common/base/stores/store.context";
 import Api from "../api";
 
 const Home: React.FC = () => {
@@ -15,6 +15,7 @@ const Home: React.FC = () => {
                     <ViewershipPlan />
                 </Row>
             </Container>
+            <br />
             <br />
             <Api />
         </>

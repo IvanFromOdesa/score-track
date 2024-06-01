@@ -2,7 +2,7 @@ import React from "react";
 import {IGamesModel} from "../models/game.model";
 import {Col, Container, Row} from "react-bootstrap";
 import GameCard from "./GameCard";
-import {useStoreContext} from "common/stores/store.context";
+import {useStoreContext} from "common/base/stores/store.context";
 
 interface IGamesWrapperProps {
     gamesModel: IGamesModel | null | undefined;

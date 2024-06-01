@@ -1,14 +1,14 @@
 import React from "react";
 import {Button, Col, Form, FormLabel, Row} from "react-bootstrap";
-import {ImgPreload} from "../common/components/load/ImgPreload";
-import {useStoreContext} from "../common/stores/store.context";
+import {ImgPreload} from "../common/load/ImgPreload";
+import {useStoreContext} from "../common/base/stores/store.context";
 import './index.css';
 import {Typeahead} from "react-bootstrap-typeahead";
 import {At, PencilSquare, PersonFill} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
-import {PROFILE_PAGE} from "../common/routes/routes";
+import {PROFILE_PAGE} from "../common/base/routes/routes";
 
-// TODO: highlight typeahead tokens on hover. Profile page
+// TODO: highlight typeahead tokens on hover
 const Profile: React.FC = () => {
     const { rootStore: { authStore: { userData }, uiStore: { bundle } } } = useStoreContext();
     const sportPreference = userData.profile?.sportPreference;

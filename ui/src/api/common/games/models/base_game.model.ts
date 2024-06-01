@@ -1,7 +1,7 @@
 import {Country, GameStatus, IGameModel, IGamesModel, League, Scores, Team, Teams} from "./game.model";
 import {Type} from "class-transformer";
-import {getDate, getDateTime} from "common/utils/date";
-import {Bundle, SportApi, Sport} from "common/models/generic.model";
+import {getDate, getDateTime} from "common/base/utils/date";
+import {Bundle, SportApi, Sport} from "common/base/models/generic.model";
 
 export class BaseGameModel implements IGameModel {
     api: SportApi;

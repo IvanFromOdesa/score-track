@@ -31,7 +31,9 @@ public class APINbaDaoConfig {
     @ConfigurationProperties(prefix = NAME + ".mongodb")
     @Primary
     public MongoProperties primaryProperties() {
-        return new MongoProperties();
+        MongoProperties mongoProperties = new MongoProperties();
+        mongoProperties.setAutoIndexCreation(true);
+        return mongoProperties;
     }
 
     @Bean(name = CLIENT)

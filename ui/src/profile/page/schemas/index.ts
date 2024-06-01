@@ -1,6 +1,6 @@
 import * as yup from 'yup';
-import {Bundle} from "common/models/generic.model";
-import {isBeforeNowString} from "common/utils/date";
+import {Bundle} from "common/base/models/generic.model";
+import {isBeforeNowString} from "common/base/utils/date";
 
 const instagramRegex = /^(?:https?:\/\/)?(?:www\.)?instagram\.com\/([a-zA-Z\d\.\_\-]+)?/;
 const twitterRegex = /^(?:https?:\/\/)?(?:www\.)?((x|twitter)\.com)\/([a-zA-Z\d\.\_\-]+)?/;

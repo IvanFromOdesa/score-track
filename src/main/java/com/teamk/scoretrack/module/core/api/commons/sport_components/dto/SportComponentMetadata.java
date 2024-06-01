@@ -45,6 +45,10 @@ public class SportComponentMetadata {
     }
 
     public enum Status {
-        ACCESSIBLE, DOWN
+        ACCESSIBLE, DOWN;
+
+        public boolean isAccessible() {
+            return this == ACCESSIBLE;
+        }
     }
 }

@@ -136,6 +136,7 @@ public class SecurityConfiguration {
                         .requestMatchers(REFRESH_ACCESS_TOKEN).permitAll()
                         .requestMatchers(PREF.concat(LANG).concat("/**")).permitAll()
                         .requestMatchers(getResources()).permitAll()
+                        //.requestMatchers(new LoginPermittedQueryParametersRequestMatcher()).permitAll()
                         /*
                          * Permit actuator endpoints for allowed user group
                          */
@@ -158,7 +159,7 @@ public class SecurityConfiguration {
     }
 
     private String[] getResources() {
-        return new String[] {"/layouts/**", "/bundles/**", "/js/**", "/vendor/**", "/api-logos/**", "/lang-icons/**"};
+        return new String[] {"/layouts/**", "/bundles/**", "/js/**", "/vendor/**", "/api-logos/**", "/api/**", "/lang-icons/**"};
     }
 
     private Set<RequestMatcher> csrfProtected() {

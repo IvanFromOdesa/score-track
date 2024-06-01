@@ -17,4 +17,7 @@ Additional libraries used in project can be found at ```pom.xml```.
 
 ## Set up instructions coming soon.
 
+TODO:
+1. Enabling / disabling specific api from properties config.
+
 Learn about Score-track [here](https://ivanfromodesa.github.io/score-track-landing/).

@@ -1,6 +1,6 @@
 // Generic interface displaying different sports games
 
-import {Bundle, CodeName, Sport, SportApi} from "common/models/generic.model";
+import {Bundle, CodeName, Sport, SportApi} from "common/base/models/generic.model";
 
 export interface IGameModel {
     id: string;

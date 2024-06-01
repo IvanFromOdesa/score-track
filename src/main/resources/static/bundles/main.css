@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-.widget {
+[class^="widget"] {
   background: transparent;
   border: 2px solid #C8B568;
   border-radius: 20px;
@@ -21,9 +21,34 @@ code {
   padding: 10px;
 }
 
+.widget-solid {
+  backdrop-filter: blur(50px);
+}
+
 .highlighted:hover {
   color: #C8B568;
   cursor: pointer;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.highlight-text {
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-left: 3px solid #C8B568;
+  color: #666;
+  page-break-inside: avoid;
+  font-family: monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 1.6em;
+  max-width: 100%;
+  overflow: auto;
+  padding: 1em 1.5em;
+  display: block;
+  word-wrap: break-word;
 }
 
 

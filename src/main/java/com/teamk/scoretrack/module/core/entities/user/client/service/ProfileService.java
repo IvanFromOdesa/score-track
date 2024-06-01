@@ -9,11 +9,7 @@ import com.teamk.scoretrack.module.core.entities.SportType;
 import com.teamk.scoretrack.module.core.entities.io.FileData;
 import com.teamk.scoretrack.module.core.entities.io.img.ImageData;
 import com.teamk.scoretrack.module.core.entities.io.service.FileUploadService;
-import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
-import com.teamk.scoretrack.module.core.entities.user.client.domain.Profile;
-import com.teamk.scoretrack.module.core.entities.user.client.domain.SocialType;
-import com.teamk.scoretrack.module.core.entities.user.client.domain.Socials;
-import com.teamk.scoretrack.module.core.entities.user.client.domain.SportPreference;
+import com.teamk.scoretrack.module.core.entities.user.client.domain.*;
 import com.teamk.scoretrack.module.core.entities.user.client.dto.ProfileUpdateDto;
 import com.teamk.scoretrack.module.core.entities.user.client.service.valid.rules.DobValidationRule;
 import com.teamk.scoretrack.module.core.entities.user.client.service.valid.rules.InstagramProfileValidationRule;
@@ -33,10 +29,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.teamk.scoretrack.module.core.entities.user.client.controller.ProfilePageController.PICTURE;
+import static com.teamk.scoretrack.module.core.entities.user.client.controller.ProfilePageController.PROFILE;
 
 @Service
 public class ProfileService {
@@ -79,7 +79,7 @@ public class ProfileService {
                 Profile profile = user.getProfile();
                 fillProfile(dto, profile);
                 if (profileImg != null && !profileImg.isEmpty()) {
-                    FileData fileData = fileUploadService.uploadFile(profileImg, authenticationBean);
+                    FileData fileData = fileUploadService.uploadFile(profileImg, authenticationBean, () -> PROFILE.concat(PICTURE).concat("/"));
                     profile.setProfileImg((ImageData) fileData);
                 }
                 clientUserEntityService.save(user);
@@ -101,15 +101,16 @@ public class ProfileService {
             profile.setNickname(nickname);
         }
         profile.setBio(dto.getBio());
-        profile.setDob(CommonsUtil.orNull(dto.getDob(), dob -> LocalDate.parse(dob, DobValidationRule.DATE_VALIDATOR.getDtf())));
+        profile.setDob(CommonsUtil.orNull(dto.getDob(), dob -> LocalDate.parse(dob, DobValidationRule.DATE_VALIDATOR.getDtf()), dob -> !dob.isBlank()));
         HibernateRelations.updateManyToOne(dto.getSportPreference(), profile.getSportPreference(), sportTypes -> getSportPreference(sportTypes, profile));
         HibernateRelations.updateManyToOne((Supplier<Collection<Socials>>) () -> getSocials(profile, dto), profile.getSocials());
     }
 
     private List<Socials> getSocials(Profile profile, ProfileUpdateDto dto) {
         List<Socials> res = new ArrayList<>();
-        CommonsUtil.runIfNonNull(dto.getInstagramLink(), instagramLink -> res.add(getSocial(profile, SocialType.INSTAGRAM, instagramLink, InstagramProfileValidationRule.INSTAGRAM_PROFILE, 1)));
-        CommonsUtil.runIfNonNull(dto.getxLink(), xLink -> res.add(getSocial(profile, SocialType.X, xLink, XProfileValidationRule.X_PROFILE, 3)));
+        Predicate<String> checkEmptyString = link -> !link.isBlank();
+        CommonsUtil.runIfNonNull(dto.getInstagramLink(), instagramLink -> res.add(getSocial(profile, SocialType.INSTAGRAM, instagramLink, InstagramProfileValidationRule.INSTAGRAM_PROFILE, 1)), checkEmptyString);
+        CommonsUtil.runIfNonNull(dto.getxLink(), xLink -> res.add(getSocial(profile, SocialType.X, xLink, XProfileValidationRule.X_PROFILE, 3)), checkEmptyString);
         return res;
     }
 

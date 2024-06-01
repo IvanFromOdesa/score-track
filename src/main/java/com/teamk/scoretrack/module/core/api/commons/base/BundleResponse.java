@@ -5,6 +5,13 @@ import java.util.Map;
 public class BundleResponse {
     private Map<String, String> bundle;
 
+    public BundleResponse() {
+    }
+
+    public BundleResponse(Map<String, String> bundle) {
+        this.bundle = bundle;
+    }
+
     public Map<String, String> getBundle() {
         return bundle;
     }

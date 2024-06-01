@@ -1,0 +1,88 @@
+#nbaapi-team-stats-bg {
+
+}
+
+[id^="nbaapi-team-stats-content"] {
+    position: relative;
+    z-index: 1;
+}
+
+#nbaapi-team-logo {
+    width: 224px;
+    height: 224px;
+}
+
+#nbaapi-arena-img {
+    width: 256px;
+    height: 161px;
+    border: 2px solid black;
+    border-radius: 20px;
+}
+
+#nbaapi-team-stats-chart {
+    width: 100%;
+    height: 600px;
+}
+
+#nbaapi-team-stats-content-analytics {
+    z-index: 1;
+ }
+
+#nbaapi-team-stats-content-analytics p {
+    font-size: 26px;
+}
+
+#nbaapi-team-stats-content-title {
+    z-index: 2;
+}
+
+.bg-blur-filter::after {
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%; height: 100%;
+    top: 0;
+}
+
+.bg-blur-filter {
+    position: relative;
+}
+
+@media (max-width: 767px) {
+    #nbaapi-team-stats-bg {
+        background-image: none !important;
+    }
+
+    #nbaapi-team-logo {
+        width: 192px;
+        height: 192px;
+    }
+
+    #nbaapi-arena-img {
+        width: 192px;
+        height: 121px;
+    }
+
+    #nbaapi-team-stats-chart {
+        width: 100%;
+        height: 400px;
+    }
+}
+
+@media (max-width: 575px) {
+    #nbaapi-team-stats-chart {
+        display: none;
+    }
+
+    #nbaapi-team-logo {
+        width: 128px;
+        height: 128px;
+    }
+
+    #nbaapi-arena-img {
+        width: 128px;
+        height: 81px;
+    }
+}

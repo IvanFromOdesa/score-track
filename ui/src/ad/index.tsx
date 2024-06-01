@@ -1,5 +1,5 @@
 import React from "react";
-import {useStoreContext} from "../common/stores/store.context";
+import {useStoreContext} from "../common/base/stores/store.context";
 import {Button, Carousel, Col, Container, Row} from "react-bootstrap";
 import {LazyLoadImage} from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
@@ -8,8 +8,8 @@ import nbaImg from "../assets/slide/nba.webp";
 import nflImg from "../assets/slide/nfl.webp";
 import soccerImg from "../assets/slide/soccer.webp";
 import InfoAccordion from "./components/InfoAccordion";
-import {BtnPreload, TextPreload, TitlePreload} from "common/components/load/Preload";
-import {Loading} from "common/components/load/Loading";
+import {BtnPreload, TextPreload, TitlePreload} from "common/load/Preload";
+import {Loading} from "common/load/Loading";
 import SupportedApis from "./components/SupportedApis";
 
 const Ad: React.FC = () => {
@@ -19,8 +19,10 @@ const Ad: React.FC = () => {
 
     return (
         <>
-            <Loading loading={loading} />
-            <Container className={loading ? 'loading' : ''}>
+            {
+                loading && <Loading fixed />
+            }
+            <Container className={loading ? 'loading-container' : ''}>
                 <Row className="justify-content-center align-items-center">
                     <Col>
                         <Carousel>

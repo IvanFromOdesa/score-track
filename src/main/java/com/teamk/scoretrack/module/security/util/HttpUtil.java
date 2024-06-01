@@ -6,6 +6,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+// FIXME: CVE-2024-22243
 public final class HttpUtil {
     public static String getBaseUrl(HttpServletRequest request) {
         return ServletUriComponentsBuilder.fromRequestUri(request).replacePath(null).build().toUriString();

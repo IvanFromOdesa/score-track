@@ -34,6 +34,7 @@ import java.util.UUID;
  * It is a core db entity that contains sensitive user information, any remove operations for {@link User}
  * should be addressed to objects of this class instead.
  */
+// TODO: separate tables for emails and phone numbers to store data more efficiently
 @Entity
 @Table(name = "authentication")
 @EntityListeners({ AuditingEntityListener.class })

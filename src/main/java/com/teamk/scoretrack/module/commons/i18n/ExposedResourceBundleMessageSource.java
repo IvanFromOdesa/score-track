@@ -71,6 +71,6 @@ public class ExposedResourceBundleMessageSource extends ReloadableResourceBundle
     }
 
     public boolean isNullSingleFileName() {
-        return targetFileName == null || targetFileName.equals("");
+        return targetFileName == null || targetFileName.isEmpty();
     }
 }

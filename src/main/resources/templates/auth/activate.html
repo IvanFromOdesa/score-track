@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Account activated!</title>
+    <link th:href="@{/layouts/styles/activation/style.css}" rel="stylesheet">
 </head>
+<style>
+    .text-center {
+        width: 100%;
+        text-align: center;
+    }
+</style>
 <body>
-
+<div class="centered">
+    <img class="imgBox" width="512px" height="512px" alt="check-mark-activated" th:src="@{/layouts/images/check-mark.png}">
+    <h1 th:text="${accountActivatedTitle}" class="text-center"></h1>
+    <div th:text="${accountActivatedDescription}" class="text-center"></div>
+</div>
 </body>
+<script>
+    window.setTimeout(function () {
+        location.href = "/login";
+    }, 3000);
+</script>
 </html>

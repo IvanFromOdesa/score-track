@@ -1,9 +1,12 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.service;
 
-import com.teamk.scoretrack.module.commons.base.page.RestPage;
 import com.teamk.scoretrack.module.commons.base.service.mapper.DtoEntityConvertService;
-import com.teamk.scoretrack.module.commons.cache.CacheStore;
-import com.teamk.scoretrack.module.commons.mongo.service.AbstractMongoDtoService;
+import com.teamk.scoretrack.module.core.api.nbaapi.commons.service.APINbaDtoService;
+import com.teamk.scoretrack.module.core.api.nbaapi.commons.service.APINbaUiHintService;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.domain.SupportedSeasons;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.dto.SupportedSeasonsDto;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.util.SupportedSeasonsUtils;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.NbaTeamInfoHelper;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.TeamData;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.TeamStats;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamResponseDto;
@@ -12,7 +15,7 @@ import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamS
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.service.convert.TeamStatsDtoEntityConvertService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +23,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@PreAuthorize("hasApiAccess(T(com.teamk.scoretrack.module.core.entities.SportAPI).API_NBA.key)")
-public class TeamDataDtoService extends AbstractMongoDtoService<TeamData, APINbaTeamResponseDto, TeamDataEntityService> {
+@PreAuthorize("hasApiAccess(T(com.teamk.scoretrack.module.core.entities.SportAPI).API_NBA.key) && @APINbaUpdateEntityService.isAccessible('teams')")
+public class TeamDataDtoService extends APINbaDtoService<TeamData, APINbaTeamResponseDto, TeamDataEntityService> {
     private final TeamStatsDtoEntityConvertService statsDtoEntityConvertService;
 
     @Autowired
@@ -29,21 +32,22 @@ public class TeamDataDtoService extends AbstractMongoDtoService<TeamData, APINba
         this.statsDtoEntityConvertService = statsDtoEntityConvertService;
     }
 
+    // PreAuthorize does not protect parent methods
     @Override
-    @Cacheable(cacheNames = {CacheStore.ApiNba.TEAM_DATA}, key = "#page", unless = "#page > 2")
-    public RestPage<APINbaTeamResponseDto> getDtoPage(int page, int size, String... sortBys) {
-        return RestPage.of(super.getDtoPage(page, size, sortBys));
+    public Page<APINbaTeamResponseDto> getDtoPage(int page, int size, String... sortBys) {
+        return super.getDtoPage(page, size, sortBys);
     }
 
-    @Cacheable(cacheNames = {CacheStore.ApiNba.TEAM_STATS}, key = "#externalId")
-    public APINbaTeamStatsMapDto getTeamStats(String externalId) {
-        Map<Integer, TeamStats> teamStats = entityService.getTeamStats(externalId);
-        return new APINbaTeamStatsMapDto(toStatsDto(teamStats), teamStats.keySet().toArray(Integer[]::new));
+    public APINbaTeamStatsMapDto getTeamStats(String externalId, String teamCode) {
+        Map<SupportedSeasons, TeamStats> teamStats = entityService.getTeamStats(externalId).teamStats();
+        NbaTeamInfoHelper byCode = NbaTeamInfoHelper.getByCode(teamCode);
+        SupportedSeasonsDto[] seasons = SupportedSeasonsUtils.transformToArrayDto(teamStats.keySet());
+        return new APINbaTeamStatsMapDto(toStatsDto(teamStats), seasons, byCode, uiHintService.getUiHint(teamCode, APINbaUiHintService.BundleName.TEAMS));
     }
 
     @NotNull
-    private Map<Integer, APINbaTeamStatsDto> toStatsDto(Map<Integer, TeamStats> data) {
-        return data.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> statsDtoEntityConvertService.toDto(e.getValue())));
+    private Map<String, APINbaTeamStatsDto> toStatsDto(Map<SupportedSeasons, TeamStats> data) {
+        return data.entrySet().stream().collect(Collectors.toMap(e -> String.valueOf(e.getKey().getYear()), e -> statsDtoEntityConvertService.toDto(e.getValue())));
     }
 
     @Override

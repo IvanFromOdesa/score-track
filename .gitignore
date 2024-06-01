@@ -37,6 +37,7 @@ build/
 !/src/main/resources/application.properties
 !/src/main/resources/certs/
 !/src/main/resources/static/lang-icons/
+/src/main/resources/static/api/nbaapi/
 !/src/test/resources
 /proxy/json/
 
@@ -64,3 +65,4 @@ ui/yarn-error.log*
 
 *.min.js
 /src/test/resources/
+/proxy/public/

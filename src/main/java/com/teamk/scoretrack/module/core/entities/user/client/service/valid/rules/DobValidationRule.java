@@ -14,7 +14,7 @@ public class DobValidationRule implements ValidationRule<ProfileUpdateDto> {
     @Override
     public Optional<ValidationRuleViolation> apply(ProfileUpdateDto dto) {
         String dob = dto.getDob();
-        if (dob != null && !DATE_VALIDATOR.isValid(dob)) {
+        if (dob != null && !dob.isBlank() && !DATE_VALIDATOR.isValid(dob)) {
             return Optional.of(new ValidationRuleViolation("dob", "error.dob"));
         }
         return Optional.empty();

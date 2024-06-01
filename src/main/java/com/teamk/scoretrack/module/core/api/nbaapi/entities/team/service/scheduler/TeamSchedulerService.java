@@ -7,8 +7,10 @@ import com.teamk.scoretrack.module.commons.base.service.valid.form.FormValidatio
 import com.teamk.scoretrack.module.commons.exception.BaseErrorMapException;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.domain.APINbaUpdate;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.service.scheduler.APINbaSchedulerService;
-import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.SupportedSeasons;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.domain.SeasonUpdateStrategy;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.domain.SupportedSeasons;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.TeamData;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.TeamSeasonUpdateStrategy;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamResponseDto;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamStatsDto;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamsResponseDto;
@@ -21,17 +23,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class TeamSchedulerService extends APINbaSchedulerService {
-    protected final TeamDtoEntityConvertService convertService;
-    protected final TeamDataEntityService teamDataService;
-    protected final BaseTransactionManager transactionManager;
-    protected final TeamStatsDtoEntityConvertService statsConvertService;
-    protected final Logger LOGGER;
+    private final TeamDtoEntityConvertService convertService;
+    private final TeamDataEntityService teamDataService;
+    private final BaseTransactionManager transactionManager;
+    private final TeamStatsDtoEntityConvertService statsConvertService;
+    private final Logger LOGGER;
     private static final String TEAMS_ENDPOINT = "/teams";
     private static final String TEAM_STATS_ENDPOINT = TEAMS_ENDPOINT.concat("/statistics");
 
@@ -45,23 +48,23 @@ public class TeamSchedulerService extends APINbaSchedulerService {
     }
 
     @Override
-    public void startUpdate() {
+    public APINbaUpdate.Status startUpdate(List<SupportedSeasons> seasonsToUpdate, AtomicReference<APINbaUpdate.Status> updateStatus) {
         LOGGER.warn("Updating teams has started.");
-        AtomicReference<APINbaUpdate.Status> updateStatus = new AtomicReference<>(APINbaUpdate.Status.PROCESSING);
-        Instant started = Instant.now();
-        updateService.save(new APINbaUpdate(started, null, getCollectionName(), updateStatus.get()));
         APINbaTeamsResponseDto apiNbaTeamsResponseDto = externalService.callApiSafe(TEAMS_ENDPOINT, APINbaTeamsResponseDto.class, new APINbaTeamsResponseDto(), LOGGER);
-        for (APINbaTeamResponseDto dto : apiNbaTeamsResponseDto.response) {
+        List<TeamData> toSave = new ArrayList<>();
+        for (APINbaTeamResponseDto dto : apiNbaTeamsResponseDto.getResponse()) {
             transactionManager.doInNewTransaction(() -> {
                 try {
                     Optional<TeamData> wrapper = convertService.toEntity(dto);
                     if (wrapper.isPresent()) {
                         TeamData teamData = wrapper.get();
-                        if (teamData.isNbaFranchise()) {
-                            setTeamStats(SupportedSeasons.getOngoingSeason(), teamData);
+                        // Somehow the api thinks that team 'Home Stephen A' is an nba franchise team
+                        if (teamData.isNbaFranchise() && !teamData.getExternalId().equals("37")) {
+                            seasonsToUpdate.forEach(s -> setTeamStats(s, teamData));
                         }
-                        String id = teamDataService.update(teamData.getExternalId(), teamData);
-                        LOGGER.info(String.format("Entity saved: %s", id));
+                        // String id = teamDataService.update(teamData.getExternalId(), teamData);
+                        LOGGER.info(String.format("Entity handled: %s", teamData.getExternalId()));
+                        toSave.add(teamData);
                     }
                 } catch (BaseErrorMapException e) {
                     updateStatus.set(APINbaUpdate.Status.WITH_ERRORS);
@@ -74,17 +77,30 @@ public class TeamSchedulerService extends APINbaSchedulerService {
             });
         }
         APINbaUpdate.Status currentStatus = updateStatus.get();
-        updateService.update(started, getCollectionName(), new APINbaUpdate(Instant.now(), currentStatus.isWithErrors() ? currentStatus : APINbaUpdate.Status.FINISHED));
+        if (!currentStatus.isWithErrors()) {
+            teamDataService.updateAll(toSave);
+            LOGGER.info("Entities updated successfully.");
+        }
         LOGGER.warn("Updating teams has finished.");
+        return currentStatus;
     }
 
-    private void setTeamStats(int season, TeamData teamData) {
-        APINbaTeamsStatsDto teamStatsDto = externalService.callApiSafe(TEAM_STATS_ENDPOINT.concat("?id=%s&season=%s".formatted(teamData.getExternalId(), season)), APINbaTeamsStatsDto.class, new APINbaTeamsStatsDto(), LOGGER);
-        statsConvertService.toEntity(teamStatsDto.response.stream().findFirst().orElse(new APINbaTeamStatsDto())).ifPresent(teamStats -> teamData.getStatsBySeason().put(season, teamStats));
+    private void setTeamStats(SupportedSeasons season, TeamData teamData) {
+        APINbaTeamsStatsDto teamStatsDto = externalService.callApiSafe(TEAM_STATS_ENDPOINT.concat("?id=%s&season=%s".formatted(teamData.getExternalId(), season.getYear())), APINbaTeamsStatsDto.class, new APINbaTeamsStatsDto(), LOGGER);
+        List<APINbaTeamStatsDto> response = teamStatsDto.getResponse();
+        if (!response.isEmpty()) {
+            statsConvertService.toEntity(response.stream().findFirst().orElseThrow())
+                    .ifPresent(teamStats -> teamData.getStatsBySeason().put(season, teamStats));
+        }
     }
 
     @Override
     protected String getCollectionName() {
         return TeamData.COLLECTION_NAME;
+    }
+
+    @Override
+    protected SeasonUpdateStrategy getSeasonUpdateStrategy() {
+        return new TeamSeasonUpdateStrategy();
     }
 }

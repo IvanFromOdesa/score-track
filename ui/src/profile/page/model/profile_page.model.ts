@@ -1,4 +1,4 @@
-import {Bundle} from "common/models/generic.model";
+import {Bundle} from "common/base/models/generic.model";
 
 export class ProfilePageModel {
     maxUploadFileSize: string;

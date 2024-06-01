@@ -21,7 +21,7 @@ public class ApiInitServiceDelegator {
 
     public ApiInitServiceDelegator(AuthenticationHolderService authenticationHolderService, List<AbstractApiInitFormOptionsService> apiInitFormOptionsServices) {
         this.authenticationHolderService = authenticationHolderService;
-        this.delegateMap = apiInitFormOptionsServices.stream().collect(Collectors.toMap(AbstractApiInitFormOptionsService::getUserGroup, Function.identity()));
+        this.delegateMap = apiInitFormOptionsServices.stream().collect(Collectors.toUnmodifiableMap(AbstractApiInitFormOptionsService::getUserGroup, Function.identity()));
     }
 
     public void prepareFormOptions(RestForm<InitResponse> initResponseRestForm, Consumer<AccessToken> sessionBind) {

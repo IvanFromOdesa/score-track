@@ -6,15 +6,17 @@ import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 import "reflect-metadata";
 import {observer} from "mobx-react";
 import {BrowserRouter, Navigate, Outlet, Route, Routes} from "react-router-dom";
-import {useStoreContext} from "./common/stores/store.context";
-import {HOME, PROFILE_PAGE} from "./common/routes/routes";
+import {useStoreContext} from "./common/base/stores/store.context";
+import {API_NBA_BASE_PATH, HOME, PROFILE_PAGE, TEAM_STATS_PAGE} from "./common/base/routes/routes";
+import {APIS} from "./api/apis";
 
 const Home = lazy(() => import(/* webpackChunkName: "home" */ "home"));
 const Ad = lazy(() => import(/* webpackChunkName: "ad" */ "ad"));
 const ProfilePage = lazy(() => import(/* webpackChunkName: "profilePage" */ "profile/page"));
+const ApiNbaTeamPage = lazy(() => import(/* webpackChunkName: "apiNbaTeamPage" */ "./api/nbaapi/teams/page"));
 
 function App() {
-    const { rootStore : { authStore } } = useStoreContext();
+    const { rootStore : { authStore, uiStore } } = useStoreContext();
     const authenticated = authStore.authenticated;
 
     return (
@@ -30,6 +32,14 @@ function App() {
                             path={PROFILE_PAGE}
                             element={authenticated ? <ProfilePage /> : <Navigate to="/" replace />}
                         />
+                        <Route path={API_NBA_BASE_PATH}
+                               element={authenticated && authStore.isApiCodeAvailable(APIS.API_NBA) && uiStore.isApiSportComponentMetadataAccessible(APIS.API_NBA, 'teams') ?
+                                   <AppWrapper /> : <Navigate to="/" replace /> }>
+                            <Route
+                                path={TEAM_STATS_PAGE}
+                                element={<ApiNbaTeamPage />}
+                            />
+                        </Route>
                     </Route>
                 </Routes>
             </BrowserRouter>

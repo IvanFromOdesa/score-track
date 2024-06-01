@@ -74,13 +74,14 @@ public class AuthenticationSignUpService {
         return AuthenticationBean.getDefault(dto.loginname(), passwordEncoder.encode(dto.password()), dto.email());
     }
 
-    public void activate(UUID uuid) {
+    public void activate(UUID uuid, Runnable displayAlertToSession) {
         long authId = Long.parseLong(tokenService.getActivationToken(uuid).authId());
         transactionManager.doInNewTransaction(() -> {
             try {
                 AuthenticationBean byId = manualCacheManager.evict(CacheStore.AUTH_CACHE_STORE, authId, AuthenticationBean.class, () -> authenticationEntityService.getByIdOrThrow(authId));
                 byId.setStatus(AuthenticationStatus.ACTIVATED);
                 authenticationEntityService.save(byId);
+                displayAlertToSession.run();
                 tokenService.evict(uuid);
             } catch (Exception e) {
                 MessageLogger.error(e.getMessage(), e);

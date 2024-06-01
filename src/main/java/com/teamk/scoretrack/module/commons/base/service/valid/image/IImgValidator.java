@@ -19,7 +19,7 @@ public interface IImgValidator<CONTEXT extends ImageValidationContext> {
             /*try {
                 ImageIO.read(new URL(url));
             } catch (IOException e) {
-                context.getErrorMap().put(context.getFieldName(), msg);
+                context.getErrorMap().put(context.getStatName(), msg);
             }*/
         }
         return context.getErrorMap();
