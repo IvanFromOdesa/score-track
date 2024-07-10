@@ -45,10 +45,16 @@ Additional libraries used in project can be found at ```pom.xml```.
 
 ### Individual player's stats
 
+![p_stats_1](https://github.com/IvanFromOdesa/score-track/assets/103036130/f919f7c4-883d-4814-808f-8aefe6a9a755)
+
+![p_stats_2](https://github.com/IvanFromOdesa/score-track/assets/103036130/8ecba35f-2770-4729-a19d-27bbe7fa63db)
+
+![p_stats_3](https://github.com/IvanFromOdesa/score-track/assets/103036130/91b7b7e5-7854-4c20-a3a2-36342890c417)
 
 
 ### Teams
 
+![teams_1](https://github.com/IvanFromOdesa/score-track/assets/103036130/f5e1e1f2-e926-4a27-b149-d72b8fa8b488)
 
 
 TODO:
