@@ -20,31 +20,36 @@ Additional libraries used in project can be found at ```pom.xml```.
 ## Demo
 ### Signing up
 
-![registration.gif](..%2F..%2FDesktop%2Fscore-track%2Fregistration.gif)
+![registration](https://github.com/IvanFromOdesa/score-track/assets/103036130/61b0e403-9f64-47be-ac36-700eb47c5dc7)
+
 
 ### Account activation
 
-![activation.gif](..%2F..%2FDesktop%2Fscore-track%2Factivation.gif)
+![activation](https://github.com/IvanFromOdesa/score-track/assets/103036130/11ad4923-003a-4865-ae2f-a332d7ef25ab)
+
 
 ### Login
 
-![login.gif](..%2F..%2FDesktop%2Fscore-track%2Flogin.gif)
+![login](https://github.com/IvanFromOdesa/score-track/assets/103036130/319bd668-26a8-4c4f-8663-4b2ebfae9ce2)
+
 
 ### User profile
 
-![profile.gif](..%2F..%2FDesktop%2Fscore-track%2Fprofile.gif)
+![profile](https://github.com/IvanFromOdesa/score-track/assets/103036130/805025ef-de1c-4041-853c-506c126a2201)
+
 
 ### Players leaderboard
 
-![players.gif](..%2F..%2FDesktop%2Fscore-track%2Fplayers.gif)
+![players](https://github.com/IvanFromOdesa/score-track/assets/103036130/afc48c05-9f03-4d75-8b0d-f5e9fba68ae6)
+
 
 ### Individual player's stats
 
-![player_stats.gif](..%2F..%2FDesktop%2Fscore-track%2Fplayer_stats.gif)
+
 
 ### Teams
 
-![teams.gif](..%2F..%2FDesktop%2Fscore-track%2Fteams.gif)
+
 
 TODO:
 1. Enabling / disabling specific api from properties config.
