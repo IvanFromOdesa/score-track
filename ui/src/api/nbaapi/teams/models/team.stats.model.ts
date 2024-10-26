@@ -1,6 +1,7 @@
-import {ApiNbaSeason, ApiNbaStatsModel} from "../../common/models/stats.model";
+import {ApiNbaStatsModel} from "../../common/models/stats.model";
 import {ApiNbaSportComponentsHelpData} from "../../common/models/nbaapi.sc.metadata.model";
-import {UiHint} from "common/base/models/ui.helper.model";
+import {ApiNbaSeasonMap} from "../../common/models/season.model";
+import {ApiNbaTeamInfoHelper} from "./team.model";
 
 export interface ApiNbaTeamStatsModel extends ApiNbaStatsModel {
     games: number,
@@ -14,19 +15,9 @@ export interface ApiNbaTeamStatsModel extends ApiNbaStatsModel {
 
 type ApiNbaTeamStatsMap = Record<string, ApiNbaTeamStatsModel>;
 
-export interface ApiNbaTeamStatsData {
-    data: ApiNbaTeamStatsMap,
-    seasons: ApiNbaSeason[],
+export interface ApiNbaTeamStatsData extends ApiNbaSeasonMap<ApiNbaTeamStatsModel> {
     infoHelper: ApiNbaTeamInfoHelper,
-    hint: UiHint
-}
-
-export interface ApiNbaTeamInfoHelper {
-    code: string,
-    arena: string,
-    arenaName: string,
-    src: string,
-    color: string
+    description: string
 }
 
 /**

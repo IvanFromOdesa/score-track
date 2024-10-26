@@ -1,7 +1,7 @@
 package com.teamk.scoretrack.module.core.entities.user.client.domain;
 
 import com.teamk.scoretrack.module.commons.base.domain.Identifier;
-import com.teamk.scoretrack.module.core.entities.SportAPI;
+import com.teamk.scoretrack.module.core.entities.sport_api.SportAPI;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;

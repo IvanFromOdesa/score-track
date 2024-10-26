@@ -2,12 +2,20 @@ package com.teamk.scoretrack.module.core.api.nbaapi.entities.player.service.conv
 
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.player.domain.*;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.player.domain.projection.PlayerDataLeaderboardProjection;
-import com.teamk.scoretrack.module.core.api.nbaapi.entities.player.dto.APINbaPlayerLeaderboardDto;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.player.dto.APINbaPlayerGamePositionDto;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.player.dto.APINbaPlayerPositionDto;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.player.dto.APINbaPlayerResponseDto;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.player.dto.APINbaPlayerStatsDto;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.domain.SupportedSeasons;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.NbaTeamInfoHelper;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain.TeamData;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamExtendedDto;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamShortDto;
 import org.modelmapper.Converter;
 
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class PlayerDataEntityDtoConvertHelper {
@@ -86,17 +94,19 @@ public class PlayerDataEntityDtoConvertHelper {
             Map<String, APINbaPlayerResponseDto.League> source = ctx.getSource();
             return source.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
                 APINbaPlayerResponseDto.League league = e.getValue();
-                return new PlayerData.League(String.valueOf(league.jersey()), league.active(), PlayerPosition.byId(league.pos()));
+                String value = league.pos() != null ? league.pos().getValue() : null;
+                return new PlayerData.League(String.valueOf(league.jersey()), league.active(), PlayerPosition.byId(value));
             }));
         };
     }
 
-    public static Converter<Map<String, PlayerData.League>, Map<String, APINbaPlayerResponseDto.League>> getLeagueWrapperConverter() {
+    public static Converter<Map<String, PlayerData.League>, Map<String, APINbaPlayerResponseDto.League>> getLeagueWrapperConverter(UnaryOperator<String> uiTextCallback) {
         return ctx -> {
             Map<String, PlayerData.League> source = ctx.getSource();
             return source.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
                 PlayerData.League league = e.getValue();
-                return new APINbaPlayerResponseDto.League(Integer.parseInt(league.jersey()), league.active(), league.position().getId());
+                String id = league.position().getId();
+                return new APINbaPlayerResponseDto.League(Integer.parseInt(league.jersey()), league.active(), new APINbaPlayerPositionDto(id, uiTextCallback.apply(id)));
             }));
         };
     }
@@ -115,12 +125,18 @@ public class PlayerDataEntityDtoConvertHelper {
         };
     }
 
-    public static Converter<String, PlayerGamePosition> getPlayerGamePositionConverter() {
-        return ctx -> PlayerGamePosition.byId(ctx.getSource());
+    public static Converter<APINbaPlayerGamePositionDto, PlayerGamePosition> getPlayerGamePositionConverter() {
+        return ctx -> {
+            APINbaPlayerGamePositionDto source = ctx.getSource();
+            return PlayerGamePosition.byId(source != null ? source.getValue() : null);
+        };
     }
 
-    public static Converter<PlayerGamePosition, String> getPlayerGamePositionWrapperConverter() {
-        return ctx -> ctx.getSource().getId();
+    public static Converter<PlayerGamePosition, APINbaPlayerGamePositionDto> getPlayerGamePositionWrapperConverter(UnaryOperator<String> uiTextCallback) {
+        return ctx -> {
+            String id = ctx.getSource().getId();
+            return new APINbaPlayerGamePositionDto(id, uiTextCallback.apply(id));
+        };
     }
 
     public static Converter<APINbaPlayerStatsDto.TeamId, PlayerStats.TeamId> getPlayerStatsTeamIdConverter() {
@@ -151,10 +167,55 @@ public class PlayerDataEntityDtoConvertHelper {
         };
     }
 
-    public static Converter<PlayerDataLeaderboardProjection, APINbaPlayerLeaderboardDto.TeamShortDto> getPlayerEfficiencyTeamShortWrapperConverter() {
+    public static Converter<PlayerDataLeaderboardProjection, APINbaTeamShortDto> getPlayerEfficiencyTeamShortWrapperConverter() {
         return ctx -> {
             PlayerDataLeaderboardProjection source = ctx.getSource();
-            return new APINbaPlayerLeaderboardDto.TeamShortDto(source.getTeamName(), source.getTeamLogo(), source.getTeamCode(), source.getTeamExternalId());
+            return new APINbaTeamShortDto(source.getTeamName(), source.getTeamLogo(), source.getTeamCode(), source.getTeamExternalId());
+        };
+    }
+
+    public static Converter<String, String> getPlayerProfileImgWrapperConverter(Function<String, PlayerHeadshotImg> profileImgCallback) {
+        return ctx -> {
+            String id = ctx.getSource();
+            PlayerHeadshotImg playerHeadshotImg = profileImgCallback.apply(id);
+            return playerHeadshotImg != null ? playerHeadshotImg.imgUrl() : null;
+        };
+    }
+
+    public static Converter<Map<SupportedSeasons, TeamData>, Map<String, APINbaTeamExtendedDto>> getPlayerTeamBySeasonWrapperConverter() {
+        return ctx -> {
+            Map<SupportedSeasons, TeamData> source = ctx.getSource();
+            return source.entrySet().stream().collect(Collectors.toMap(
+                    e -> String.valueOf(e.getKey().getYear()),
+                    e -> {
+                        TeamData value = e.getValue();
+                        String code = value.getCode();
+                        return new APINbaTeamExtendedDto(
+                                value.getName(),
+                                value.getLogo(),
+                                code,
+                                value.getExternalId(),
+                                NbaTeamInfoHelper.getByCode(code));
+                    }));
+        };
+    }
+
+    public static Converter<String, Double> getPlayerStatsMinConverter() {
+        return ctx -> {
+            try {
+                String[] parts = ctx.getSource().split(":");
+                double totalMinutes;
+                if (parts.length == 1) {
+                    totalMinutes = Double.parseDouble(parts[0]);
+                } else if (parts.length == 2) {
+                    totalMinutes = Double.parseDouble(parts[0]) + (Double.parseDouble(parts[1]) / 60.0);
+                } else {
+                    return (double) 0;
+                }
+                return Math.round(totalMinutes * 100.0) / 100.0;
+            } catch (NumberFormatException e) {
+                return (double) 0;
+            }
         };
     }
 }

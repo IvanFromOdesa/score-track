@@ -8,7 +8,7 @@ public class APINbaPlayerStatsDto extends StatsDto<String> {
     public GameId game;
     public TeamId team;
     public PlayerId player;
-    public String pos;
+    public APINbaPlayerGamePositionDto pos;
     public String min;
 
     public GameId getGame() {
@@ -35,11 +35,11 @@ public class APINbaPlayerStatsDto extends StatsDto<String> {
         this.player = player;
     }
 
-    public String getPos() {
+    public APINbaPlayerGamePositionDto getPos() {
         return pos;
     }
 
-    public void setPos(String pos) {
+    public void setPos(APINbaPlayerGamePositionDto pos) {
         this.pos = pos;
     }
 

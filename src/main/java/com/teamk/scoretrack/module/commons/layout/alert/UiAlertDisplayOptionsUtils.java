@@ -1,9 +1,12 @@
 package com.teamk.scoretrack.module.commons.layout.alert;
 
+import com.teamk.scoretrack.module.commons.other.ErrorMap;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import static com.teamk.scoretrack.module.commons.layout.alert.UiAlertDisplayOptions.ATTRIBUTE_NAME;
 
@@ -26,5 +29,12 @@ public class UiAlertDisplayOptionsUtils {
 
     private static UiAlertDisplayOptions getAttribute(HttpSession session) {
         return (UiAlertDisplayOptions) session.getAttribute(ATTRIBUTE_NAME);
+    }
+
+    public static void displayErrorAlert(RedirectAttributes redirectAttributes, ErrorMap errorMap) {
+        redirectAttributes.addFlashAttribute(UiAlertType.ERROR.getName(),
+                errorMap.getErrors().values().stream()
+                        .map(ErrorMap.Error::getMsg)
+                        .collect(Collectors.joining("<br/>")));
     }
 }

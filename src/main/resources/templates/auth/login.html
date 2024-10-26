@@ -14,6 +14,7 @@
         </div>
     </div>
     <div th:replace="~{fragments/alerts.html :: alert-info}"></div>
+    <div th:replace="~{fragments/alerts.html :: alert-warning}"></div>
     <div class="all">
         <div class="wrapper-form">
             <div class="form-box login">
@@ -63,13 +64,13 @@
                     <small id="error.email">Error msg</small>
                     <div class="input-box">
                         <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                        <input type="password" th:field="*{password}" placeholder=" " autocomplete="off" minlength="8" onchange="checkPwd()" required>
+                        <input type="password" th:field="*{pwdForm.password}" placeholder=" " autocomplete="off" minlength="8" onchange="checkPwd()" required>
                         <label th:text="${passwordTitle}"></label>
                     </div>
                     <small id="error.password">Error msg</small>
                     <div class="input-box">
                         <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                        <input type="password" th:field="*{confirmPassword}" placeholder=" " autocomplete="off" minlength="8" onchange="checkPwd()" required>
+                        <input type="password" th:field="*{pwdForm.confirmPassword}" placeholder=" " autocomplete="off" minlength="8" onchange="checkPwd()" required>
                         <label th:text="${confirmPasswordTitle}"></label>
                     </div>
                     <small id="error.password.confirm">Error msg</small>
@@ -106,8 +107,8 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script>
         function checkPwd() {
-            const password = document.getElementById('password');
-            const confirm = document.getElementById('confirmPassword');
+            const password = document.getElementById('pwdForm.password');
+            const confirm = document.getElementById('pwdForm.confirmPassword');
             if (confirm.value === password.value) {
                 confirm.setCustomValidity('');
             } else {

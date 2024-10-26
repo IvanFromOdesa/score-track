@@ -4,7 +4,7 @@ import com.teamk.scoretrack.module.commons.base.controller.BaseRestController;
 import com.teamk.scoretrack.module.commons.form.rest.RestForm;
 import com.teamk.scoretrack.module.core.api.commons.init.dto.InitResponse;
 import com.teamk.scoretrack.module.core.api.commons.init.service.ApiInitServiceDelegator;
-import com.teamk.scoretrack.module.core.entities.SportAPI;
+import com.teamk.scoretrack.module.core.entities.sport_api.SportAPI;
 import com.teamk.scoretrack.module.security.session.filter.SessionAccessTokenBindFilter;
 import com.teamk.scoretrack.module.security.token.jwt.model.AccessToken;
 import com.teamk.scoretrack.module.security.token.jwt.service.AccessTokenService;
@@ -52,7 +52,7 @@ public class ApiInitController extends BaseRestController {
     }
 
     /**
-     * Change url on client to that in {@link com.teamk.scoretrack.module.core.api.commons.search.ApiSearchController}
+     * Change url on client to that in SportTypeSearchController
      */
     @GetMapping(SUPPORTED_APIS)
     @Deprecated

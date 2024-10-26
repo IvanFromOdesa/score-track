@@ -3,7 +3,7 @@ package com.teamk.scoretrack.module.core.api.nbaapi.entities.season.dto;
 import com.teamk.scoretrack.module.core.api.commons.base.UiWrapperResponse;
 import com.teamk.scoretrack.module.core.api.nbaapi.entities.season.domain.SupportedSeasons;
 
-public final class SupportedSeasonsDto extends UiWrapperResponse {
+public final class SupportedSeasonsDto extends UiWrapperResponse<String> {
     private SupportedSeasonsDto(String value, String uiText) {
         super(value, uiText);
     }

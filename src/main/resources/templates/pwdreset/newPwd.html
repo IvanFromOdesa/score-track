@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{./base.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Reset your password</title>
+    <link th:href="@{/layouts/styles/pwdreset/style.css}" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content">
+    <div th:replace="~{fragments/alerts.html :: alert-error}"></div>
+    <div class="container">
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <h4 class="alert-heading" th:text="${newPasswordTitle}"></h4>
+            <span th:text="${instructionTitle}"></span>
+        </div>
+    </div>
+    <div class="centered">
+        <div class="textBox">
+            <h2 th:text="${newPasswordTitle}"></h2>
+            <form th:action="@{/reset/new}" th:object="${newPwdForm}" method="post" id="newPwdForm">
+                <div class="input-box">
+                    <input th:field="*{password}" type="password" placeholder=" " required>
+                    <label th:text="${passwordLabel}"></label>
+                </div>
+                <div class="input-box">
+                    <input th:field="*{confirmPassword}" type="password" placeholder=" " required>
+                    <label th:text="${confirmPasswordLabel}"></label>
+                </div>
+                <button th:text="${submitButtonTitle}" class="baseBtn g-recaptcha" type="submit" th:attr="data-sitekey=${recaptcha_pb_key}" data-callback="onPwdResetSubmit" data-action="/reset/new"></button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function onPwdResetSubmit(token) {
+            document.getElementById("newPwdForm").submit();
+        }
+    </script>
+</div>
+</body>
+</html>

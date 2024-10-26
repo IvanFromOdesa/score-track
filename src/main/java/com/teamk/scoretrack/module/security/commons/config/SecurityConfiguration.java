@@ -7,7 +7,9 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.Privileges;
 import com.teamk.scoretrack.module.security.auth.service.AuthenticationSignUpService;
 import com.teamk.scoretrack.module.security.auth.service.ExtendedDaoAuthenticationProvider;
+import com.teamk.scoretrack.module.security.auth.service.PostAuthenticationChecks;
 import com.teamk.scoretrack.module.security.auth.service.PreAuthenticationChecks;
+import com.teamk.scoretrack.module.security.commons.filter.RedirectFilter;
 import com.teamk.scoretrack.module.security.firewall.filter.XSSSanitizerFilter;
 import com.teamk.scoretrack.module.security.geo.filter.GeoLiteFilter;
 import com.teamk.scoretrack.module.security.handler.AuthSuccessHandler;
@@ -62,7 +64,7 @@ import static com.teamk.scoretrack.module.commons.layout.preferences.Preferences
 import static com.teamk.scoretrack.module.commons.layout.preferences.PreferencesController.PREF;
 import static com.teamk.scoretrack.module.core.api.commons.init.controller.ApiInitController.*;
 import static com.teamk.scoretrack.module.security.auth.controller.AuthenticationController.*;
-import static com.teamk.scoretrack.module.security.pwdreset.PwdResetController.PWD_RESET;
+import static com.teamk.scoretrack.module.security.pwdreset.controller.PwdResetController.*;
 
 @Configuration
 @EnableMethodSecurity
@@ -72,6 +74,7 @@ public class SecurityConfiguration {
     private final GeoLiteFilter geoLiteFilter;
     private final RecaptchaVerifyFilter recaptchaVerifyFilter;
     private final XSSSanitizerFilter xssSanitizerFilter;
+    private final RedirectFilter redirectFilter;
     @Value("${sym.remember-me}")
     private String rememberMeKey;
     private static final int REMEMBER_ME_TOKEN_DURATION = 60 * 60 * 24 * 7;
@@ -80,24 +83,28 @@ public class SecurityConfiguration {
                                  IpBlockFilter ipBlockFilter,
                                  GeoLiteFilter geoLiteFilter,
                                  RecaptchaVerifyFilter recaptchaVerifyFilter,
-                                 XSSSanitizerFilter xssSanitizerFilter) {
+                                 XSSSanitizerFilter xssSanitizerFilter,
+                                 RedirectFilter redirectFilter) {
         this.rsaKeys = rsaKeys;
         this.ipBlockFilter = ipBlockFilter;
         this.geoLiteFilter = geoLiteFilter;
         this.recaptchaVerifyFilter = recaptchaVerifyFilter;
         this.xssSanitizerFilter = xssSanitizerFilter;
+        this.redirectFilter = redirectFilter;
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
                                                             @Qualifier(HashingConfiguration.BCRYPT) PasswordEncoder passwordEncoder,
                                                             AuthenticationSignUpService authenticationSignUpService,
-                                                            @Qualifier(PreAuthenticationChecks.NAME) UserDetailsChecker userDetailsChecker) {
+                                                            @Qualifier(PreAuthenticationChecks.NAME) UserDetailsChecker preAuthChecks,
+                                                            @Qualifier(PostAuthenticationChecks.NAME) UserDetailsChecker postAuthChecks) {
         ExtendedDaoAuthenticationProvider extendedDaoAuthenticationProvider = new ExtendedDaoAuthenticationProvider(authenticationSignUpService);
         extendedDaoAuthenticationProvider.setHideUserNotFoundExceptions(false);
         extendedDaoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         extendedDaoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        extendedDaoAuthenticationProvider.setPreAuthenticationChecks(userDetailsChecker);
+        extendedDaoAuthenticationProvider.setPreAuthenticationChecks(preAuthChecks);
+        extendedDaoAuthenticationProvider.setPostAuthenticationChecks(postAuthChecks);
         return extendedDaoAuthenticationProvider;
     }
 
@@ -131,11 +138,14 @@ public class SecurityConfiguration {
                         .requestMatchers(SIGN_UP).permitAll()
                         .requestMatchers(ACTIVATE.concat("/**")).permitAll()
                         // TODO: refactor into one list all permitted preferences options
-                        .requestMatchers(PWD_RESET).permitAll()
+                        .requestMatchers(PWD_FORGOT).permitAll()
+                        .requestMatchers(CONFIRM_URL_TOKEN.concat("/**")).permitAll()
+                        .requestMatchers(REQ_PWD_RESET).permitAll()
+                        .requestMatchers(NEW_PWD).permitAll()
                         .requestMatchers(INIT).permitAll()
                         .requestMatchers(REFRESH_ACCESS_TOKEN).permitAll()
                         .requestMatchers(PREF.concat(LANG).concat("/**")).permitAll()
-                        .requestMatchers(getResources()).permitAll()
+                        .requestMatchers(getWhitelistedResources()).permitAll()
                         //.requestMatchers(new LoginPermittedQueryParametersRequestMatcher()).permitAll()
                         /*
                          * Permit actuator endpoints for allowed user group
@@ -155,10 +165,15 @@ public class SecurityConfiguration {
                 .addFilterBefore(ipBlockFilter, AuthorizationFilter.class)
                 .addFilterAfter(recaptchaVerifyFilter, IpBlockFilter.class)
                 .addFilterAfter(geoLiteFilter, RecaptchaVerifyFilter.class)
+                .addFilterAfter(redirectFilter, RecaptchaVerifyFilter.class)
                 .build();
     }
 
-    private String[] getResources() {
+    /**
+     * Public resource folders
+     * @return whitelisted public resource folders.
+     */
+    public static String[] getWhitelistedResources() {
         return new String[] {"/layouts/**", "/bundles/**", "/js/**", "/vendor/**", "/api-logos/**", "/api/**", "/lang-icons/**"};
     }
 
@@ -168,7 +183,9 @@ public class SecurityConfiguration {
                 new AntPathRequestMatcher(LOGOUT, HttpMethod.POST.name()),
                 new AntPathRequestMatcher(SIGN_UP, HttpMethod.POST.name()),
                 new AntPathRequestMatcher(OtpAuthController.RECOVER, HttpMethod.POST.name()),
-                new AntPathRequestMatcher(OtpAuthController.RESEND_OTP, HttpMethod.POST.name())
+                new AntPathRequestMatcher(OtpAuthController.RESEND_OTP, HttpMethod.POST.name()),
+                new AntPathRequestMatcher(REQ_PWD_RESET, HttpMethod.POST.name()),
+                new AntPathRequestMatcher(NEW_PWD, HttpMethod.POST.name())
                 /*new AntPathRequestMatcher(PREF.concat(LANG).concat("/**"), HttpMethod.POST.name())*/
         );
     }

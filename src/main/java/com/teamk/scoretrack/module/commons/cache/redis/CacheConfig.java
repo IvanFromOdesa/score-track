@@ -2,8 +2,7 @@ package com.teamk.scoretrack.module.commons.cache.redis;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.teamk.scoretrack.module.commons.io.config.IOConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,23 +41,10 @@ public class CacheConfig {
     }
 
     @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-        return getDefault();
-    }
-
-    @Bean
     public ObjectMapper redisObjectMapper() {
-        ObjectMapper mapper = getDefault();
+        ObjectMapper mapper = IOConfig.getDefault();
         mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY);
         return mapper;
-    }
-
-    private static ObjectMapper getDefault() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.registerModule(new GuavaModule());
-        return objectMapper;
     }
 
     @Bean

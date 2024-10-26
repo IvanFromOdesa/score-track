@@ -2,7 +2,7 @@ package com.teamk.scoretrack.module.core.entities.user.base.service;
 
 import com.teamk.scoretrack.module.commons.base.service.AbstractJpaEntityService;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.Privileges;
-import com.teamk.scoretrack.module.core.entities.SportAPI;
+import com.teamk.scoretrack.module.core.entities.sport_api.SportAPI;
 import com.teamk.scoretrack.module.core.entities.user.base.dao.BaseUserDao;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.PlannedViewership;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;

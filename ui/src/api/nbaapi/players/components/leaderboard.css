@@ -1,0 +1,13 @@
+.player-row {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.player-row:hover {
+    border-color: #C8B568;
+    transform: scale(1.05);
+    cursor: pointer;
+}

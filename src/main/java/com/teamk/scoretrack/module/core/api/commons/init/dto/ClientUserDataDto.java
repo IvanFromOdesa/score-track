@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.teamk.scoretrack.module.core.entities.SportAPI;
-import com.teamk.scoretrack.module.core.entities.SportType;
+import com.teamk.scoretrack.module.core.entities.sport_api.SportAPI;
 import com.teamk.scoretrack.module.core.entities.io.AccessStatus;
+import com.teamk.scoretrack.module.core.entities.sport_type.SportTypeDto;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.PlannedViewership;
 
 import java.time.Instant;
@@ -52,7 +52,7 @@ public class ClientUserDataDto extends UserDataDto {
         private String nickname;
         private ProfileImgDto profileImg;
         private String bio;
-        private List<SportType> sportPreference;
+        private List<SportTypeDto> sportPreference;
         private String instagramLink;
         private String xLink;
 
@@ -104,11 +104,11 @@ public class ClientUserDataDto extends UserDataDto {
             this.bio = bio;
         }
 
-        public List<SportType> getSportPreference() {
+        public List<SportTypeDto> getSportPreference() {
             return sportPreference;
         }
 
-        public void setSportPreference(List<SportType> sportPreference) {
+        public void setSportPreference(List<SportTypeDto> sportPreference) {
             this.sportPreference = sportPreference;
         }
 

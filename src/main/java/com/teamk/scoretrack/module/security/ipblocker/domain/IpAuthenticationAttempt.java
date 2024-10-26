@@ -8,8 +8,6 @@ import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serial;
 
-import static com.teamk.scoretrack.module.security.handler.error.authfailure.domain.BadCredentialsAuthenticationAttempt.MAX_FAILED_ATTEMPTS;
-
 /**
  * @implNote {@link #getId()} is the ip address
  */
@@ -17,6 +15,7 @@ import static com.teamk.scoretrack.module.security.handler.error.authfailure.dom
 public class IpAuthenticationAttempt extends RedisAuthIdentifier {
     private int attempt;
     private Level level;
+    private static final int MAX_FAILED_ATTEMPTS = 5;
 
     public static final long TTL = 7200;
     @Serial

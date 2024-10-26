@@ -1,5 +1,3 @@
-import {UiWrapperResponse} from "../../../../common/base/models/ui.helper.model";
-
 export interface ApiNbaStatsModel {
     points: number,
     fgm: number,
@@ -20,12 +18,4 @@ export interface ApiNbaStatsModel {
     turnovers: number,
     blocks: number,
     plusMinus: number,
-}
-
-export interface ApiNbaSeason extends UiWrapperResponse {
-
-}
-
-export interface ApiNbaStatCategory extends UiWrapperResponse {
-
 }

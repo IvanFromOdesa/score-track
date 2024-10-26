@@ -1,7 +1,7 @@
 package com.teamk.scoretrack.module.profile;
 
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
-import com.teamk.scoretrack.module.core.entities.SportType;
+import com.teamk.scoretrack.module.core.entities.sport_type.SportType;
 import com.teamk.scoretrack.module.core.entities.user.client.dto.ProfileUpdateDto;
 import com.teamk.scoretrack.module.core.entities.user.client.service.i18n.ProfilePageTranslatorService;
 import com.teamk.scoretrack.module.core.entities.user.client.service.valid.ProfileUpdateFormValidationContext;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ProfileUpdateValidatorTests {
+class ProfileUpdateValidatorTests {
     @Mock
     private IFileValidator<FileValidationContext> fileValidator;
     @Mock

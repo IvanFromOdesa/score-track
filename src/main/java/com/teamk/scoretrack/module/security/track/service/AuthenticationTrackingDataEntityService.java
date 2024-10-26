@@ -26,7 +26,10 @@ public class AuthenticationTrackingDataEntityService extends AbstractJpaEntitySe
         if (by.isPresent()) {
             AuthenticationTrackingData trackingData = by.get();
             int consecutiveLogIn = trackingData.getConsecutiveLogIn();
-            e.setConsecutiveLogIn(CommonsUtil.isInRange(e.getLastLogOn(), trackingData.getLastLogOn(), ChronoUnit.DAYS, 1, 2) ? consecutiveLogIn + 1 : consecutiveLogIn);
+            e.setConsecutiveLogIn(
+                    CommonsUtil.isInRange(e.getLastLogOn(), trackingData.getLastLogOn(),
+                            ChronoUnit.DAYS, 1, 2)
+                            ? consecutiveLogIn + 1 : 1);
             e.setTotalLogIn(trackingData.getTotalLogIn() + 1);
             AuthenticationTrackingData merged = merge(e, trackingData);
             this.save(merged);

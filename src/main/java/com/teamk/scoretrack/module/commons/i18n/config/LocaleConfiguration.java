@@ -38,6 +38,7 @@ public class LocaleConfiguration {
     public static final String RECAPTCHA = ST + "/recaptcha";
     public static final String IO = ST + "/io";
     public static final String PROFILE_PAGE = ST + "/profile";
+    public static final String SPORT_TYPES = ST + "/sport_types";
 
     @Bean(AUTH)
     @Scope("prototype")
@@ -97,6 +98,12 @@ public class LocaleConfiguration {
     @Scope("prototype")
     public MessageSource profileBundles() {
         return getRB(PROFILE_PAGE);
+    }
+
+    @Bean(SPORT_TYPES)
+    @Scope("prototype")
+    public MessageSource searchBundles() {
+        return getRB(SPORT_TYPES);
     }
 
     @Bean

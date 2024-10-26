@@ -1,5 +1,6 @@
 package com.teamk.scoretrack.module.security.auth.controller;
 
+import com.teamk.scoretrack.module.commons.layout.alert.UiAlertType;
 import com.teamk.scoretrack.module.security.auth.service.AuthenticationHolderService;
 import com.teamk.scoretrack.module.security.auth.service.i18n.AuthTranslatorService;
 import com.teamk.scoretrack.module.security.handler.ExtendedHandlerInterceptor;
@@ -27,7 +28,7 @@ public class HomePageInterceptor implements ExtendedHandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
         authenticationHolderService.getCurrentAuthentication().ifPresent(a -> getAlertDisplayOptions(request.getSession()).ifPresent(o -> {
             if (o.isFirstLogIn()) {
-                modelAndView.addObject("alertInfo", translatorService.getMessage("auth.firstLogin", a.getLoginname()));
+                modelAndView.addObject(UiAlertType.INFO.getName(), translatorService.getMessage("auth.firstLogin", a.getLoginname()));
                 o.setFirstLogIn(false);
             }
         }));

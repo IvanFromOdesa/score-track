@@ -1,6 +1,6 @@
-import {ApiNbaTeamInfoHelper} from "../models/team.stats.model";
 import {Col, Image, Row, Stack} from "react-bootstrap";
 import React from "react";
+import {ApiNbaTeamInfoHelper} from "../models/team.model";
 
 function ApiNbaTeamDescription(infoHelper: ApiNbaTeamInfoHelper | undefined, teamName: string, description: string | undefined | null, srcName: string | undefined) {
     return <Col className="widget-solid p-3" xl={6}>

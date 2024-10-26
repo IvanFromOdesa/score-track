@@ -45,8 +45,6 @@ public enum SupportedSeasons {
         return uiText;
     }
 
-
-
     public static SupportedSeasons getOngoingSeason() {
         // Nba seasons usually start at late October of the current year
         return Month.from(Instant.now().atZone(ZoneOffset.UTC)).getValue() == Month.NOVEMBER.getValue() ? CURRENT : LOOKUP_MAP.get(CURRENT.year - 1);

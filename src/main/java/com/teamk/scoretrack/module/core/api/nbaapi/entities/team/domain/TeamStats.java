@@ -3,6 +3,10 @@ package com.teamk.scoretrack.module.core.api.nbaapi.entities.team.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.domain.Stats;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @JsonIgnoreProperties("id")
 public class TeamStats extends Stats {
     private int games;
@@ -71,5 +75,19 @@ public class TeamStats extends Stats {
 
     public void setLongestRun(int longestRun) {
         this.longestRun = longestRun;
+    }
+
+    public static List<String> getFieldNames() {
+        List<String> fields = new ArrayList<>(Arrays.asList(
+                "games",
+                "fastBreakPoints",
+                "pointsInPaint",
+                "biggestLead",
+                "secondChancePoints",
+                "pointsOffTurnovers",
+                "longestRun"
+        ));
+        fields.addAll(Stats.getFieldNames());
+        return fields;
     }
 }

@@ -2,7 +2,7 @@ package com.teamk.scoretrack.module.core.entities.user.client.domain;
 
 import com.google.common.base.Objects;
 import com.teamk.scoretrack.module.commons.base.domain.Identifier;
-import com.teamk.scoretrack.module.core.entities.SportType;
+import com.teamk.scoretrack.module.core.entities.sport_type.SportType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;

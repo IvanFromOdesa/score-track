@@ -1,15 +1,15 @@
 package com.teamk.scoretrack.module.core.api.commons.base;
 
-public abstract class UiWrapperResponse {
-    private final String value;
+public abstract class UiWrapperResponse<V> {
+    private final V value;
     private final String uiText;
 
-    protected UiWrapperResponse(String value, String uiText) {
+    protected UiWrapperResponse(V value, String uiText) {
         this.value = value;
         this.uiText = uiText;
     }
 
-    public String getValue() {
+    public V getValue() {
         return value;
     }
 

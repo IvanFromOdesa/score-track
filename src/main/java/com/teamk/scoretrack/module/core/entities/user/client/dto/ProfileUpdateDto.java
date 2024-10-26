@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.client.dto;
 
-import com.teamk.scoretrack.module.core.entities.SportType;
+import com.teamk.scoretrack.module.core.entities.sport_type.SportType;
 
 import java.util.List;
 

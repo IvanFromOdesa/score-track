@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Changed on 18.03.2024 - following SOLID patterns, decouple sign up logic into {@link AuthenticationSignUpService}
  */
@@ -34,6 +36,14 @@ public class AuthenticationEntityService extends AbstractJpaEntityService<Authen
     @Override
     public UserDetails loadUserByUsername(String username) {
         return dao.findByLoginname(username).orElseThrow(() -> new UsernameNotFoundException("%s not found.".formatted(username)));
+    }
+
+    public boolean existsByLoginnameOrEmail(String loginname, String email) {
+        return dao.existsByLoginnameOrEmail(loginname, email);
+    }
+
+    public Optional<AuthenticationBean> findByEmail(String email) {
+        return dao.findByEmail(email);
     }
 
     @Override

@@ -33,4 +33,12 @@ router.get(`${PLAYERS}/top`, (req, res) => {
     sendJson(res, `${API_PATH}/players/top.json`, 2500);
 });
 
+router.get(`${PLAYERS}/:id`, (req, res) => {
+    sendJson(res, `${API_PATH}/players/player.json`);
+});
+
+router.get(`${PLAYERS}/:id/stats`, (req, res) => {
+    sendJson(res, `${API_PATH}/players/avgStatsPerSeason.json`, 2000);
+});
+
 module.exports = router;

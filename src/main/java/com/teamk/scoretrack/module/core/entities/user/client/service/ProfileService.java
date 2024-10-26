@@ -5,7 +5,7 @@ import com.teamk.scoretrack.module.commons.util.CommonsUtil;
 import com.teamk.scoretrack.module.commons.util.HibernateRelations;
 import com.teamk.scoretrack.module.core.api.commons.init.dto.ClientUserDataDto;
 import com.teamk.scoretrack.module.core.api.commons.init.service.data.ClientUserDataDtoPopulateService;
-import com.teamk.scoretrack.module.core.entities.SportType;
+import com.teamk.scoretrack.module.core.entities.sport_type.SportType;
 import com.teamk.scoretrack.module.core.entities.io.FileData;
 import com.teamk.scoretrack.module.core.entities.io.img.ImageData;
 import com.teamk.scoretrack.module.core.entities.io.service.FileUploadService;

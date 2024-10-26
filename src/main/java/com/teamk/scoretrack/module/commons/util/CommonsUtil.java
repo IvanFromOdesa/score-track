@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
@@ -83,6 +84,10 @@ public final class CommonsUtil {
 
     public static boolean isInRange(Instant time, Instant from, Instant to) {
         return from.isBefore(time) && to.isAfter(time);
+    }
+
+    public static Instant fromDays(Long afterDays) {
+        return Instant.from(Instant.now().minus(Duration.ofDays(afterDays)));
     }
 
     public static boolean patternMatches(String input, String regexRule) {

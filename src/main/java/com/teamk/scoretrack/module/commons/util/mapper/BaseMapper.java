@@ -56,7 +56,7 @@ public class BaseMapper<FROM, TO> {
         return map(from);
     }
 
-    private <ARG_FROM_TYPE, ARG_TO_TYPE> BaseMapper<FROM, TO> addFieldCondition(Condition<ARG_FROM_TYPE, ARG_TO_TYPE> condition, SourceGetter<FROM> getter, DestinationSetter<TO, ARG_TO_TYPE> setter) {
+    public <ARG_FROM_TYPE, ARG_TO_TYPE> BaseMapper<FROM, TO> addFieldCondition(Condition<ARG_FROM_TYPE, ARG_TO_TYPE> condition, SourceGetter<FROM> getter, DestinationSetter<TO, ARG_TO_TYPE> setter) {
         getTypeMap().addMappings(mapper -> mapper.when(condition).map(getter, setter));
         return this;
     }
@@ -72,6 +72,11 @@ public class BaseMapper<FROM, TO> {
             return typeMap;
         }
         return mapper.createTypeMap(fromClass, toClass);
+    }
+
+    public TO map(FROM from, TO to) {
+        mapper.map(from, to);
+        return to;
     }
 
     private TO map(FROM from) {

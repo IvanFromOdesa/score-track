@@ -23,9 +23,10 @@ public class ExtendedDaoAuthenticationProvider extends DaoAuthenticationProvider
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
         super.additionalAuthenticationChecks(userDetails, authentication);
-        if (((ExtendedUserDetails) userDetails).isBadCredentialsFailurePresent()) {
+        ExtendedUserDetails eud = (ExtendedUserDetails) userDetails;
+        if (eud.isBadCredentialsFailurePresent()) {
             throw new BadCredentialsLockedException("Locked account due to recent auth attempts with bad credentials.");
-        } else if (!userDetails.isEnabled()) {
+        } else if (!eud.isEnabled() || !eud.isLastConfirmed()) {
             logger.debug("Failed to authenticate since user account is disabled");
             authenticationSignUpService.sendActivationEmail((AuthenticationBean) userDetails, HttpUtil.getBaseUrl().concat(AuthenticationController.ACTIVATE));
             throw new DisabledException(messages.getMessage("AbstractUserDetailsAuthenticationProvider.disabled", "User is disabled"));

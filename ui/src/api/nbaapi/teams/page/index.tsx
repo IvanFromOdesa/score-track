@@ -61,7 +61,7 @@ const ApiNbaTeamPage: React.FC = () => {
                     <div id='nbaapi-team-stats-content'>
                         <Row className="gap-5">
                             {ApiNbaTeamInfo(team, helpText)}
-                            {ApiNbaTeamDescription(infoHelper, team.name, data?.hint.description, helpText?.['wikiSrcTitle'])}
+                            {ApiNbaTeamDescription(infoHelper, team.name, data?.description, helpText?.['wikiSrcTitle'])}
                         </Row>
                     </div>
                     <br/>
@@ -82,13 +82,13 @@ const ApiNbaTeamPage: React.FC = () => {
                     <div id='nbaapi-team-stats-content-analytics'>
                         <Row className="d-flex">
                             <Col xl={4} className="mb-3">
-                                {FgStats(helpText, stats, infoHelper?.color || 'black')}
+                                {FgStats(helpText, stats, infoHelper?.colors.primary || 'black')}
                             </Col>
                             <Col xl={4} className="mb-3">
-                                {FtStats(helpText, stats, infoHelper?.color || 'black')}
+                                {FtStats(helpText, stats, infoHelper?.colors.primary || 'black')}
                             </Col>
                             <Col xl={4} className="mb-3">
-                                {TpStats(helpText, stats, infoHelper?.color || 'black')}
+                                {TpStats(helpText, stats, infoHelper?.colors.primary || 'black')}
                             </Col>
                         </Row>
                         <br/>

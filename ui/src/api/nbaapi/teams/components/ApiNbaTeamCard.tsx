@@ -3,7 +3,7 @@ import React from "react";
 import SportComponentCard from "../../../common/base/SportComponentCard";
 import {Bundle} from "common/base/models/generic.model";
 import {useNavigate} from "react-router-dom";
-import {API_NBA_TEAM_STATS_PAGE} from "common/base/routes/routes";
+import {API_NBA_TEAM_PAGE} from "common/base/routes/routes";
 
 interface IApiNbaTeamCardProps {
     team: ApiNbaTeam;
@@ -26,7 +26,7 @@ const ApiNbaTeamCard: React.FC<IApiNbaTeamCardProps> = ({team, helpText}) => {
             title={team.name}
             infoJSX={() => leagueInfo}
             badges={[]}
-            btnOnClick={() => navigate(API_NBA_TEAM_STATS_PAGE.replace(':id', team.id), {state: team})}
+            btnOnClick={() => navigate(API_NBA_TEAM_PAGE.replace(':id', team.id), {state: team})}
         />
     )
 }

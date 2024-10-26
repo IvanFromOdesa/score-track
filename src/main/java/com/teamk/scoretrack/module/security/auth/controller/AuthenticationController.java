@@ -73,7 +73,7 @@ public class AuthenticationController extends BaseMvcController {
                 responseDto.setErrors(errors);
             }
         } else {
-            String result = authenticationSignUpService.processSignUp(new AuthenticationDto(signUpForm.getLoginname(), signUpForm.getPassword(), signUpForm.getEmail()), getBaseUrl().concat(ACTIVATE));
+            String result = authenticationSignUpService.processSignUp(new AuthenticationDto(signUpForm.getLoginname(), signUpForm.getPwdForm().getPassword(), signUpForm.getEmail()), getBaseUrl().concat(ACTIVATE));
             responseDto.setResult(result);
         }
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

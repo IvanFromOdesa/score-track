@@ -15,4 +15,10 @@ public interface ExtendedUserDetails extends UserDetails {
      * @return
      */
     boolean isRecentAuthenticationPresent();
+
+    /**
+     * Checks if the {@link UserDetails} has been confirmed.
+     * @return
+     */
+    boolean isLastConfirmed();
 }

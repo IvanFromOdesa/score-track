@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
+
 import static com.teamk.scoretrack.module.core.entities.user.client.controller.ProfilePageController.PROFILE;
 
 @RestController
@@ -66,7 +68,7 @@ public class ProfilePageController extends BaseRestController {
 
     @GetMapping(PICTURE + "/{filename}")
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable String filename) {
-        byte[] profilePicture = profileService.getProfilePicture(new String(BaseEncoding.base64Url().decode(filename)));
+        byte[] profilePicture = profileService.getProfilePicture(new String(BaseEncoding.base64Url().decode(filename), StandardCharsets.UTF_8));
         return profilePicture.length > 0 ? ResponseEntity.ok(profilePicture) : ResponseEntity.notFound().build();
     }
 }

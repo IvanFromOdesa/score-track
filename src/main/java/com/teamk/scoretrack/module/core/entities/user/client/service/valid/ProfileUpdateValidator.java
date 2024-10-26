@@ -3,7 +3,7 @@ package com.teamk.scoretrack.module.core.entities.user.client.service.valid;
 import com.teamk.scoretrack.module.commons.base.service.valid.ValidationRule;
 import com.teamk.scoretrack.module.commons.base.service.valid.form.DtoEntityValidator;
 import com.teamk.scoretrack.module.commons.other.ErrorMap;
-import com.teamk.scoretrack.module.core.entities.SportType;
+import com.teamk.scoretrack.module.core.entities.sport_type.SportType;
 import com.teamk.scoretrack.module.core.entities.io.FileType;
 import com.teamk.scoretrack.module.core.entities.user.client.dto.ProfileUpdateDto;
 import com.teamk.scoretrack.module.core.entities.user.client.service.i18n.ProfilePageTranslatorService;

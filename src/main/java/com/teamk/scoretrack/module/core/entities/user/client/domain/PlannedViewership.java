@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.BiMap;
 import com.teamk.scoretrack.module.commons.util.enums.EnumUtils;
 import com.teamk.scoretrack.module.commons.util.enums.convert.IEnumConvert;
-import com.teamk.scoretrack.module.core.entities.SportAPI;
+import com.teamk.scoretrack.module.core.entities.sport_api.SportAPI;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;

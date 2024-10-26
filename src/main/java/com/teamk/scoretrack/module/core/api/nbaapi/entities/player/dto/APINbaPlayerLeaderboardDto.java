@@ -1,5 +1,7 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.player.dto;
 
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamShortDto;
+
 public class APINbaPlayerLeaderboardDto {
     private String valueAvg;
     private String id;
@@ -7,7 +9,7 @@ public class APINbaPlayerLeaderboardDto {
     private String lastName;
     private String rank;
     private String imgUrl;
-    private TeamShortDto team;
+    private APINbaTeamShortDto team;
 
     public String getValueAvg() {
         return valueAvg;
@@ -57,13 +59,11 @@ public class APINbaPlayerLeaderboardDto {
         this.imgUrl = imgUrl;
     }
 
-    public TeamShortDto getTeam() {
+    public APINbaTeamShortDto getTeam() {
         return team;
     }
 
-    public void setTeam(TeamShortDto team) {
+    public void setTeam(APINbaTeamShortDto team) {
         this.team = team;
     }
-
-    public record TeamShortDto(String name, String logo, String code, String id) {}
 }

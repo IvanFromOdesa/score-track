@@ -9,7 +9,7 @@ public class PlayerStats extends Stats {
     private TeamId team;
     private PlayerId player;
     private PlayerGamePosition position;
-    private int minutes;
+    private double minutes;
 
     public GameId getGame() {
         return game;
@@ -43,11 +43,11 @@ public class PlayerStats extends Stats {
         this.position = position;
     }
 
-    public int getMinutes() {
+    public double getMinutes() {
         return minutes;
     }
 
-    public void setMinutes(int minutes) {
+    public void setMinutes(double minutes) {
         this.minutes = minutes;
     }
 

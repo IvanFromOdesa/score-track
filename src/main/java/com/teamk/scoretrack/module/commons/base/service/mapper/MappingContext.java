@@ -74,6 +74,16 @@ public class MappingContext<ENTITY extends IdAware<?>, DTO> {
             return this;
         }
 
+        public <ARG_FROM_TYPE, ARG_TO_TYPE> Builder addMappingFieldConditionOnEntity(Condition<ARG_FROM_TYPE, ARG_TO_TYPE> condition, SourceGetter<DTO> getter, DestinationSetter<ENTITY, ARG_TO_TYPE> setter) {
+            getDtoToEntity().addFieldCondition(condition, getter, setter);
+            return this;
+        }
+
+        public <ARG_FROM_TYPE, ARG_TO_TYPE> Builder addMappingFieldConditionOnDto(Condition<ARG_FROM_TYPE, ARG_TO_TYPE> condition, SourceGetter<ENTITY> getter, DestinationSetter<DTO, ARG_TO_TYPE> setter) {
+            getEntityToDto().addFieldCondition(condition, getter, setter);
+            return this;
+        }
+
         public <ARG_FROM_TYPE, ARG_TO_TYPE> Builder addFieldConverterOnEntity(Converter<ARG_FROM_TYPE, ARG_TO_TYPE> converter, SourceGetter<DTO> getter, DestinationSetter<ENTITY, ARG_TO_TYPE> setter) {
             getDtoToEntity().addFieldConverter(converter, getter, setter);
             return this;

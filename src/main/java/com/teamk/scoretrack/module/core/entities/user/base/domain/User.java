@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.base.domain;
 
-import com.teamk.scoretrack.module.core.entities.SportAPI;
+import com.teamk.scoretrack.module.core.entities.sport_api.SportAPI;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ViewershipPlan;
 import com.teamk.scoretrack.module.core.entities.user.support.domain.SupportUser;
@@ -42,8 +42,6 @@ public class User extends AuthenticationIdentifier implements IUserAware {
         this.preferredLang = preferredLang;
     }
 
-    // FIXME this and other helper methods that are currently tied to domain classes may be moved to a separate classes,
-    //  although overall just a minor thing
     public void setDefaultLanguageAndAuth(AuthenticationBean authentication) {
         setAuthenticationBean(authentication);
         this.setPreferredLang(Language.byCode(LocaleContextHolder.getLocale().getLanguage()));

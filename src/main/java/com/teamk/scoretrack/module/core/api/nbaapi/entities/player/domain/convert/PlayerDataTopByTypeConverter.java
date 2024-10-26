@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class PlayerDataTopByTypeConverter implements Converter<String, PlayerDataStatCategoryInfoHelper> {
     @Override
     public PlayerDataStatCategoryInfoHelper convert(String source) {
-        return PlayerDataStatCategoryInfoHelper.byFieldName(source);
+        return PlayerDataStatCategoryInfoHelper.byCategoryName(source);
     }
 }

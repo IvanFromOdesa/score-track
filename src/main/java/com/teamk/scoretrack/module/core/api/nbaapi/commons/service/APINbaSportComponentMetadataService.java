@@ -9,7 +9,7 @@ import com.teamk.scoretrack.module.core.api.nbaapi.commons.dto.APINbaHelpData;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.dto.APINbaSportComponentsMetadata;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.service.convert.APINbaComponentMetadataConvertService;
 import com.teamk.scoretrack.module.core.api.nbaapi.commons.service.i18n.APINbaSportComponentTranslatorService;
-import com.teamk.scoretrack.module.core.entities.SportAPI;
+import com.teamk.scoretrack.module.core.entities.sport_api.SportAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -4,7 +4,7 @@ export interface UiHint {
     className: string | null;
 }
 
-export interface UiWrapperResponse {
-    value: string;
+export interface UiWrapperResponse<T> {
+    value: T;
     uiText: string;
 }

@@ -5,7 +5,7 @@ import {
     SportComponentsMetadataMap
 } from "../../../common/base/models/sport-components.metadata.model";
 import {ValidateKeys} from "common/base/models/generic.model";
-import {ApiNbaPlayersSportComponentsHelpData} from "../../players/models/player.stats.model";
+import {ApiNbaPlayersSportComponentsHelpData} from "../../players/models/player.sc.model";
 import {ApiNbaTeamsSportComponentsHelpData} from "../../teams/models/team.stats.model";
 
 export class ApiNbaSportComponentsMetadataContainer implements ApiSportComponentMetadataContainer<ApiNbaSportComponentsMetadataContainer> {

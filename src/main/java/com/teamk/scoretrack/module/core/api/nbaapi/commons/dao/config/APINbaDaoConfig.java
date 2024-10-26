@@ -5,6 +5,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.teamk.scoretrack.module.commons.mongo.convert.MongoReadingConverter;
 import org.bson.UuidRepresentation;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
@@ -15,9 +16,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "com.teamk.scoretrack.module.core.api.nbaapi")
@@ -46,5 +49,10 @@ public class APINbaDaoConfig {
     @Bean(name = NAME + "MongoDBFactory")
     public MongoDatabaseFactory mongoDatabaseFactory(@Qualifier(CLIENT) MongoClient mongoClient, @Qualifier(PROPS) MongoProperties mongoProperties) {
         return new SimpleMongoClientDatabaseFactory(mongoClient, mongoProperties.getDatabase());
+    }
+
+    @Bean(name = NAME + "MongoCustomConversions")
+    public MongoCustomConversions mongoCustomConversions(List<MongoReadingConverter<?>> converters) {
+        return new MongoCustomConversions(converters);
     }
 }

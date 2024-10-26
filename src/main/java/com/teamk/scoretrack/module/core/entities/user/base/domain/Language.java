@@ -10,11 +10,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 
 public enum Language implements IEnumConvert<String, Language> {
-    ENGLISH("0", "en", "English", "Please select the language", Locale.US, DateTimeFormatter.RFC_1123_DATE_TIME.withZone(Zones.FROM_UTC).withLocale(Locale.ENGLISH)),
-    UKRAINIAN("1", "ukr", "Українська", "Будь ласка, оберіть мову", Locales.UKRAINE, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withLocale(Locale.ENGLISH).withZone(Zones.EET)),
-    UNDEFINED(CODE_UNDEFINED_STR, "", "", "", null, null);
+    ENGLISH("0", "en-US", "English", "Please select the language", Locale.US,
+            getEnglishDateTimeFormatter(),
+            DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+    UKRAINIAN("1", "ukr", "Українська", "Будь ласка, оберіть мову", Locales.UKRAINE,
+            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withZone(Zones.EET).withLocale(Locale.ENGLISH),
+            DateTimeFormatter.ISO_LOCAL_DATE),
+    DEFAULT("999", "en", "English", "Please select the language", Locale.ENGLISH,
+            getEnglishDateTimeFormatter(),
+            DateTimeFormatter.ISO_LOCAL_DATE),
+    UNDEFINED(CODE_UNDEFINED_STR, "", "", "", null, null, null);
 
     public static final BiMap<String, Language> LOOKUP_MAP = EnumUtils.createLookup(Language.class);
 
@@ -24,9 +32,17 @@ public enum Language implements IEnumConvert<String, Language> {
     private final String imagePath;
     private final String helpText;
     private final Locale locale;
+    /**
+     * DateTime with a zone offset (Instant, OffsetDateTime, ZonedDateTime)
+     */
     private final DateTimeFormatter dtFormatter;
+    /**
+     * Date without a zone offset (LocalDate)
+     */
+    private final DateTimeFormatter dateFormatter;
 
-    Language(String code, String alias, String name, String helpText, Locale locale, DateTimeFormatter dtFormatter) {
+    Language(String code, String alias, String name, String helpText, Locale locale,
+             DateTimeFormatter dtFormatter, DateTimeFormatter dateFormatter) {
         this.code = code;
         this.alias = alias;
         this.name = name;
@@ -34,6 +50,7 @@ public enum Language implements IEnumConvert<String, Language> {
         this.locale = locale;
         this.imagePath = locale != null ? "/lang-icons/" + locale.getLanguage().toLowerCase() + ".svg" : "";
         this.dtFormatter = dtFormatter;
+        this.dateFormatter = dateFormatter;
     }
 
     public String getCode() {
@@ -64,16 +81,27 @@ public enum Language implements IEnumConvert<String, Language> {
         return dtFormatter;
     }
 
-    public static Language byIsoCode(String isoCode) {
-        return LOOKUP_MAP.values().stream().filter(language -> {
-            Locale locale = language.locale;
-            return locale != null && locale.getCountry().equals(isoCode);
-        }).findFirst().orElse(Language.UNDEFINED);
+    public DateTimeFormatter getDateFormatter() {
+        return dateFormatter;
     }
 
+    public static Language byIsoCode(String isoCode) {
+        return getLanguage(l -> {
+            Locale locale = l.locale;
+            return locale != null && locale.getCountry().equals(isoCode);
+        });
+    }
+
+    public static Language byLocale(Locale locale) {
+        return getLanguage(l -> l.locale != null && l.locale.equals(locale));
+    }
 
     public static Language byAlias(String alias) {
-        return LOOKUP_MAP.values().stream().filter(l -> l.getAlias().equals(alias)).findFirst().orElse(Language.UNDEFINED);
+        return getLanguage(l -> l.getAlias().equals(alias));
+    }
+
+    private static Language getLanguage(Predicate<Language> p) {
+        return LOOKUP_MAP.values().stream().filter(p).findFirst().orElse(Language.UNDEFINED);
     }
 
     public static List<Language> supported() {
@@ -89,7 +117,11 @@ public enum Language implements IEnumConvert<String, Language> {
     }
 
     public Language getValid() {
-        return this == UNDEFINED ? ENGLISH : this;
+        return this == UNDEFINED ? DEFAULT : this;
+    }
+
+    private static DateTimeFormatter getEnglishDateTimeFormatter() {
+        return DateTimeFormatter.RFC_1123_DATE_TIME.withZone(Zones.FROM_UTC).withLocale(Locale.ENGLISH);
     }
 
     static class Locales {

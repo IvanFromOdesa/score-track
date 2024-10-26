@@ -20,6 +20,14 @@ public class AuthenticationLockService extends AbstractJpaEntityService<Authenti
         this.authenticationEntityService = authenticationEntityService;
     }
 
+    /**
+     * Locks the account if no log in within the last 15 days has been made.
+     * If there's a lock history for the account, rewrites unlockedAt date and saves.
+     * If no lock history has been associated with the account, creates and saves new lock.
+     * @param authentication account to be locked
+     * @param lockDuration lock duration
+     * @return true if the account has been successfully locked, otherwise returns false.
+     */
     public boolean lock(AuthenticationBean authentication, long lockDuration) {
         boolean recentAuthenticationPresent = authentication.isRecentAuthenticationPresent();
         if (!recentAuthenticationPresent) {

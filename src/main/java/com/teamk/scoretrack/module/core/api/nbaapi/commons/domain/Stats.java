@@ -2,6 +2,7 @@ package com.teamk.scoretrack.module.core.api.nbaapi.commons.domain;
 
 import com.teamk.scoretrack.module.commons.base.domain.IdAware;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Stats implements IdAware<UUID> {
@@ -189,5 +190,29 @@ public class Stats implements IdAware<UUID> {
 
     public void setPlusMinus(int plusMinus) {
         this.plusMinus = plusMinus;
+    }
+
+    public static List<String> getFieldNames() {
+        return List.of(
+                "points",
+                "fgm",
+                "fga",
+                "fgp",
+                "ftm",
+                "fta",
+                "ftp",
+                "tpm",
+                "tpa",
+                "tpp",
+                "offReb",
+                "defReb",
+                "totReb",
+                "assists",
+                "pFouls",
+                "steals",
+                "turnovers",
+                "blocks",
+                "plusMinus"
+        );
     }
 }

@@ -31,4 +31,9 @@ public final class HttpUtil {
         }
         return xfHeader.split(",")[0];
     }
+
+    public static HttpServletRequest getCurrentHttpRequest() {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return requestAttributes != null ? requestAttributes.getRequest() : null;
+    }
 }

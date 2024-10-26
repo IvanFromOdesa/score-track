@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -62,7 +63,7 @@ public class AuthenticationSignUpService {
         AuthenticationBean authenticationBean = getDefault(dto);
         userProcessingDelegator.processEvent(new FanProcessingEvent(FanProcessingContext.getDefault(authenticationBean), UserProcessingEvent.OperationType.CREATE));
         manualCacheManager.cache(CacheStore.AUTH_CACHE_STORE, authenticationBean.getId(), authenticationBean);
-        sendActivationEmail(dto.email(), activationLink, generateActivationToken(authenticationBean));
+        sendActivationEmail(true, dto.email(), activationLink, generateActivationToken(authenticationBean));
         return translatorService.getMessage("success.message");
     }
 
@@ -80,6 +81,7 @@ public class AuthenticationSignUpService {
             try {
                 AuthenticationBean byId = manualCacheManager.evict(CacheStore.AUTH_CACHE_STORE, authId, AuthenticationBean.class, () -> authenticationEntityService.getByIdOrThrow(authId));
                 byId.setStatus(AuthenticationStatus.ACTIVATED);
+                byId.setLastConfirmedOn(Instant.now());
                 authenticationEntityService.save(byId);
                 displayAlertToSession.run();
                 tokenService.evict(uuid);
@@ -94,12 +96,15 @@ public class AuthenticationSignUpService {
     }
 
     public void sendActivationEmail(AuthenticationBean authenticationBean, String link) {
-        sendActivationEmail(authenticationBean.getEmail(), link, generateActivationToken(authenticationBean));
+        sendActivationEmail(false, authenticationBean.getEmail(), link, generateActivationToken(authenticationBean));
     }
 
-    private void sendActivationEmail(String recipient, String link, UUID token) {
+    private void sendActivationEmail(boolean signup, String recipient, String link, UUID token) {
         String toActivate = link.concat("/%s".formatted(UUIDUtils.toBase64Url(token)));
         NotificationEmail email = emailPrepareService.prepareEmail(recipient, translatorService, toActivate, toActivate, TimeUnit.HOURS.convert(ActivationToken.TTL, TimeUnit.SECONDS));
+        if (signup) {
+            email.setMessage(translatorService.getMessage("mail.signup").concat(email.getMessage()));
+        }
         emailService.sendEmail(email);
     }
 }

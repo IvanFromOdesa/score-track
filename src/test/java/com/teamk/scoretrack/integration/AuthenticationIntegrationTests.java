@@ -23,7 +23,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 // TODO: adequate testing
 @WebMvcTest(value = AuthenticationController.class, useDefaultFilters = false)
 @ContextConfiguration(classes = SpringSecurityWebAuxTestConfig.class)
-public class AuthenticationIntegrationTests {
+class AuthenticationIntegrationTests {
     @Autowired
     private MockMvc mvc;
     @MockBean

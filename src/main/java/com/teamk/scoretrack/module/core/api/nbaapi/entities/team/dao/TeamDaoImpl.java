@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -38,6 +37,7 @@ public class TeamDaoImpl implements TeamDaoMongoProjection {
         return one != null ? one.getStatsBySeason() : Collections.emptyMap();
     }
 
+    @Override
     public Map<SupportedSeasons, TeamStats> findAvgTeamStatsBySeason() {
         final String statsBySeason = "statsBySeason";
         final String arrayValue = statsBySeason.concat(".v");
@@ -55,7 +55,7 @@ public class TeamDaoImpl implements TeamDaoMongoProjection {
 
     private static ProjectionOperation getProjectionOperation() {
         ProjectionOperation projectToArray = project().andExclude("_id").and("$_id").as("season");
-        for (String field: getFieldNames()) {
+        for (String field: TeamStats.getFieldNames()) {
             projectToArray = projectToArray.and(field).as("avgStats." + field);
         }
         return projectToArray;
@@ -63,41 +63,10 @@ public class TeamDaoImpl implements TeamDaoMongoProjection {
 
     private static GroupOperation groupByKey(String arrayValue) {
         GroupOperation group = group("statsBySeason".concat(".k"));
-        for (String field : getFieldNames()) {
+        for (String field : TeamStats.getFieldNames()) {
             group = group.avg(arrayValue.concat(".%s").formatted(field)).as(field);
         }
         return group;
-    }
-
-    private static List<String> getFieldNames() {
-        return List.of(
-                "games",
-                "fastBreakPoints",
-                "pointsInPaint",
-                "biggestLead",
-                "secondChancePoints",
-                "pointsOffTurnovers",
-                "longestRun",
-                "points",
-                "fgm",
-                "fga",
-                "fgp",
-                "ftm",
-                "fta",
-                "ftp",
-                "tpm",
-                "tpa",
-                "tpp",
-                "offReb",
-                "defReb",
-                "totReb",
-                "assists",
-                "pFouls",
-                "steals",
-                "turnovers",
-                "blocks",
-                "plusMinus"
-        );
     }
 
     public record Options(String externalId) {

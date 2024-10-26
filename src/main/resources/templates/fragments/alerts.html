@@ -13,4 +13,20 @@
         </div>
     </div>
 </div>
+<div th:fragment="alert-warning">
+    <div th:if="${alertWarning}" class="container">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <span th:utext="${alertWarning}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<div th:fragment="alert-error">
+    <div th:if="${alertError}" class="container">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:utext="${alertError}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 </body>

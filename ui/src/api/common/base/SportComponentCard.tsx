@@ -18,11 +18,11 @@ const SportComponentCard: React.FC<ISportComponentCardProps> = ({...props}) => {
 
     return (
         <>
-            <Card className="game-card h-100">
+            <Card className="sport-card h-100">
                 <div className="text-center m-2">
                     <Card.Img variant="top" src={props.img} style={{width: '120px', height:'120px'}} loading={"lazy"}/>
                 </div>
-                <Card.Body className="game-card-body d-flex flex-column">
+                <Card.Body className="sport-card-body d-flex flex-column">
                     <Card.Title className="text-center">
                         <h4>{props.title}</h4>
                     </Card.Title>

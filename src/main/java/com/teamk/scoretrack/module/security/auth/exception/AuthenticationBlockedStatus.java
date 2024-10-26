@@ -6,10 +6,10 @@ public enum AuthenticationBlockedStatus {
     /**
      * Unresolved {@link AuthenticationLock}
      */
-    BLOCKED_BAD_CREDENTIALS("creds.locked"),
+    BLOCKED_BAD_CREDENTIALS("auth.creds.locked"),
     BLOCKED_TOS("tos.block"),
     BLOCKED_SUSPICIOUS_ACTIVITY("activity.unusual"),
-    DEFAULT("creds.invalid");
+    DEFAULT("auth.error.default");
 
     private final String code;
 

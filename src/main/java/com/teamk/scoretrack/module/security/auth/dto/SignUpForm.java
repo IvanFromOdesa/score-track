@@ -3,8 +3,7 @@ package com.teamk.scoretrack.module.security.auth.dto;
 public class SignUpForm {
     private String loginname;
     private String email;
-    private String password;
-    private String confirmPassword;
+    private PasswordForm pwdForm;
     private boolean tosChecked;
 
     public String getLoginname() {
@@ -23,20 +22,12 @@ public class SignUpForm {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public PasswordForm getPwdForm() {
+        return pwdForm;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
+    public void setPwdForm(PasswordForm pwdForm) {
+        this.pwdForm = pwdForm;
     }
 
     public boolean isTosChecked() {

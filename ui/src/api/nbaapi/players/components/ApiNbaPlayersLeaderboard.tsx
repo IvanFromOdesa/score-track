@@ -10,6 +10,9 @@ import {ApiNbaSportComponentsMetadataContainer} from "../../common/models/nbaapi
 import {DropdownSeasons, DropdownStatCategories} from "../../common/components/Dropdowns";
 import {useActiveSeason, useActiveStatCategory} from "../../common/hooks";
 import {Loading} from "common/load/Loading";
+import {useNavigate} from "react-router-dom";
+import {API_NBA_PLAYER_PAGE} from "common/base/routes/routes";
+import './leaderboard.css';
 
 const ApiNbaPlayersLeaderboard: React.FC = () => {
     const {rootStore: {uiStore: { thisApiSportComponentMetadataContainer } } } = useStoreContext();
@@ -18,6 +21,7 @@ const ApiNbaPlayersLeaderboard: React.FC = () => {
     const statCategories = playersHelpData?.statCategories;
     const [getActiveSeason, setActiveSeason] = useActiveSeason(seasons?.at(0)?.value);
     const [getActiveStatCategory, setActiveStatCategory] = useActiveStatCategory(statCategories?.at(0)?.value);
+    const navigate = useNavigate();
 
     const {data, isLoading} = useQuery({
         queryKey: [PLAYERS_LEADERBOARD, {season: getActiveSeason(), type: getActiveStatCategory()}],
@@ -41,7 +45,7 @@ const ApiNbaPlayersLeaderboard: React.FC = () => {
             const chunk = players.slice(i, i + chunkSize)
                 .map((player, idx) => {
                     const team = player.team;
-                    return <Row key={idx} className="align-items-center">
+                    return <Row key={idx} className="align-items-center player-row" onClick={() => navigate(API_NBA_PLAYER_PAGE.replace(':id', player.id))}>
                         <Col sm={1} style={{color: topColors[player.rank] || undefined }}><h3>{player.rank}</h3></Col>
                         <Col sm={3}><Image src={player.imgUrl} width={111} height={64} /></Col>
                         <Col>

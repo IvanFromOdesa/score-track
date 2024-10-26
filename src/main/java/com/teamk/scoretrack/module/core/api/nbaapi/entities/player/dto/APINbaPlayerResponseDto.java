@@ -1,13 +1,13 @@
 package com.teamk.scoretrack.module.core.api.nbaapi.entities.player.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.teamk.scoretrack.module.core.api.commons.sport_components.dto.SportComponentResponseDto;
+import com.teamk.scoretrack.module.core.api.nbaapi.entities.team.dto.APINbaTeamExtendedDto;
 
 import java.time.LocalDate;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class APINbaPlayerResponseDto extends SportComponentResponseDto {
+public class APINbaPlayerResponseDto {
     public String id;
     public String firstname;
     public String lastname;
@@ -18,6 +18,8 @@ public class APINbaPlayerResponseDto extends SportComponentResponseDto {
     public String college;
     public String affiliation;
     public Map<String, League> leagues;
+    public Map<String, APINbaTeamExtendedDto> teamBySeason;
+    public String imgUrl;
 
     public String getId() {
         return id;
@@ -99,8 +101,24 @@ public class APINbaPlayerResponseDto extends SportComponentResponseDto {
         this.leagues = leagues;
     }
 
+    public Map<String, APINbaTeamExtendedDto> getTeamBySeason() {
+        return teamBySeason;
+    }
+
+    public void setTeamBySeason(Map<String, APINbaTeamExtendedDto> teamBySeason) {
+        this.teamBySeason = teamBySeason;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public record League(int jersey, boolean active, String pos) {}
+    public record League(int jersey, boolean active, APINbaPlayerPositionDto pos) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record BirthData(LocalDate date, String country) {}

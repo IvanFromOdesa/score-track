@@ -14,7 +14,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import java.util.List;
 
 @TestConfiguration
-public class SpringSecurityWebAuxTestConfig {
+class SpringSecurityWebAuxTestConfig {
 
     @Bean
     @Primary

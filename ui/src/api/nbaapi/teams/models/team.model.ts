@@ -15,6 +15,24 @@ export interface ApiNbaTeamShortModel extends ApiNbaIdentifierModel {
     code: string;
 }
 
+export interface ApiNbaTeamExtendedModel extends ApiNbaTeamShortModel {
+    infoHelper: ApiNbaTeamInfoHelper;
+}
+
+export interface ApiNbaTeamInfoHelper {
+    code: string,
+    arena: string,
+    arenaName: string,
+    src: string,
+    colors: ApiNbaTeamColors;
+}
+
+export interface ApiNbaTeamColors {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+}
+
 type LeagueMap = Record<string, League>;
 
 type League = {

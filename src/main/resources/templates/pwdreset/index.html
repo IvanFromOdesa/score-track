@@ -7,6 +7,8 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div th:replace="~{fragments/alerts.html :: alert-info}"></div>
+    <div th:replace="~{fragments/alerts.html :: alert-error}"></div>
     <div class="centered">
         <div class="imgBox">
             <svg class="animated" id="freepik_stories-forgot-password" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" version="1.1" xmlns:svgjs="http://svgjs.com/svgjs">
@@ -15,15 +17,20 @@
         </div>
         <div class="textBox">
             <h2 th:text="${forgotPasswordTitle}"></h2>
-            <form th:action="@{/}">
+            <form th:action="@{/req/reset}" th:object="${pwdResetForm}" method="post" id="pwdResetForm">
                 <div class="input-box">
-                    <input type="email" placeholder=" " required>
+                    <input th:field="*{email}" type="email" placeholder=" " required>
                     <label th:text="${emailTitle}"></label>
                 </div>
-                <button th:text="${submitTitle}" class="baseBtn" type="submit"></button>
+                <button th:text="${submitTitle}" class="baseBtn g-recaptcha" type="submit" th:attr="data-sitekey=${recaptcha_pb_key}" data-callback="onPwdResetSubmit" data-action="/req/reset"></button>
             </form>
         </div>
     </div>
+    <script>
+        function onPwdResetSubmit(token) {
+            document.getElementById("pwdResetForm").submit();
+        }
+    </script>
 </div>
 </body>
 </html>

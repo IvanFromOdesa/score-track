@@ -1,10 +1,11 @@
 import {Dropdown, DropdownButton} from "react-bootstrap";
 import {useStoreContext} from "common/base/stores/store.context";
-import {ApiNbaSeason, ApiNbaStatCategory} from "../models/stats.model";
 import React from "react";
 import {UiWrapperResponse} from "common/base/models/ui.helper.model";
+import {ApiNbaSeason} from "../models/season.model";
+import {ApiNbaStatCategory} from "../models/stat.category.model";
 
-interface DropdownProps<T extends UiWrapperResponse> {
+interface DropdownProps<T extends UiWrapperResponse<string>> {
     items: T[] | undefined,
     activeItem: string | undefined,
     setActiveItem: (s: string | undefined) => void,
@@ -15,7 +16,7 @@ interface DropdownProps<T extends UiWrapperResponse> {
     itemKeyPrefix: string
 }
 
-function GenericDropdown<T extends UiWrapperResponse>({ items, activeItem, setActiveItem, titleKey, selectTitleKey, getItemValue, getItemText, itemKeyPrefix }: DropdownProps<T>) {
+function GenericDropdown<T extends UiWrapperResponse<string>>({ items, activeItem, setActiveItem, titleKey, selectTitleKey, getItemValue, getItemText, itemKeyPrefix }: DropdownProps<T>) {
     const { rootStore: { uiStore: { thisApiSportComponentCommonsHelpText } } } = useStoreContext();
     const helpText = thisApiSportComponentCommonsHelpText();
 

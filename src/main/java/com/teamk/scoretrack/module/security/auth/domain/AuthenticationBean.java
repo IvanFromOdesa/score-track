@@ -1,6 +1,7 @@
 package com.teamk.scoretrack.module.security.auth.domain;
 
 import com.teamk.scoretrack.module.commons.base.domain.Identifier;
+import com.teamk.scoretrack.module.commons.util.CommonsUtil;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.UserPrivilege;
 import com.teamk.scoretrack.module.security.handler.error.authfailure.domain.AuthenticationLock;
@@ -21,7 +22,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.UUID;
 @EntityListeners({ AuditingEntityListener.class })
 public class AuthenticationBean extends Identifier implements ExtendedUserDetails {
     public static final long AUTH_INACTIVITY = 15;
-    private static final long ENABLED_LIMIT = 30;
+    private static final long CONFIRMED_LIMIT = 30;
     private static final long EXPIRED_LIMIT = 365;
     public static final String FK_NAME = "auth_fk";
     public static final String MAPPED_BY = "authenticationBean";
@@ -65,6 +65,7 @@ public class AuthenticationBean extends Identifier implements ExtendedUserDetail
     private User user;
     @LastModifiedDate
     private Instant lastModified;
+    private Instant lastConfirmedOn;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     @LastModifiedBy
@@ -160,6 +161,14 @@ public class AuthenticationBean extends Identifier implements ExtendedUserDetail
         this.lastModified = lastModified;
     }
 
+    public Instant getLastConfirmedOn() {
+        return lastConfirmedOn;
+    }
+
+    public void setLastConfirmedOn(Instant lastConfirmedOn) {
+        this.lastConfirmedOn = lastConfirmedOn;
+    }
+
     public AuthenticationBean getModifiedBy() {
         return modifiedBy;
     }
@@ -236,17 +245,22 @@ public class AuthenticationBean extends Identifier implements ExtendedUserDetail
         return status.isActivated() && lastLogonAfter(AUTH_INACTIVITY);
     }
 
+    @Override
+    public boolean isLastConfirmed() {
+        return lastConfirmedOn != null && lastConfirmedOn.isAfter(CommonsUtil.fromDays(CONFIRMED_LIMIT));
+    }
+
     /**
-     * This is currently used to check if the user activated account from email verification or if the user last logon is within {@link #ENABLED_LIMIT}
+     * This is currently used to check if the user activated account from email verification.
      * @return
      */
     @Override
     public boolean isEnabled() {
-        return status.isActivated() && lastLogonAfter(ENABLED_LIMIT);
+        return status.isActivated();
     }
 
     private boolean lastLogonAfter(Long afterDays) {
-        return trackingData == null || trackingData.getLastLogOn().isAfter(Instant.from(Instant.now().minus(Duration.ofDays(afterDays))));
+        return trackingData == null || trackingData.getLastLogOn().isAfter(CommonsUtil.fromDays(afterDays));
     }
 
     @Override
