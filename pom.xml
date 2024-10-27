@@ -119,6 +119,11 @@
             <artifactId>google-cloud-storage</artifactId>
             <version>2.34.0</version>
         </dependency>
+        <!-- Google oauth -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
         <!-- Docker compose -->
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>

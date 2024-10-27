@@ -1,5 +1,6 @@
 package com.teamk.scoretrack.module.security.firewall.filter;
 
+import com.teamk.scoretrack.module.security.util.HttpUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.HtmlUtils;
@@ -26,10 +28,18 @@ import java.util.stream.Collectors;
 @Component
 public class XSSSanitizerFilter extends OncePerRequestFilter {
     private static final PolicyFactory NONE = new HtmlPolicyBuilder().toFactory();
+    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    private String oauth2GooglePath;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         filterChain.doFilter(new FilteredRequest(request), response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        // We're not running this for the Google's oauth2 flow
+        return HttpUtil.getRequestedUri(request).endsWith(oauth2GooglePath);
     }
 
     // TODO: this only sanitizes application/x-www-form-urlencoded. Add sanitization for application/json.

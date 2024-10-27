@@ -14,6 +14,8 @@ public abstract class AbstractUserProcessingListener<EVENT extends UserProcessin
         // TODO
         if (event.getType().isCreate()) {
             userEntityService.processUserCreation(event.getCtx());
+        } else if (event.getType().isUpdate()) {
+            userEntityService.processUserUpdate(event.getCtx());
         }
     }
 

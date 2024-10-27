@@ -40,6 +40,15 @@
     visibility: hidden !important;
 }
 
+.google-signup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto;
+}
+
 .hints {
     text-align: center;
     margin-top: 6px;
@@ -48,7 +57,7 @@
 .hints .error {
     font-family: "Roboto", serif;
     font-weight: bold;
-    font-size: 1.25rem;
+    font-size: 0.95rem;
     color: crimson;
 }
 

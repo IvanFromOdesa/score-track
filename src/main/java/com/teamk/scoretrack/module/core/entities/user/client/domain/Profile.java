@@ -1,6 +1,7 @@
 package com.teamk.scoretrack.module.core.entities.user.client.domain;
 
 import com.teamk.scoretrack.module.commons.base.domain.Identifier;
+import com.teamk.scoretrack.module.core.entities.io.img.ExternalImageData;
 import com.teamk.scoretrack.module.core.entities.io.img.ImageData;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -30,6 +31,9 @@ public class Profile extends Identifier {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_img_id", referencedColumnName = "id")
     private ImageData profileImg;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "external_profile_img_id", referencedColumnName = "id")
+    private ExternalImageData externalProfileImg;
     @Column(length = Length.LONG)
     private String bio;
     /**
@@ -97,6 +101,14 @@ public class Profile extends Identifier {
 
     public void setProfileImg(ImageData profileImg) {
         this.profileImg = profileImg;
+    }
+
+    public ExternalImageData getExternalProfileImg() {
+        return externalProfileImg;
+    }
+
+    public void setExternalProfileImg(ExternalImageData externalProfileImg) {
+        this.externalProfileImg = externalProfileImg;
     }
 
     public String getBio() {

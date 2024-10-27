@@ -4,6 +4,7 @@ import com.teamk.scoretrack.module.commons.base.domain.Identifier;
 import com.teamk.scoretrack.module.commons.util.CommonsUtil;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.User;
 import com.teamk.scoretrack.module.core.entities.user.base.domain.UserPrivilege;
+import com.teamk.scoretrack.module.security.oauth2.external.ExternalAuthentication;
 import com.teamk.scoretrack.module.security.handler.error.authfailure.domain.AuthenticationLock;
 import com.teamk.scoretrack.module.security.history.domain.AuthenticationHistory;
 import com.teamk.scoretrack.module.security.token.util.UUIDUtils;
@@ -80,6 +81,8 @@ public class AuthenticationBean extends Identifier implements ExtendedUserDetail
      */
     @OneToMany(mappedBy = MAPPED_BY, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AuthenticationHistory> authenticationHistories;
+    @OneToMany(mappedBy = MAPPED_BY, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ExternalAuthentication> externalAuthentications;
 
     public UUID getExternalId() {
         return externalId;
@@ -193,15 +196,24 @@ public class AuthenticationBean extends Identifier implements ExtendedUserDetail
         this.trackingData = trackingData;
     }
 
+    public static AuthenticationBean getDefault(String loginname, String email) {
+        return getDefault(loginname, null, email, AuthenticationStatus.ACTIVATED, AuthenticationType.EXTERNAL_OAUTH);
+    }
+
     public static AuthenticationBean getDefault(String loginname, String hash, String email) {
+        return getDefault(loginname, hash, email, AuthenticationStatus.CREATED, AuthenticationType.EMAIL);
+    }
+
+    public static AuthenticationBean getDefault(String loginname, String hash, String email,
+                                                AuthenticationStatus status, AuthenticationType type) {
         AuthenticationBean authenticationBean = new AuthenticationBean();
         authenticationBean.setExternalId(UUIDUtils.v5(loginname));
         authenticationBean.setLoginname(loginname);
         authenticationBean.setPassword(hash);
         authenticationBean.setEmail(email);
-        authenticationBean.setStatus(AuthenticationStatus.CREATED);
+        authenticationBean.setStatus(status);
         authenticationBean.setPs(PasswordStatus.NEW);
-        authenticationBean.setAuthType(AuthenticationType.EMAIL);
+        authenticationBean.setAuthType(type);
         return authenticationBean;
     }
 

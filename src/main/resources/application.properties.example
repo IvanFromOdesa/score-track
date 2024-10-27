@@ -27,6 +27,16 @@ recaptcha.public-key=${RECAPTCHA_PB_KEY}
 recaptcha.connection-timeout=${WEB_DEFAULT_CONNECT_TIMEOUT}
 recaptcha.read-timeout=${WEB_DEFAULT_READ_TIMEOUT}
 
+# Google OAuth2
+spring.security.oauth2.client.registration.google.client-id=${GOOGLE_OAUTH2_CLIENT_ID}
+spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_OAUTH2_CLIENT_SECRET}
+spring.security.oauth2.client.registration.google.scope=openid, profile, email
+spring.security.oauth2.client.registration.google.redirect-uri=http://localhost:8080/login/oauth2/code/google
+spring.security.oauth2.client.provider.google.authorization-uri=https://accounts.google.com/o/oauth2/auth
+spring.security.oauth2.client.provider.google.token-uri=https://oauth2.googleapis.com/token
+spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleapis.com/oauth2/v3/userinfo
+spring.security.oauth2.client.provider.google.jwk-set-uri=https://www.googleapis.com/oauth2/v3/certs
+
 # Google cloud
 google.cloud.auth=certs/gcs_key.json
 google.cloud.project-id=

@@ -2,6 +2,7 @@ package com.teamk.scoretrack.module.core.api.commons.init.service.data;
 
 import com.teamk.scoretrack.module.core.api.commons.init.dto.ClientUserDataDto;
 import com.teamk.scoretrack.module.core.entities.io.AccessStatus;
+import com.teamk.scoretrack.module.core.entities.io.img.ExternalImageData;
 import com.teamk.scoretrack.module.core.entities.io.img.ImageData;
 import com.teamk.scoretrack.module.core.entities.sport_type.SportTypeDtoService;
 import com.teamk.scoretrack.module.core.entities.user.client.domain.ClientUser;
@@ -45,7 +46,9 @@ public class ClientUserDataDtoPopulateService extends UserDataDtoPopulateService
             dto.setLastName(profile.getLastName());
             dto.setDob(profile.getDob());
             dto.setNickname(profile.getNickname());
-            dto.setProfileImg(getProfileImg(profile.getProfileImg()));
+            dto.setProfileImg(getProfileImg(
+                    profile.getProfileImg(),
+                    profile.getExternalProfileImg()));
             dto.setBio(profile.getBio());
             dto.setSportPreference(
                     profile.getSportPreference().stream()
@@ -64,7 +67,8 @@ public class ClientUserDataDtoPopulateService extends UserDataDtoPopulateService
         socials.get().filter(s -> s.getSocialId().getSocialType().isX()).findFirst().ifPresent(s -> dto.setxLink(s.buildSocialLink()));
     }
 
-    private static ClientUserDataDto.ProfileImgDto getProfileImg(@Nullable ImageData imageEntity) {
+    private static ClientUserDataDto.ProfileImgDto getProfileImg(@Nullable ImageData imageEntity,
+                                                                 @Nullable ExternalImageData externalImageData) {
         ClientUserDataDto.ProfileImgDto profileImgDto = new ClientUserDataDto.ProfileImgDto();
         if (imageEntity != null) {
             AccessStatus accessStatus = imageEntity.getAccessStatus();
@@ -72,6 +76,9 @@ public class ClientUserDataDtoPopulateService extends UserDataDtoPopulateService
             if (accessStatus.isAccessible()) {
                 profileImgDto.setUrl(imageEntity.getExternalUrl());
             }
+        } else if (externalImageData != null) {
+            profileImgDto.setUrl(externalImageData.getPublicUrl());
+            profileImgDto.setAccessStatus(AccessStatus.ACCESSIBLE);
         } else {
             profileImgDto.setAccessStatus(AccessStatus.UNDEFINED);
         }

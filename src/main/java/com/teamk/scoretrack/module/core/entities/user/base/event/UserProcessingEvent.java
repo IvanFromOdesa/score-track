@@ -25,5 +25,9 @@ public abstract class UserProcessingEvent<CTX extends UserProcessingContext> {
         public boolean isCreate() {
             return this == CREATE;
         }
+
+        public boolean isUpdate() {
+            return this == UPDATE;
+        }
     }
 }

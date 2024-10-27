@@ -1,5 +1,6 @@
 package com.teamk.scoretrack.module.core.entities.user.client.service;
 
+import com.teamk.scoretrack.module.core.entities.io.img.ExternalImageData;
 import com.teamk.scoretrack.module.core.entities.sport_api.SportAPI;
 import com.teamk.scoretrack.module.core.entities.user.base.dao.AbstractUserDao;
 import com.teamk.scoretrack.module.core.entities.user.base.service.AbstractUserEntityService;
@@ -21,14 +22,35 @@ public abstract class AbstractClientUserEntityService<USER extends ClientUser, D
         AuthenticationBean authenticationBean = ctx.authenticationBean();
         user.setViewershipPlan(getOrDefaultVP(ctx.getViewershipCreationContext()));
         user.setDefaultLanguageAndAuth(authenticationBean);
-        user.setProfile(createProfile(authenticationBean));
+        user.setProfile(createProfile(authenticationBean, ctx));
         return user;
     }
 
-    protected Profile createProfile(AuthenticationBean authenticationBean) {
+    protected Profile createProfile(AuthenticationBean authenticationBean, USER_CTX ctx) {
         Profile profile = new Profile();
-        profile.setNickname(authenticationBean.getUsername());
+        ClientUserProcessingContext.ProfileCreationContext profileCreationContext = ctx.getProfileCreationContext();
+        String username = authenticationBean.getUsername();
+        if (profileCreationContext != null) {
+            String nickname = profileCreationContext.getNickname();
+            profile.setNickname(nickname != null ? nickname : username);
+            profile.setFirstName(profileCreationContext.getFirstName());
+            profile.setLastName(profileCreationContext.getLastName());
+            profile.setDob(profileCreationContext.getDob());
+            profile.setBio(profileCreationContext.getBio());
+            profile.setExternalProfileImg(getExternalProfileImg(
+                    profileCreationContext.getImageUrl(),
+                    authenticationBean));
+        } else {
+            profile.setNickname(username);
+        }
         return profile;
+    }
+
+    private static ExternalImageData getExternalProfileImg(String url, AuthenticationBean authentication) {
+        ExternalImageData profileImg = new ExternalImageData();
+        profileImg.setPublicUrl(url);
+        profileImg.setUploadedBy(authentication);
+        return profileImg;
     }
 
     protected ViewershipPlan getOrDefaultVP(ClientUserProcessingContext.ViewershipCreationContext ctx) {

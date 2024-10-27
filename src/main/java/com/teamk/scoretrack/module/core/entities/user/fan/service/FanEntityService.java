@@ -15,6 +15,14 @@ public class FanEntityService extends AbstractClientUserEntityService<Fan, FanDa
     }
 
     @Override
+    public void processUserUpdate(FanProcessingContext ctx) {
+        baseTransactionManager.doInNewTransaction(
+                () -> update(processClientUser(ctx, new Fan()),
+                () -> dao.findByAuthenticationBean(ctx.authenticationBean()))
+        );
+    }
+
+    @Override
     @Autowired
     protected void setDao(FanDao dao) {
         this.dao = dao;

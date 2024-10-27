@@ -24,11 +24,12 @@ import java.time.Instant;
 @Component(AuthSuccessHandler.NAME)
 public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     public static final String NAME = "authSuccessHandler";
-    private final AuthenticationTrackingDataEntityService authenticationTrackingDataEntityService;
-    private final AuthenticationHolderService authenticationHolderService;
-    private final BadCredentialsAuthAttemptService badCredentialsAuthAttemptService;
-    private final IpAuthenticationAttemptService ipAuthenticationAttemptService;
-    private final RecaptchaResponseResolveService recaptchaResponseResolveService;
+    protected final AuthenticationTrackingDataEntityService authenticationTrackingDataEntityService;
+    protected final AuthenticationHolderService authenticationHolderService;
+    protected final BadCredentialsAuthAttemptService badCredentialsAuthAttemptService;
+    protected final IpAuthenticationAttemptService ipAuthenticationAttemptService;
+    protected final RecaptchaResponseResolveService recaptchaResponseResolveService;
+    private boolean requireRecaptchaCheck;
 
     @Autowired
     public AuthSuccessHandler(AuthenticationTrackingDataEntityService authenticationTrackingDataEntityService,
@@ -41,6 +42,7 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
         this.badCredentialsAuthAttemptService = badCredentialsAuthAttemptService;
         this.ipAuthenticationAttemptService = ipAuthenticationAttemptService;
         this.recaptchaResponseResolveService = recaptchaResponseResolveService;
+        this.requireRecaptchaCheck = true;
         setAlwaysUseDefaultTargetUrl(true);
     }
 
@@ -54,7 +56,7 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
                 UiAlertDisplayOptionsUtils.addToHttpSession(request.getSession(), UiAlertDisplayOptions::setFirstLogIn);
             }
         });
-        if (recaptchaResponseResolveService.resolve(request, HttpUtil.getClientIP(request)).isBlocked()) {
+        if (requireRecaptchaCheck && recaptchaResponseResolveService.resolve(request, HttpUtil.getClientIP(request)).isBlocked()) {
             OtpRedirectHandler.onBlockStatus(request, response);
         } else {
             super.onAuthenticationSuccess(request, response, authentication);
@@ -64,5 +66,13 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
     private void clear(String ip, String loginname) {
         badCredentialsAuthAttemptService.evict(loginname);
         ipAuthenticationAttemptService.evict(ip);
+    }
+
+    public boolean isRequireRecaptchaCheck() {
+        return requireRecaptchaCheck;
+    }
+
+    public void setRequireRecaptchaCheck(boolean requireRecaptchaCheck) {
+        this.requireRecaptchaCheck = requireRecaptchaCheck;
     }
 }

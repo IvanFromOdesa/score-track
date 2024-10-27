@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +32,19 @@ public class AuthenticationHolderService {
     private static final String ANONYMOUS_AUTHENTICATION = "anonymousUser";
 
     public Optional<AuthenticationBean> getCurrentAuthentication() {
-        return getAuthentication(a -> a instanceof JwtAuthenticationToken, a -> (AuthenticationBean) a.getPrincipal());
+        return getAuthentication(a -> a instanceof JwtAuthenticationToken || a instanceof OAuth2AuthenticationToken, a -> (AuthenticationBean) a.getPrincipal());
     }
 
     public Optional<JwtAuthenticationToken> getCurrentAuthenticationToken() {
-        return getAuthentication(a -> a instanceof UsernamePasswordAuthenticationToken, a -> (JwtAuthenticationToken) a);
+        return getAuthentication(a -> a instanceof UsernamePasswordAuthenticationToken || a instanceof OAuth2AuthenticationToken, a -> (JwtAuthenticationToken) a);
+    }
+
+    public Optional<OAuth2AuthenticationToken> getCurrentOAuth2Token() {
+        return getAuthentication(a -> a instanceof UsernamePasswordAuthenticationToken || a instanceof JwtAuthenticationToken, a -> (OAuth2AuthenticationToken) a);
+    }
+
+    public void setAuthentication(Authentication authentication) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private <T> Optional<T> getAuthentication(Predicate<Authentication> authTypeCheck, Function<Authentication, T> authTransformer) {

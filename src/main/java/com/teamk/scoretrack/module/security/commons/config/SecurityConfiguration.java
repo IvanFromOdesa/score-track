@@ -13,9 +13,11 @@ import com.teamk.scoretrack.module.security.commons.filter.RedirectFilter;
 import com.teamk.scoretrack.module.security.firewall.filter.XSSSanitizerFilter;
 import com.teamk.scoretrack.module.security.geo.filter.GeoLiteFilter;
 import com.teamk.scoretrack.module.security.handler.AuthSuccessHandler;
+import com.teamk.scoretrack.module.security.handler.OAuth2SuccessHandler;
 import com.teamk.scoretrack.module.security.handler.error.authfailure.AuthFailureHandler;
 import com.teamk.scoretrack.module.security.ipblocker.ExtendedLoginUrlAuthEntryPoint;
 import com.teamk.scoretrack.module.security.ipblocker.filter.IpBlockFilter;
+import com.teamk.scoretrack.module.security.oauth2.ExtendedOAuth2UserService;
 import com.teamk.scoretrack.module.security.recaptcha.filter.RecaptchaVerifyFilter;
 import com.teamk.scoretrack.module.security.session.filter.SessionAccessTokenBindFilter;
 import com.teamk.scoretrack.module.security.token.jwt.convert.JwtUserPrivilegeConverter;
@@ -125,7 +127,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain authFilterChain(HttpSecurity httpSecurity,
                                                @Qualifier(AuthFailureHandler.NAME) AuthenticationFailureHandler failureHandler,
                                                @Qualifier(AuthSuccessHandler.NAME) AuthenticationSuccessHandler successHandler,
-                                               @Qualifier(ExtendedLoginUrlAuthEntryPoint.NAME) AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
+                                               @Qualifier(OAuth2SuccessHandler.NAME) AuthenticationSuccessHandler oauth2SuccessHandler,
+                                               @Qualifier(ExtendedLoginUrlAuthEntryPoint.NAME) AuthenticationEntryPoint authenticationEntryPoint,
+                                               // TODO: improve. There may be more oauth2 services in the future
+                                               ExtendedOAuth2UserService oAuth2UserService) throws Exception {
         RequestMatcher csrfRequestMatcher = request -> csrfProtected().stream().anyMatch(requestMatcher -> requestMatcher.matches(request));
         return httpSecurity
                 .cors(Customizer.withDefaults())
@@ -154,6 +159,12 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.loginPage(LOGIN).permitAll().defaultSuccessUrl(HOME).failureHandler(failureHandler).successHandler(successHandler))
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage(LOGIN)
+                        .defaultSuccessUrl(HOME)
+                        .successHandler(oauth2SuccessHandler)
+                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oAuth2UserService))
+                )
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
                 /*
                  * If using https, add this to clear everything (cache, cookies, storage and executionContexts) on logout.
