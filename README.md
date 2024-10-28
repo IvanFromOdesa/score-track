@@ -15,7 +15,80 @@
 
 Additional libraries used in project can be found at ```pom.xml```.
 
-## Set up instructions coming soon.
+## Set up
+
+- Docker: unsupported.
+
+All the necessary configuration can be found in ```application.properties.example```.
+To set up and run the application, you will need to create a copy of this file without the ```.example```.
+
+- SQL configuration
+
+   - Set up ```datasource url```, ```username``` and ```password``` if not default, ```ddl-auto``` option.
+
+- Private keys
+
+   - Application makes use of JWTs, requiring an asymmetric encryption. Set up public and private ```.pem``` keys and put them under the `resources/certs`. You can use [OpenSSL](https://github.com/openssl/openssl) to generate them.
+   - Set up a symmetric key for remember-me (used in authentication flow) key.
+
+- Recaptcha
+
+   - Application makes use of Google's [reCAPTCHA](https://www.google.com/recaptcha/about/) service. You should provide a private and public keys after you have configured your reCAPTCHA account.
+
+- Google OAuth2
+
+  - You will have to configure Google OAuth2. Once done, paste your ```CLIENT_ID``` and ```CLIENT_SECRET``` into the ```.env``` file under the ```${GOOGLE_OAUTH2_CLIENT_ID}``` and ```${GOOGLE_OAUTH2_CLIENT_SECRET}``` variables respectively.
+
+- Google Cloud Storage
+
+  - Application uses GCP service which is [Google Cloud Storage](https://cloud.google.com/storage/) used to upload, store and download media and files. You will have to configure it. Download the file with the ```key``` in its name in the JSON format, name it ```gcs_key.json``` and put under the ```certs``` folder. You will also have to provide the ```project-id``` and ```bucket``` name.
+
+- Redis
+
+  - Application uses [Redis](https://github.com/redis/redis) to cache and store data. The default configuration is already provided. You will have to run Redis DB on port ```6379``` (default).
+
+- GeoLite
+
+  - Application uses [GeoLite](https://dev.maxmind.com/geoip/) to identify IP addresses. Not required. If you want to use it, set the ```geo.enabled``` property to ```true```, download the GeoIP database and place it under `resources/geo` folder. DB's format is ```mmdb```.
+
+- ClamAV
+
+  - Application uses [ClamAV](https://github.com/Cisco-Talos/clamav) to scan uploaded files and detect malware. Not required. If you want to use it, run ClamAV service on port  ```3310``` (default).
+
+- React dev scripts
+
+  - If you want to run a specific script that has not been minimized yet, you can do that by providing a link to your webpack (or other) dev server that runs it, on the desired html page (that is served by the main application). To avoid cross-origin problem, set the ```react.enable.dev``` property to true, which will mark ```localhost:3000``` as "trusted". This property must be disabled in production.
+
+- Emails
+
+  - Set up ```host```, ```port```, ```username```, ```password``` and ```protocol``` to allow the application to send emails. You can use any kind of email testing tool or configure an actual SMTP server. I recommend [Mailtrap](https://mailtrap.io/) or using Google's SMTP server.
+
+- NBA Api MongoDB Database
+
+  - Application stores business related data (sports data) in document-oriented database [MongoDB](https://www.mongodb.com/). Currently Score Track is supporting only one sport's API service of the [API-SPORTS](https://api-sports.io/) platform which is NBA Api. For each of the API, application uses different MongoDB databases. To set up the NBA Api MongoDB database, provide ```host```, ```authenticationDatabase```, ```database name```, ```username```, ```password``` and ```port```.
+
+- Batch updates scheduling
+
+  - Application uses scheduled tasks to update and provide latest sports data. By default, NBA Api ```teams``` data is updated daily at 12:00 local time and ```players``` at 13:00 local time, which you can change by altering cron expressions at ```nbaapi.update.team.cron``` and ```nbaapi.update.player.cron``` properties respectively.
+  - You also need to set up properties for Api itself. It includes ```nbaapi.realhost```, ```nbaapi.key.name```, ```nbaapi.key.value```, ```nbaapi.host.name```, ```nbaapi.host.value```, ```nbaapi.connection.timeout```, ```nbaapi.read.timeout```.
+
+- ```.env``` variables
+
+  - You may have noticed that there are references to ```.env``` variables. You need to create an ```.env``` file at the root of the project. Set up ```WEB_DEFAULT_READ_TIMEOUT```, ```WEB_DEFAULT_CONNECT_TIMEOUT```, ```RM_KEY```, ```RECAPTCHA_PR_KEY```, ```RECAPTCHA_PB_KEY```, ```GOOGLE_OAUTH2_CLIENT_ID```, ```GOOGLE_OAUTH2_CLIENT_SECRET``` variables there.
+
+- i18n
+
+  - Score Track supports internationalization and provides localized versions depending on the location. Currently, it supports English and Ukrainian languages. The default locale is ```en``` and can be changed at ```application.locale```.
+
+- Resources
+
+  - Besides IP database and encryption keys, you need to set up some media files (pictures). This media is allowed to be used in development, however there may be issues with licensing, so they are currently git ignored. These include pictures under `resources/static/api/nbaapi/arenas`, `resources/static/api/nbaapi/players` and `resources/static/lang-icons`. For development, I will provide links where you will find them and download yourself.
+  - Minimized scripts and everything related to that is also git ignored. This includes the main script under `resources/static/bundles/home`. You will have to build it and place it under this folder yourself. Currently, the React UI is only about that script, so should be no issues with that.
+
+### Internationalization
+
+Our project currently supports English and Ukrainian. We welcome contributions to add additional languages! All localization text files are located in the `resources/bundle` folder. If you'd like to contribute translations, please feel free to add a new language file following the existing format, and submit a pull request.
+
 
 ## Demo
 ### Signing up
@@ -24,7 +97,7 @@ Additional libraries used in project can be found at ```pom.xml```.
 
 - Choose a Login Name:
 
-  - Your login name should be between 5 to 15 characters.
+  - Your login name should be between 5 and 15 characters.
   - Only letters, numbers, and underscores (_) are allowed.
 
 - Create a Password:
