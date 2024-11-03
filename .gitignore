@@ -39,7 +39,6 @@ build/
 !/src/main/resources/static/lang-icons/
 /src/main/resources/static/api/nbaapi/
 !/src/test/resources
-/proxy/json/
 
 ui/node_modules
 ui/.pnp
@@ -64,5 +63,8 @@ ui/yarn-debug.log*
 ui/yarn-error.log*
 
 *.min.js
-/src/test/resources/
 /proxy/public/
+/proxy/json/
+
+# DB dumps
+!/dump

@@ -74,7 +74,7 @@ To set up and run the application, you will need to create a copy of this file w
 
 - ```.env``` variables
 
-  - You may have noticed that there are references to ```.env``` variables. You need to create an ```.env``` file at the root of the project. Set up ```WEB_DEFAULT_READ_TIMEOUT```, ```WEB_DEFAULT_CONNECT_TIMEOUT```, ```RM_KEY```, ```RECAPTCHA_PR_KEY```, ```RECAPTCHA_PB_KEY```, ```GOOGLE_OAUTH2_CLIENT_ID```, ```GOOGLE_OAUTH2_CLIENT_SECRET``` variables there.
+  - You may have noticed that there are references to ```.env``` variables. You need to create an ```.env``` file at the root of the project. Set up ```WEB_DEFAULT_READ_TIMEOUT```, ```WEB_DEFAULT_CONNECT_TIMEOUT```, ```RM_KEY```, ```RECAPTCHA_PR_KEY```, ```RECAPTCHA_PB_KEY```, ```GOOGLE_OAUTH2_CLIENT_ID```, ```GOOGLE_OAUTH2_CLIENT_SECRET``` variables there. It also should contain ```NBA_API_MONGO_HOST```, ```NBA_API_MONGO_PORT```, ```NBA_API_MONGO_AUTH_DB```, ```NBA_API_MONGO_DB```, ```NBA_API_MONGO_USER``` and ```NBA_API_MONGO_PASSWORD``` to execute `.sh` NBA Api MongoDB dumps scripts.
 
 - i18n
 

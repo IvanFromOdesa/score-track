@@ -77,11 +77,11 @@ mongo.db.rs=false
 
 # NBA Api
 nbaapi.mongodb.host=
-nbaapi.mongodb.authenticationDatabase=
-nbaapi.mongodb.database=
-nbaapi.mongodb.username=
-nbaapi.mongodb.password=
-nbaapi.mongodb.port=
+nbaapi.mongodb.authenticationDatabase=${NBA_API_MONGO_AUTH_DB}
+nbaapi.mongodb.database=${NBA_API_MONGO_DB}
+nbaapi.mongodb.username=${NBA_API_MONGO_USER}
+nbaapi.mongodb.password=${NBA_API_MONGO_PASSWORD}
+nbaapi.mongodb.port=${NBA_API_MONGO_PORT}
 
 # Free plan permits 10 requests per minute
 nbaapi.rate.limit=10
