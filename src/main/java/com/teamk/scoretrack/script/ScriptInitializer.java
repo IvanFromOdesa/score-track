@@ -27,15 +27,17 @@ public class ScriptInitializer implements ApplicationContextInitializer<Configur
         System.out.println("This initializer runs predefined shell scripts to perform various setup tasks.");
         System.out.println("These tasks might include database backups, data migrations, or other essential operations.");
 
+        if (operatingSystem.isWin() && !SystemUtils.isRunningInWSL()) {
+            System.out.println("WSL is not available. Skipping script execution and continuing initialization.");
+            return;
+        }
+
         if (!getUserConfirmation("Do you want to run the script initializer? (y/n): ")) {
             System.out.println("Skipping script initialization.");
             return;
         }
 
-        if (operatingSystem.isWin() && !SystemUtils.isRunningInWSL()) {
-            System.out.println("WSL is not available. Skipping script execution and continuing initialization.");
-            return;
-        } else if (operatingSystem.isWin()) {
+        if (operatingSystem.isWin()) {
             System.out.println("Running on Windows with WSL.");
         } else if (operatingSystem.isUnix()) {
             System.out.println("Running on a Unix-based OS.");
