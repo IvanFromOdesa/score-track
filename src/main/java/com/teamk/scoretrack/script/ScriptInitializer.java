@@ -23,6 +23,15 @@ public class ScriptInitializer implements ApplicationContextInitializer<Configur
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
+        System.out.println(":: SCRIPTS INITIALIZER ::");
+        System.out.println("This initializer runs predefined shell scripts to perform various setup tasks.");
+        System.out.println("These tasks might include database backups, data migrations, or other essential operations.");
+
+        if (!getUserConfirmation("Do you want to run the script initializer? (y/n): ")) {
+            System.out.println("Skipping script initialization.");
+            return;
+        }
+
         if (operatingSystem.isWin() && !SystemUtils.isRunningInWSL()) {
             System.out.println("WSL is not available. Skipping script execution and continuing initialization.");
             return;
@@ -39,24 +48,8 @@ public class ScriptInitializer implements ApplicationContextInitializer<Configur
             System.out.println("Script: " + script.name());
             System.out.println("Description: " + script.description());
 
-            String input;
-            while (true) {
-                System.out.print("Do you want to run this script? (y/n): ");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-                try {
-                    input = reader.readLine();
-                    if ("y".equalsIgnoreCase(input)) {
-                        runScript(script.path());
-                        break;
-                    } else if ("n".equalsIgnoreCase(input)) {
-                        break;
-                    } else {
-                        System.out.println("Invalid input. Please enter 'y' or 'n'.");
-                    }
-                } catch (IOException e) {
-                    MessageLogger.error(e.getMessage());
-                }
+            if (getUserConfirmation("Do you want to run this script? (y/n): ")) {
+                runScript(script.path());
             }
         }
     }
@@ -65,7 +58,8 @@ public class ScriptInitializer implements ApplicationContextInitializer<Configur
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             File jsonFile = new File(SCRIPTS_PATH);
-            return objectMapper.readValue(jsonFile, new TypeReference<>() {});
+            return objectMapper.readValue(jsonFile, new TypeReference<>() {
+            });
         } catch (IOException e) {
             System.out.println("Error loading scripts.json: " + e.getMessage());
             return List.of();
@@ -74,7 +68,9 @@ public class ScriptInitializer implements ApplicationContextInitializer<Configur
 
     private void runScript(String scriptPath) {
         try {
-            ProcessBuilder processBuilder = operatingSystem.isUnix() ? new ProcessBuilder("bash", scriptPath) : new ProcessBuilder("wsl", "bash", "-c", scriptPath);
+            ProcessBuilder processBuilder = operatingSystem.isUnix()
+                    ? new ProcessBuilder("bash", scriptPath)
+                    : new ProcessBuilder("wsl", "bash", "-c", scriptPath);
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
 
@@ -89,6 +85,27 @@ public class ScriptInitializer implements ApplicationContextInitializer<Configur
             System.out.println("Script exited with code: " + exitCode);
         } catch (IOException | InterruptedException e) {
             MessageLogger.error(e.getMessage());
+        }
+    }
+
+    private boolean getUserConfirmation(String prompt) {
+        String input;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        while (true) {
+            System.out.print(prompt);
+            try {
+                input = reader.readLine();
+                if ("y".equalsIgnoreCase(input)) {
+                    return true;
+                } else if ("n".equalsIgnoreCase(input)) {
+                    return false;
+                } else {
+                    System.out.println("Invalid input. Please enter 'y' or 'n'.");
+                }
+            } catch (IOException e) {
+                MessageLogger.error(e.getMessage());
+            }
         }
     }
 }
