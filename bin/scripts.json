@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Backup NBA Api MongoDB",
+    "description": "Create a dump of MongoDB NBA Api DB and upload to GCS.",
+    "path": "./bin/backupAPINbaDumpGCS.sh",
+    "comment": ""
+  }
+]

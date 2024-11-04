@@ -4,6 +4,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 source "$SCRIPT_DIR/../.env"
 
+# These should come from the .env
 MONGO_HOST="$NBA_API_MONGO_HOST"
 MONGO_PORT="$NBA_API_MONGO_PORT"
 MONGO_AUTH_DB="$NBA_API_MONGO_AUTH_DB"
@@ -29,7 +30,7 @@ if [ $? -eq 0 ]; then
 
     GCS_BUCKET="gs://$GOOGLE_CLOUD_STORAGE_BUCKET_MAIN/dump/$MONGO_DB-$TIMESTAMP"
     echo "Uploading backup to GCS bucket: $GCS_BUCKET"
-    gsutil cp -r "$DUMP_PATH" "$GCS_BUCKET"
+    gsutil -m cp -r "$DUMP_PATH" "$GCS_BUCKET"
 
     if [ $? -eq 0 ]; then
         echo "Upload successful!"
