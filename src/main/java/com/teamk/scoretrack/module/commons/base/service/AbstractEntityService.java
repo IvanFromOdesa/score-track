@@ -7,7 +7,6 @@ import com.teamk.scoretrack.module.commons.other.ErrorMap;
 import com.teamk.scoretrack.module.commons.other.ErrorMapBeanWrapper;
 import com.teamk.scoretrack.module.commons.other.ScoreTrackConfig;
 import com.teamk.scoretrack.module.commons.util.mapper.BaseMapper;
-import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,6 @@ public abstract class AbstractEntityService<ENTITY extends IdAware<ID>, ID,
     protected DAO dao;
     @Autowired
     protected BaseTransactionManager baseTransactionManager;
-    @Autowired
-    protected EntityManager entityManager;
     @Autowired
     protected ErrorMapBeanWrapper errorMapBeanWrapper;
     protected final Logger LOGGER;
