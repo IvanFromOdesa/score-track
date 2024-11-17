@@ -43,7 +43,6 @@ public class SessionAccessTokenBindFilter extends BaseSecurityFilter {
             }
             filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
     }
 
     @Override
