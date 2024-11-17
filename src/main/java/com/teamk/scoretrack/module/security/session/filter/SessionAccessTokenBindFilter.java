@@ -28,7 +28,7 @@ public class SessionAccessTokenBindFilter extends BaseSecurityFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        /*String token = bearerTokenResolver.resolve(request);
+        String token = bearerTokenResolver.resolve(request);
         if (token == null) {
             filterChain.doFilter(request, response);
         } else {
@@ -42,7 +42,7 @@ public class SessionAccessTokenBindFilter extends BaseSecurityFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        }*/
+        }
         filterChain.doFilter(request, response);
     }
 
