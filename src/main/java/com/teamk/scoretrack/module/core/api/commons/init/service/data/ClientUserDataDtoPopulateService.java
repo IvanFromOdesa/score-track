@@ -70,12 +70,10 @@ public class ClientUserDataDtoPopulateService extends UserDataDtoPopulateService
     private static ClientUserDataDto.ProfileImgDto getProfileImg(@Nullable ImageData imageEntity,
                                                                  @Nullable ExternalImageData externalImageData) {
         ClientUserDataDto.ProfileImgDto profileImgDto = new ClientUserDataDto.ProfileImgDto();
-        if (imageEntity != null) {
+        if (imageEntity != null && imageEntity.getAccessStatus().isAccessible()) {
             AccessStatus accessStatus = imageEntity.getAccessStatus();
             profileImgDto.setAccessStatus(accessStatus);
-            if (accessStatus.isAccessible()) {
-                profileImgDto.setUrl(imageEntity.getExternalUrl());
-            }
+            profileImgDto.setUrl(imageEntity.getExternalUrl());
         } else if (externalImageData != null) {
             profileImgDto.setUrl(externalImageData.getPublicUrl());
             profileImgDto.setAccessStatus(AccessStatus.ACCESSIBLE);

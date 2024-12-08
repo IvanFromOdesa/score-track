@@ -6,6 +6,7 @@ import com.teamk.scoretrack.module.security.auth.service.AuthenticationHolderSer
 import com.teamk.scoretrack.module.security.handler.error.authfailure.service.BadCredentialsAuthAttemptService;
 import com.teamk.scoretrack.module.security.ipblocker.service.IpAuthenticationAttemptService;
 import com.teamk.scoretrack.module.security.recaptcha.service.RecaptchaResponseResolveService;
+import com.teamk.scoretrack.module.security.session.service.SessionExpirationAlertRedisService;
 import com.teamk.scoretrack.module.security.track.service.AuthenticationTrackingDataEntityService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,8 +28,17 @@ public class OAuth2SuccessHandler extends AuthSuccessHandler {
                                 AuthenticationHolderService authenticationHolderService,
                                 BadCredentialsAuthAttemptService badCredentialsAuthAttemptService,
                                 IpAuthenticationAttemptService ipAuthenticationAttemptService,
-                                RecaptchaResponseResolveService recaptchaResponseResolveService, AuthenticationEntityService authenticationEntityService) {
-        super(authenticationTrackingDataEntityService, authenticationHolderService, badCredentialsAuthAttemptService, ipAuthenticationAttemptService, recaptchaResponseResolveService);
+                                RecaptchaResponseResolveService recaptchaResponseResolveService,
+                                AuthenticationEntityService authenticationEntityService,
+                                SessionExpirationAlertRedisService sessionExpirationAlertRedisService) {
+        super(
+                authenticationTrackingDataEntityService,
+                authenticationHolderService,
+                badCredentialsAuthAttemptService,
+                ipAuthenticationAttemptService,
+                recaptchaResponseResolveService,
+                sessionExpirationAlertRedisService
+        );
         this.authenticationEntityService = authenticationEntityService;
         this.setRequireRecaptchaCheck(false);
     }

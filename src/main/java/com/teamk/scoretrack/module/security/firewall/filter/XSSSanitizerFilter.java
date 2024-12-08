@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class XSSSanitizerFilter extends OncePerRequestFilter {
-    private static final PolicyFactory NONE = new HtmlPolicyBuilder().toFactory();
+    private static final PolicyFactory NONE = new HtmlPolicyBuilder().allowStandardUrlProtocols().toFactory();
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String oauth2GooglePath;
 

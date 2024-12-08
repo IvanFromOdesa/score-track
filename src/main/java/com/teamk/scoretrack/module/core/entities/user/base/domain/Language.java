@@ -104,8 +104,10 @@ public enum Language implements IEnumConvert<String, Language> {
         return LOOKUP_MAP.values().stream().filter(p).findFirst().orElse(Language.UNDEFINED);
     }
 
+    // FIXME: calling /preferences/lang/en-US results in reCAPTCHA error:
+    //  Invalid action name, may only include "A-Za-z/_". Do not include user-specific information.
     public static List<Language> supported() {
-        return List.of(ENGLISH, UKRAINIAN);
+        return List.of(DEFAULT, UKRAINIAN);
     }
 
     public static Language byCode(String code) {

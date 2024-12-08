@@ -47,6 +47,7 @@ email.external-validator=false
 # Redis
 redis.hostname=localhost
 redis.port=6379
+redis.session.lifespan=1800000
 
 # Default ttl for caching, ms
 caching.default.ttl=3600000

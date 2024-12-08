@@ -43,11 +43,15 @@ public abstract class TranslatorService implements MessageSourceResolver {
      * @return
      */
     public Map<String, String> getMessages(String bundleName) {
+        return getMessages(bundleName, LocaleContextHolder.getLocale());
+    }
+
+    public Map<String, String> getMessages(String bundleName, Locale locale) {
         ExposedResourceBundleMessageSource messageSourceBean = getMessageSourceBean();
         if (bundleName != null) {
             messageSourceBean.setTargetFileName(bundleName);
         }
-        return getMessages(LocaleContextHolder.getLocale(), messageSourceBean);
+        return getMessages(locale, messageSourceBean);
     }
 
     public Map<String, String> getMessages(Locale locale) {

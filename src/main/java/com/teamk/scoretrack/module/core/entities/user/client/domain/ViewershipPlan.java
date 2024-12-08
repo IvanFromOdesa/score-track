@@ -7,6 +7,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,7 +26,7 @@ public class ViewershipPlan extends Identifier {
      */
     private Instant endDateTime;
     // TODO: Hibernate n + 1 problem
-    @ElementCollection(targetClass = SportAPI.class)
+    @ElementCollection(targetClass = SportAPI.class, fetch = FetchType.EAGER)
     @JoinTable(name = "view_rights", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "api", nullable = false)
     @Enumerated(EnumType.STRING)

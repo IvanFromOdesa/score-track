@@ -1,6 +1,6 @@
 package com.teamk.scoretrack.module.commons.cache.redis.service;
 
-import com.teamk.scoretrack.module.commons.base.domain.IdAware;
+import com.teamk.scoretrack.module.commons.cache.redis.domain.RedisIdAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class HashedRedisService<CACHE_CONTEXT, ENTITY extends IdAware<ID>, ID> extends RedisService<CACHE_CONTEXT, ENTITY, ID> {
+public abstract class HashedRedisService<CACHE_CONTEXT, ENTITY extends RedisIdAware<ID>, ID> extends RedisService<CACHE_CONTEXT, ENTITY, ID> {
     private final HashOperations<String, ID, ENTITY> dao;
 
     @Autowired

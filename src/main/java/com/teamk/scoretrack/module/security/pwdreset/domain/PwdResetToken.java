@@ -38,6 +38,11 @@ public class PwdResetToken extends RedisAuthIdentifier {
         this.status = Status.USED;
     }
 
+    @Override
+    public Long getTtl() {
+        return TTL;
+    }
+
     public enum Status {
         CREATED, USED;
 

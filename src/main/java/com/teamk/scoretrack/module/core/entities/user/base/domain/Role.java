@@ -45,6 +45,10 @@ public enum Role {
         return Arrays.asList(privileges).contains(privilege);
     }
 
+    public static Role byRoleAlias(String roleAlias) {
+        return Arrays.stream(Role.values()).filter(r -> r.getRoleAlias().equals(roleAlias)).findAny().orElseThrow();
+    }
+
     public static Privileges[] sAdminPrivileges() {
         return CommonsUtil.concat2Arrays(adminPrivileges(), new Privileges[] {
                 Privileges.API_MANAGEMENT, Privileges.CONTENT_MANAGEMENT, Privileges.APP_MANAGEMENT

@@ -1,7 +1,7 @@
 package com.teamk.scoretrack.module.commons.cache.redis.service;
 
 import com.teamk.scoretrack.module.commons.cache.redis.dao.RedisDao;
-import com.teamk.scoretrack.module.commons.base.domain.IdAware;
+import com.teamk.scoretrack.module.commons.cache.redis.domain.RedisIdAware;
 
 import java.util.Optional;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
  * @param <ID> id of ENTITY
  * @param <DAO> redis type DAO
  */
-public abstract class BaseRedisService<CACHE_CONTEXT, ENTITY extends IdAware<ID>, ID, DAO extends RedisDao<ENTITY, ID>> extends RedisService<CACHE_CONTEXT, ENTITY, ID> {
+public abstract class BaseRedisService<CACHE_CONTEXT, ENTITY extends RedisIdAware<ID>, ID, DAO extends RedisDao<ENTITY, ID>> extends RedisService<CACHE_CONTEXT, ENTITY, ID> {
     protected DAO dao;
 
     @Override

@@ -65,11 +65,10 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Horizontal scaling? Hell nah -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-data-redis</artifactId>
-        </dependency>-->
+        </dependency>
         <!-- Thymeleaf -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

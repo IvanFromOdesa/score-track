@@ -54,6 +54,9 @@ public class ClientUser extends User {
     @JoinColumn(name = "view_plan", referencedColumnName = "id")
     private ViewershipPlan viewershipPlan;
 
+    protected ClientUser() {
+    }
+
     public Profile getProfile() {
         return profile;
     }

@@ -34,4 +34,9 @@ public class BadCredentialsAuthenticationAttempt extends RedisAuthIdentifier {
     public void setAttempt(int attempt) {
         this.attempt = attempt;
     }
+
+    @Override
+    public Long getTtl() {
+        return TTL;
+    }
 }

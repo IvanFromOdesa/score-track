@@ -38,4 +38,9 @@ public class OTPToken extends RedisAuthIdentifier {
     public Instant getCreated() {
         return created;
     }
+
+    @Override
+    public Long getTtl() {
+        return TTL;
+    }
 }

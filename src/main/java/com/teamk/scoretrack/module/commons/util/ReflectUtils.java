@@ -53,6 +53,12 @@ public final class ReflectUtils {
         return res;
     }
 
+    public static <T> void setField(T object, String fieldName, Object value, Class<T> clazz) throws NoSuchFieldException, IllegalAccessException {
+        Field field = getAllFields(clazz).stream().filter(f -> f.getName().equals(fieldName)).findAny().orElseThrow();
+        field.setAccessible(true);
+        field.set(object, value);
+    }
+
     public static <T> boolean isNull(T t) {
         return t == null || getAllValues(t).isEmpty();
     }

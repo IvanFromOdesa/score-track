@@ -11,6 +11,7 @@ public class CacheStore {
     public static final String IP_AUTH_FAILURE_CACHE_STORE = "ipAuthFailure";
     public static final String CRYPTO_TOKENS = "cryptoTokens";
     public static final String API_RATE_LIMITER = "apiRateLimiter";
+    public static final String SESSION_EXPIRATION_ALERT = "sessionExpirationAlert";
 
     /**
      * NBA API

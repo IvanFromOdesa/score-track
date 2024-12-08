@@ -44,6 +44,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
@@ -67,6 +68,8 @@ import static com.teamk.scoretrack.module.commons.layout.preferences.Preferences
 import static com.teamk.scoretrack.module.core.api.commons.init.controller.ApiInitController.*;
 import static com.teamk.scoretrack.module.security.auth.controller.AuthenticationController.*;
 import static com.teamk.scoretrack.module.security.pwdreset.controller.PwdResetController.*;
+import static com.teamk.scoretrack.module.security.session.controller.SessionExpirationAlertSseController.SESSION_EXPIRATION_ALERT;
+import static com.teamk.scoretrack.module.security.session.controller.SessionExpirationAlertSseController.SUBSCRIBE;
 
 @Configuration
 @EnableMethodSecurity
@@ -185,7 +188,7 @@ public class SecurityConfiguration {
      * @return whitelisted public resource folders.
      */
     public static String[] getWhitelistedResources() {
-        return new String[] {"/layouts/**", "/bundles/**", "/js/**", "/vendor/**", "/api-logos/**", "/api/**", "/lang-icons/**"};
+        return new String[] {"/layouts/**", "/bundles/**", "/js/**", "/vendor/**", "/api-logos/**", "/api/**", "/lang-icons/**", "/favicon.ico"};
     }
 
     private Set<RequestMatcher> csrfProtected() {
@@ -214,7 +217,12 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.NEVER))
-                .addFilterBefore(sessionAccessTokenBindFilter, AuthorizationFilter.class)
+                /*
+                 * This is related specifically to mis sync between session and jwt.
+                 * Once the HttpSession is expired, client can still provide a valid jwt and set the authentication to JwtAuthenticationToken.
+                 * To prevent that, we have to check if session and jwt are in sync before the undermentioned filter will set the authentication.
+                 */
+                .addFilterBefore(sessionAccessTokenBindFilter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
 

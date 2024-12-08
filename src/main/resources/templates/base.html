@@ -7,6 +7,7 @@
     <!-- Preferred language option right on navbar -->
     <script sec:authorize="isAnonymous()" type="text/javascript" th:src="@{/js/navbar-helper.js}"></script>
     <script sec:authorize="isAuthenticated()" type="text/javascript" th:src="@{/js/common.js}"></script>
+    <script sec:authorize="isAuthenticated()" type="module" th:src="@{/js/session-expire-alert.js}"></script>
     <script defer th:src="@{/vendor/bootstrap.js}"></script>
     <!-- Download recaptcha scripts at once as some scripts might need it in runtime -->
     <script th:src="@{https://www.google.com/recaptcha/api.js(render=${recaptcha_pb_key})}"></script>

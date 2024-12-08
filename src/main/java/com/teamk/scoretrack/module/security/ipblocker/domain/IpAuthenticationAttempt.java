@@ -40,6 +40,11 @@ public class IpAuthenticationAttempt extends RedisAuthIdentifier {
         return level;
     }
 
+    @Override
+    public Long getTtl() {
+        return TTL;
+    }
+
     public enum Level {
         OK(0,1, MAX_FAILED_ATTEMPTS - 1),
         WARN(1, MAX_FAILED_ATTEMPTS, (MAX_FAILED_ATTEMPTS * 2) - 1),

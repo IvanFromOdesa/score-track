@@ -27,7 +27,6 @@ public class FanEntityService extends AbstractClientUserEntityService<Fan, FanDa
     @Override
     protected Fan merge(Fan e, Fan byId) {
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
 
         mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
 

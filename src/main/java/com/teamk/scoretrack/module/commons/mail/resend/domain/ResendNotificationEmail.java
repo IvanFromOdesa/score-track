@@ -38,4 +38,9 @@ public class ResendNotificationEmail extends RedisAuthIdentifier {
     public int getMaxAttempts() {
         return 3;
     }
+
+    @Override
+    public Long getTtl() {
+        return TTL;
+    }
 }
